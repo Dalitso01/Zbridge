@@ -1,131 +1,326 @@
 import React, { useState, useEffect } from "react";
-import { Card, CardContent, CardMedia, Typography, Box, TextField, Button, Grid, Paper } from "@mui/material";
+import {
+  Box, Typography, Paper, Grid, TextField, Button, List, ListItem, ListItemText, Chip, Avatar, Divider, Dialog, DialogTitle, DialogContent, DialogActions
+} from "@mui/material";
+import BusinessIcon from "@mui/icons-material/Business";
+import GroupIcon from "@mui/icons-material/Group";
+import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
+import EditIcon from "@mui/icons-material/Edit";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CancelIcon from "@mui/icons-material/Cancel";
+import AttachFileIcon from "@mui/icons-material/AttachFile";
 import firebase from "firebase/compat/app";
 import app from "./firebase";
 
 const db = firebase.firestore();
 
-const abstractImages = [
-  "https://images.unsplash.com/photo-1465101178521-c1a9136a3b99?auto=format&fit=crop&w=600&q=80",
-  "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80"
-];
-
 const EmployerDashboard = () => {
-  const [internships, setInternships] = useState([]);
-  const [form, setForm] = useState({
-    company: "",
-    title: "",
-    description: ""
-  });
-  const [message, setMessage] = useState("");
+  const [company, setCompany] = useState({ name: "", description: "", logo: "" });
+  const [editing, setEditing] = useState(false);
+  const [applicants, setApplicants] = useState([]);
+  const [submissions, setSubmissions] = useState([]);
+  const [selectedSubmission, setSelectedSubmission] = useState(null);
+  const [logoUrl, setLogoUrl] = useState("");
   const [saving, setSaving] = useState(false);
+  const [taskTimes, setTaskTimes] = useState({}); // { taskId: timeAllocated }
+  const [fileUrl, setFileUrl] = useState(""); // For file preview in dialog
 
-  // Fetch internships from Firestore
+  // Fetch company profile and applicants
   useEffect(() => {
-    const unsubscribe = db.collection("internships")
-      .orderBy("timestamp", "desc")
-      .onSnapshot(snapshot => {
-        const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setInternships(data);
+    const userId = firebase.auth().currentUser?.uid;
+    if (!userId) return;
+
+    // Fetch company profile
+    db.collection("companies").doc(userId).get().then(doc => {
+      if (doc.exists) setCompany(doc.data());
+    });
+
+    // Fetch applicants
+    db.collection("applications")
+      .where("employerId", "==", userId)
+      .get()
+      .then(snapshot => {
+        setApplicants(snapshot.docs.map(doc => doc.data()));
       });
-    return () => unsubscribe();
+
+    // Fetch submissions for review
+    db.collection("submissions")
+      .where("employerId", "==", userId)
+      .get()
+      .then(snapshot => {
+        setSubmissions(snapshot.docs.map(doc => doc.data()));
+      });
   }, []);
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // Save company profile (with logo)
+  const handleSaveProfile = async () => {
     setSaving(true);
-    try {
-      await db.collection("internships").add({
-        ...form,
-        image: abstractImages[Math.floor(Math.random() * abstractImages.length)],
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      });
-      setForm({ company: "", title: "", description: "" });
-      setMessage("Internship posted!");
-    } catch (error) {
-      setMessage("Error posting internship: " + error.message);
-    }
+    const userId = firebase.auth().currentUser?.uid;
+    await db.collection("companies").doc(userId).set({
+      ...company,
+      logo: logoUrl || company.logo || ""
+    });
+    setCompany({ ...company, logo: logoUrl || company.logo || "" });
+    setEditing(false);
     setSaving(false);
   };
 
+  // Approve or reject applicant (example logic)
+  const handleApplicantStatus = async (idx, status) => {
+    const applicant = applicants[idx];
+    // Update status in Firestore (assuming docId is available)
+    if (applicant.id) {
+      await db.collection("applications").doc(applicant.id).update({ status });
+    }
+    setApplicants(applicants =>
+      applicants.map((a, i) => (i === idx ? { ...a, status } : a))
+    );
+  };
+
+  // Logo upload (optional, for demo just use URL)
+  const handleLogoChange = e => {
+    setLogoUrl(e.target.value);
+  };
+
+  // Set time allocation for a task
+  const handleTimeChange = (taskId, value) => {
+    setTaskTimes({ ...taskTimes, [taskId]: value });
+    // Optionally, update in Firestore for persistence
+    // db.collection("tasks").doc(taskId).update({ timeAllocated: value });
+  };
+
+  // File type check helper
+  const isSupportedFile = (fileName) => {
+    return /\.(xlsx?|pptx?|docx?|pdf)$/i.test(fileName);
+  };
+
   return (
-    <Box sx={{ maxWidth: 1000, mx: "auto", mt: 4 }}>
-      <Typography variant="h4" gutterBottom color="primary">
-        Employer Dashboard
-      </Typography>
-      <Paper elevation={3} sx={{ p: 4, mb: 4, borderRadius: 3 }}>
-        <Typography variant="h6" gutterBottom>
-          Post a New Internship
-        </Typography>
-        <Box component="form" onSubmit={handleSubmit}>
-          <TextField
-            name="company"
-            label="Company Name"
-            value={form.company}
-            onChange={handleChange}
-            required
-            fullWidth
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            name="title"
-            label="Internship Title"
-            value={form.title}
-            onChange={handleChange}
-            required
-            fullWidth
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            name="description"
-            label="Description"
-            value={form.description}
-            onChange={handleChange}
-            required
-            fullWidth
-            multiline
-            minRows={2}
-            sx={{ mb: 2 }}
-          />
-          <Button type="submit" variant="contained" color="primary" fullWidth disabled={saving}>
-            {saving ? "Posting..." : "Post Internship"}
+    <Box sx={{ maxWidth: 1000, mx: "auto", mt: 4, p: { xs: 1, md: 2 } }}>
+      <Paper elevation={3} sx={{ p: { xs: 3, md: 5 }, mb: 4, background: "#e3f2fd" }}>
+        <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+          <Avatar
+            src={company.logo || logoUrl}
+            sx={{ width: 64, height: 64, mr: 2, bgcolor: "primary.main" }}
+          >
+            <BusinessIcon fontSize="large" />
+          </Avatar>
+          <Box>
+            <Typography variant="h4" sx={{ fontWeight: "bold" }}>
+              {company.name || "Your Company"}
+            </Typography>
+            <Typography variant="subtitle1" color="text.secondary">
+              {company.description || "No description set."}
+            </Typography>
+          </Box>
+          <Button
+            variant="outlined"
+            startIcon={<EditIcon />}
+            sx={{ ml: "auto" }}
+            onClick={() => setEditing(true)}
+          >
+            Edit Profile
           </Button>
-          {message && (
-            <Typography sx={{ mt: 2, color: message.startsWith("Error") ? "red" : "green" }}>{message}</Typography>
-          )}
         </Box>
+        {editing && (
+          <Box sx={{ mt: 2 }}>
+            <TextField
+              label="Company Name"
+              fullWidth
+              sx={{ mb: 2 }}
+              value={company.name}
+              onChange={e => setCompany({ ...company, name: e.target.value })}
+            />
+            <TextField
+              label="Description"
+              fullWidth
+              multiline
+              minRows={2}
+              sx={{ mb: 2 }}
+              value={company.description}
+              onChange={e => setCompany({ ...company, description: e.target.value })}
+            />
+            <TextField
+              label="Logo URL"
+              fullWidth
+              sx={{ mb: 2 }}
+              value={logoUrl}
+              onChange={handleLogoChange}
+              placeholder="Paste a logo image URL"
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleSaveProfile}
+              disabled={saving}
+            >
+              {saving ? "Saving..." : "Save"}
+            </Button>
+            <Button sx={{ ml: 2 }} onClick={() => setEditing(false)}>
+              Cancel
+            </Button>
+          </Box>
+        )}
       </Paper>
-      <Typography variant="h5" gutterBottom>
-        Posted Internships
-      </Typography>
-      <Grid container spacing={4}>
-        {internships.map((intern) => (
-          <Grid item xs={12} sm={6} md={4} key={intern.id}>
-            <Card sx={{ height: "100%", display: "flex", flexDirection: "column", borderRadius: 3 }}>
-              <CardMedia
-                component="img"
-                height="140"
-                image={intern.image}
-                alt={intern.title}
-                sx={{ borderTopLeftRadius: 12, borderTopRightRadius: 12 }}
-              />
-              <CardContent>
-                <Typography variant="h6">{intern.title}</Typography>
-                <Typography variant="subtitle2" color="text.secondary">
-                  {intern.company}
-                </Typography>
-                <Typography variant="body2" sx={{ my: 1 }}>
-                  {intern.description}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
+      <Grid container spacing={3}>
+        <Grid item xs={12} md={6}>
+          <Paper sx={{ p: 3, mb: 3, minHeight: 300 }}>
+            <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+              <GroupIcon color="secondary" sx={{ mr: 1 }} />
+              <Typography variant="h6">Applicants</Typography>
+            </Box>
+            <Divider sx={{ mb: 2 }} />
+            <List>
+              {applicants.length === 0 ? (
+                <Typography variant="body2">No applicants yet.</Typography>
+              ) : (
+                applicants.map((app, idx) => (
+                  <ListItem
+                    key={idx}
+                    secondaryAction={
+                      <>
+                        <Chip
+                          label={app.status || "Pending"}
+                          color={app.status === "Approved" ? "success" : app.status === "Rejected" ? "error" : "warning"}
+                          size="small"
+                          sx={{ mr: 1 }}
+                        />
+                        <Button
+                          startIcon={<CheckCircleIcon />}
+                          color="success"
+                          size="small"
+                          sx={{ mr: 1 }}
+                          onClick={() => handleApplicantStatus(idx, "Approved")}
+                          disabled={app.status === "Approved"}
+                        >
+                          Approve
+                        </Button>
+                        <Button
+                          startIcon={<CancelIcon />}
+                          color="error"
+                          size="small"
+                          onClick={() => handleApplicantStatus(idx, "Rejected")}
+                          disabled={app.status === "Rejected"}
+                        >
+                          Reject
+                        </Button>
+                      </>
+                    }
+                  >
+                    <ListItemText
+                      primary={app.studentName || app.studentEmail || "Applicant"}
+                      secondary={`Status: ${app.status || "Pending"}`}
+                    />
+                  </ListItem>
+                ))
+              }
+            </List>
+          </Paper>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Paper sx={{ p: 3, mb: 3, minHeight: 300 }}>
+            <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+              <AssignmentTurnedInIcon color="info" sx={{ mr: 1 }} />
+              <Typography variant="h6">Submissions for Review</Typography>
+            </Box>
+            <Divider sx={{ mb: 2 }} />
+            <List>
+              {submissions.length === 0 ? (
+                <Typography variant="body2">No submissions yet.</Typography>
+              ) : (
+                submissions.map((sub, idx) => (
+                  <ListItem
+                    key={idx}
+                    button
+                    onClick={() => setSelectedSubmission(sub)}
+                  >
+                    <ListItemText
+                      primary={
+                        <>
+                          {`Task ${sub.taskId}: ${sub.answer?.slice(0, 40)}${sub.answer?.length > 40 ? "..." : ""}`}
+                          {sub.fileName && isSupportedFile(sub.fileName) && (
+                            <Chip
+                              icon={<AttachFileIcon />}
+                              label={sub.fileName.split(".").pop().toUpperCase()}
+                              size="small"
+                              color="info"
+                              sx={{ ml: 1 }}
+                            />
+                          )}
+                        </>
+                      }
+                      secondary={
+                        <>
+                          {`Student: ${sub.studentName || sub.studentEmail || "Unknown"}`}
+                          <br />
+                          <Box sx={{ display: "flex", alignItems: "center", mt: 1 }}>
+                            <Typography variant="caption" sx={{ mr: 1 }}>
+                              Time Allocated:
+                            </Typography>
+                            <TextField
+                              size="small"
+                              type="number"
+                              value={taskTimes[sub.taskId] || ""}
+                              onChange={e => handleTimeChange(sub.taskId, e.target.value)}
+                              placeholder="Minutes"
+                              sx={{ width: 80 }}
+                            />
+                          </Box>
+                        </>
+                      }
+                    />
+                  </ListItem>
+                ))
+              }
+            </List>
+          </Paper>
+        </Grid>
       </Grid>
+      {/* Submission Detail Dialog */}
+      <Dialog
+        open={!!selectedSubmission}
+        onClose={() => setSelectedSubmission(null)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Submission Details</DialogTitle>
+        <DialogContent>
+          <Typography variant="subtitle2" sx={{ mb: 1 }}>
+            Task ID: {selectedSubmission?.taskId}
+          </Typography>
+          <Typography variant="body1" sx={{ mb: 2 }}>
+            {selectedSubmission?.answer}
+          </Typography>
+          {selectedSubmission?.fileUrl && isSupportedFile(selectedSubmission.fileName) && (
+            <Box sx={{ my: 2 }}>
+              <Typography variant="body2" sx={{ mb: 1 }}>
+                Attached File:{" "}
+                <a href={selectedSubmission.fileUrl} target="_blank" rel="noopener noreferrer">
+                  {selectedSubmission.fileName}
+                </a>
+              </Typography>
+              {/* Optionally, preview PDF files */}
+              {/\.pdf$/i.test(selectedSubmission.fileName) && (
+                <iframe
+                  src={selectedSubmission.fileUrl}
+                  title="PDF Preview"
+                  width="100%"
+                  height="400px"
+                  style={{ border: "1px solid #ccc" }}
+                />
+              )}
+            </Box>
+          )}
+          <Typography variant="body2" color="text.secondary">
+            Student: {selectedSubmission?.studentName || selectedSubmission?.studentEmail || "Unknown"}
+          </Typography>
+          <Typography variant="body2" sx={{ mt: 1 }}>
+            Time Allocated: {taskTimes[selectedSubmission?.taskId] || "Not set"} minutes
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setSelectedSubmission(null)}>Close</Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

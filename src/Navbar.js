@@ -1,23 +1,73 @@
-import React from "react";
-import { AppBar, Toolbar, Typography, Button } from "@mui/material";
+import React, { useState } from "react";
+import { AppBar, Toolbar, Typography, Button, IconButton, Drawer, List, ListItem, ListItemText, Box } from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
 import { Link } from "react-router-dom";
 
-const Navbar = () => (
-  <AppBar position="static" color="success">
-    <Toolbar>
-      <Typography variant="h6" sx={{ flexGrow: 1 }}>
-        Z-Bridge
-      </Typography>
-      <Button color="inherit" component={Link} to="/">Home</Button>
-      <Button color="inherit" component={Link} to="/dashboard">Student</Button>
-      <Button color="inherit" component={Link} to="/employer">Employer</Button>
-      <Button color="inherit" component={Link} to="/podcast">Podcast</Button>
-      <Button color="inherit" component={Link} to="/profile">Profile</Button>
-      <Button color="inherit" component={Link} to="/library">Library</Button>
-      <Button color="inherit" component={Link} to="/admin">Admin</Button>
-      <Button color="inherit" component={Link} to="/forum">Forum</Button>
-    </Toolbar>
-  </AppBar>
-);
+const navLinks = [
+  { label: "Home", to: "/" },
+  { label: "Student", to: "/dashboard" },
+  { label: "Employer", to: "/employer" },
+  { label: "Podcast", to: "/podcast" },
+  { label: "Profile", to: "/profile" },
+  { label: "Library", to: "/library" },
+  { label: "Admin", to: "/admin" },
+  { label: "Forum", to: "/forum" }
+];
+
+const Navbar = () => {
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  return (
+    <AppBar position="static" color="success">
+      <Toolbar>
+        <Box sx={{ display: { xs: "block", md: "none" }, mr: 2 }}>
+          <IconButton
+            color="inherit"
+            edge="start"
+            onClick={() => setDrawerOpen(true)}
+            sx={{ mr: 1 }}
+          >
+            <MenuIcon />
+          </IconButton>
+        </Box>
+        <img src="/logo.png" alt="ZBridge Logo" style={{ height: 40, marginRight: 16 }} />
+        <Typography variant="h6" sx={{ flexGrow: 1 }}>
+          Z-Bridge
+        </Typography>
+        {/* Desktop Nav */}
+        <Box sx={{ display: { xs: "none", md: "flex" } }}>
+          {navLinks.map(link => (
+            <Button
+              key={link.to}
+              color="inherit"
+              component={Link}
+              to={link.to}
+              sx={{ ml: 1 }}
+            >
+              {link.label}
+            </Button>
+          ))}
+        </Box>
+        {/* Mobile Drawer */}
+        <Drawer
+          anchor="left"
+          open={drawerOpen}
+          onClose={() => setDrawerOpen(false)}
+          sx={{ display: { xs: "block", md: "none" } }}
+        >
+          <Box sx={{ width: 220 }} role="presentation" onClick={() => setDrawerOpen(false)}>
+            <List>
+              {navLinks.map(link => (
+                <ListItem button component={Link} to={link.to} key={link.to}>
+                  <ListItemText primary={link.label} />
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+        </Drawer>
+      </Toolbar>
+    </AppBar>
+  );
+};
 
 export default Navbar;

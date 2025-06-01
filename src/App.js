@@ -8,13 +8,15 @@ import Contact from "./Contact";
 import Profile from "./Profile";
 import StudentDashboard from "./StudentDashboard";
 import EmployerDashboard from "./EmployerDashboard";
-import TaskSubmission from "./TaskSubmission";
 import Podcast from "./Podcast";
 import AdminPanel from "./AdminPanel";
 import InternshipSimulation from "./InternshipSimulation";
 import ReviewSubmissions from "./ReviewSubmissions";
 import Library from "./Library";
 import Forum from "./Forum";
+import Layout from "./Layout";
+import Simulations from "./Simulations";
+import SimulationRunner from "./SimulationRunner";
 
 const theme = createTheme({
   palette: {
@@ -23,7 +25,9 @@ const theme = createTheme({
     background: { default: "#f5f5f5" }
   },
   typography: {
-    fontFamily: "Roboto, Arial, sans-serif"
+    fontFamily: "Roboto, Arial, sans-serif",
+    h4: { fontSize: "2rem", "@media (max-width:600px)": { fontSize: "1.3rem" } },
+    h5: { fontSize: "1.3rem", "@media (max-width:600px)": { fontSize: "1.1rem" } }
   }
 });
 
@@ -32,8 +36,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
-        <Navbar />
-        <Container sx={{ mt: 4 }}>
+        <Layout>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
@@ -41,15 +44,15 @@ function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/dashboard" element={<StudentDashboard />} />
             <Route path="/employer" element={<EmployerDashboard />} />
-            <Route path="/submit-task" element={<TaskSubmission />} />
             <Route path="/podcast" element={<Podcast />} />
             <Route path="/admin" element={<AdminPanel />} />
-            <Route path="/simulation" element={<InternshipSimulation />} />
+            <Route path="/simulation" element={<Simulations />} />
+            <Route path="/simulation/:simId" element={<SimulationRunner />} />
             <Route path="/review" element={<ReviewSubmissions />} />
             <Route path="/library" element={<Library />} />
             <Route path="/forum" element={<Forum />} />
           </Routes>
-        </Container>
+        </Layout>
       </Router>
     </ThemeProvider>
   );
