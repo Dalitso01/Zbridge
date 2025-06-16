@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { Box, Typography, Paper, Button, TextField } from "@mui/material";
-import { simulations } from "./simulations";
-
+import simulations from "./Simulations";
 export default function SimulationRunner() {
   const { simId } = useParams();
   const sim = simulations.find(s => s.id === simId);
@@ -44,7 +43,11 @@ export default function SimulationRunner() {
             />
             <input
               type="file"
-              accept={task.fileType.split(",").map(type => "." + type).join(",")}
+              accept={
+                task.fileType
+                  ? task.fileType.split(",").map(type => "." + type.trim()).join(",")
+                  : ""
+              }
               onChange={e => handleFile(task.id, e.target.files[0])}
             />
           </Box>

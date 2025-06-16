@@ -1,20 +1,23 @@
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
-import 'firebase/compat/analytics';
-import 'firebase/compat/firestore'; // <-- Add this line
+// Install: npm install firebase
+import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyC3CtIX1VLcjl_EZTx8wehiXWQF8A4Ds0g", // <-- your real API key
-  authDomain: "zbridge-f1887.firebaseapp.com",
-  projectId: "zbridge-f1887",
-  storageBucket: "zbridge-f1887.appspot.com",
-  messagingSenderId: "780403796560",
-  appId: "1:780403796560:web:5035340a8b2c468f663f55",
-  measurementId: "G-JV7Y7V21XJ"
+  apiKey: "your-api-key",
+  authDomain: "your-auth-domain",
+  projectId: "your-project-id",
+  storageBucket: "your-storage-bucket",
+  messagingSenderId: "your-messaging-sender-id",
+  appId: "your-app-id",
 };
 
-const app = firebase.apps.length
-  ? firebase.app()
-  : firebase.initializeApp(firebaseConfig);
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
 
-export default app;
+// Initialize Firestore and Auth
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+// Export the initialized instances
+export { app, db, auth };

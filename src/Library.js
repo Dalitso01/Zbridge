@@ -6,7 +6,7 @@ import {
 import firebase from "firebase/compat/app";
 import app from "./firebase";
 
-const db = firebase.firestore();
+import { db } from "./firebase";
 
 const categoriesList = ["Career", "Finance", "Law", "Technology", "Marketing", "Procurement", "Business", "Other"];
 

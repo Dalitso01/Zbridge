@@ -4,7 +4,17 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import * as firebaseui from 'firebaseui';
 import 'firebaseui/dist/firebaseui.css';
-import app from './firebase'; // Make sure this is here
+import { initializeApp } from "firebase/app";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+
+const firebaseConfig = { /* your config here */ };
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+export function signInWithGoogle() {
+  const provider = new GoogleAuthProvider();
+  return signInWithPopup(auth, provider);
+}
 
 const FirebaseAuthUI = () => {
   useEffect(() => {

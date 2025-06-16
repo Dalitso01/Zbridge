@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { AppBar, Toolbar, Typography, Button, IconButton, Drawer, List, ListItem, ListItemText, Box } from "@mui/material";
+import { AppBar, Toolbar, Typography, Button, IconButton, Drawer, List, ListItem, ListItemText, Box, Avatar } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Link } from "react-router-dom";
 
@@ -14,7 +14,7 @@ const navLinks = [
   { label: "Forum", to: "/forum" }
 ];
 
-const Navbar = () => {
+const Navbar = ({ profile, onProfileClick }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   return (
@@ -48,6 +48,20 @@ const Navbar = () => {
             </Button>
           ))}
         </Box>
+        {/* Profile Section */}
+        {profile && (
+          <Box sx={{ display: "flex", alignItems: "center", ml: 2 }}>
+            <Typography sx={{ mr: 1 }}>{profile.name}</Typography>
+            <Avatar
+              src={profile.avatarUrl}
+              alt={profile.name}
+              sx={{ width: 40, height: 40, cursor: "pointer" }}
+              onClick={onProfileClick}
+            >
+              {profile.name ? profile.name[0] : ""}
+            </Avatar>
+          </Box>
+        )}
         {/* Mobile Drawer */}
         <Drawer
           anchor="left"

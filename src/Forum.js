@@ -2,24 +2,30 @@ import React, { useState, useEffect } from "react";
 import { Box, Typography, Card, CardContent, Button, TextField, Grid, Paper } from "@mui/material";
 import firebase from "firebase/compat/app";
 import app from "./firebase";
+import { collection, query, orderBy, onSnapshot } from "firebase/firestore";
 
-const db = firebase.firestore();
+import { db } from "./firebase";
 
 const Forum = () => {
   const [topics, setTopics] = useState([]);
   const [newTopic, setNewTopic] = useState({ title: "", content: "" });
   const [reply, setReply] = useState({});
   const [saving, setSaving] = useState(false);
+  const [posts, setPosts] = useState([
+    { user: "Jane", text: "This simulation is really interesting!", timestamp: new Date() }
+  ]);
+  const [message, setMessage] = useState("");
 
   // Fetch topics and replies
   useEffect(() => {
-    const unsub = db.collection("forumTopics")
-      .orderBy("timestamp", "desc")
-      .onSnapshot(snapshot => {
-        const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setTopics(data);
-      });
-    return () => unsub();
+    const forumTopicsRef = collection(db, "forumTopics");
+    const q = query(forumTopicsRef, orderBy("timestamp", "desc"));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setTopics(data);
+    });
+
+    return () => unsubscribe(); // Cleanup subscription
   }, []);
 
   // Post a new topic
@@ -48,6 +54,15 @@ const Forum = () => {
     });
     setReply({ ...reply, [topicId]: "" });
     setSaving(false);
+  };
+
+  const handlePost = () => {
+    if (!message) return;
+    setPosts([
+      ...posts,
+      { user: "You", text: message, timestamp: new Date() }
+    ]);
+    setMessage("");
   };
 
   return (
@@ -133,6 +148,29 @@ const Forum = () => {
           <Typography sx={{ m: 4 }}>No topics yet. Start the first discussion!</Typography>
         )}
       </Grid>
+      <Paper sx={{ p: 3, mb: 3 }}>
+        <Typography variant="h6">Discussion Forum</Typography>
+        <Box sx={{ mb: 2 }}>
+          {posts.map((post, idx) => (
+            <Box key={idx} sx={{ mb: 1 }}>
+              <Typography variant="body2" color="text.secondary">
+                {post.user} - {post.timestamp.toLocaleString()}
+              </Typography>
+              <Typography variant="body1">{post.text}</Typography>
+            </Box>
+          ))}
+        </Box>
+        <TextField
+          label="Share your thoughts"
+          value={message}
+          onChange={e => setMessage(e.target.value)}
+          fullWidth
+          sx={{ mb: 1 }}
+        />
+        <Button variant="contained" onClick={handlePost} disabled={!message}>
+          Post
+        </Button>
+      </Paper>
     </Box>
   );
 };

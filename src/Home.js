@@ -1,163 +1,296 @@
-import React from "react";
-import { Card, CardContent, CardMedia, Typography, Grid, Button, Box, Paper } from "@mui/material";
-import { Link } from "react-router-dom";
+import React, { useMemo } from "react";
+import { Box, Button, createTheme, ThemeProvider, Typography } from "@mui/material";
+import { motion } from "framer-motion";
+import { Helmet } from "react-helmet";
+import HeroSection from "./components/HeroSection";
+import ContactSection from "./components/ContactSection";
+import simulations from "./Simulations";
+import GuideAvatar from "./components/GuideAvatar";
 
-const sections = [
-  {
-    title: "Student Dashboard",
-    description: "Simulate real internships, build skills, and track your journey.",
-    image: "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80", // Try this image
-    link: "/dashboard"
+const theme = createTheme({
+  palette: {
+    primary: { main: "#1a237e" }, // Deep blue
+    secondary: { main: "#ffd600" }, // Gold accent
+    background: { default: "#f5f5f5" },
   },
-  {
-    title: "Employer Dashboard",
-    description: "Design virtual work experiences and discover emerging talent.",
-    image: "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80",
-    link: "/employer"
+  typography: {
+    fontFamily: "Roboto, Arial, sans-serif",
+    h4: { fontSize: "2rem", "@media (max-width:600px)": { fontSize: "1.3rem" } },
+    h5: { fontSize: "1.3rem", "@media (max-width:600px)": { fontSize: "1.1rem" } },
   },
-  {
-    title: "Podcast",
-    description: "Hear from Zambia’s industry giants and innovators.",
-    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80",
-    link: "/podcast"
-  },
-  {
-    title: "Profile",
-    description: "Showcase your professional journey and achievements.",
-    image: "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80",
-    link: "/profile"
-  }
+});
+
+const motivationalQuotes = [
+  { text: "The more you learn, the more you earn.", author: "Warren Buffett" },
+  { text: "The power which establishes a strong career is the same power that builds a strong character.", author: "Kenneth Kaunda" },
+  { text: "Commit to lifelong learning. The most valuable asset you'll ever have is your mind and what you put into it.", author: "Brian Tracy" },
 ];
 
-const quotes = [
-  {
-    text: "The education of the youth is the foundation of any nation.",
-    author: "Kenneth Kaunda"
-  },
-  {
-    text: "Education is the most powerful weapon which you can use to change the world.",
-    author: "Nelson Mandela"
-  },
-  {
-    text: "We must become the change we want to see.",
-    author: "Kenneth Kaunda"
-  }
-];
+export default function Home({ isLoggedIn, onStartSimulation }) {
+  const featuredSimulations = useMemo(() => simulations.slice(0, 4), [simulations]); // Show 4 simulations
 
-const Home = () => (
-  <Box
-    sx={{
-      minHeight: "100vh",
-      position: "relative",
-      py: 8,
-      px: { xs: 2, md: 8 },
-      background: "linear-gradient(135deg, #1a237e 60%, #ffd600 100%)"
-    }}
-  >
-    <Box
-      sx={{
-        position: "absolute",
-        top: 0,
-        left: 0,
-        width: "100%",
-        height: "100%",
-        bgcolor: "rgba(26,35,126,0.7)",
-        zIndex: 0
-      }}
-    />
-    <Box sx={{ position: "relative", zIndex: 1 }}>
-      <Typography
-        variant="h2"
-        align="center"
-        gutterBottom
+  return (
+    <ThemeProvider theme={theme}>
+      <Helmet>
+        <title>ZBRIDGE - Empowering Professionals</title>
+      </Helmet>
+      <Box
         sx={{
-          color: "#fff",
-          fontWeight: 700,
-          letterSpacing: 2,
-          mb: 2
+          minHeight: "100vh",
+          background: "#0d2343",
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          gap: 4,
+          padding: 4,
         }}
       >
-        Z-Bridge: Zambia’s Virtual Internship Platform
-      </Typography>
-      <Typography
-        variant="h5"
-        align="center"
-        color="#ffd600"
-        paragraph
-        sx={{ mb: 6, fontWeight: 400 }}
-      >
-        Empowering Africa’s next generation of professionals through real-world experience, mentorship, and inspiration.
-      </Typography>
-      <Grid container spacing={5} justifyContent="center">
-        {sections.map((section) => (
-          <Grid item key={section.title} xs={12} sm={6} md={3}>
-            <Card
-              elevation={6}
-              sx={{
-                borderRadius: 4,
-                background: "#fff",
-                minHeight: 380,
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between"
-              }}
-            >
-              <CardMedia
-                component="img"
-                height="160"
-                image={section.image}
-                alt={section.title}
-                sx={{ objectFit: "cover", borderTopLeftRadius: 16, borderTopRightRadius: 16 }}
-              />
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="div" sx={{ fontWeight: 600 }}>
-                  {section.title}
-                </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                  {section.description}
-                </Typography>
-                <Button
-                  component={Link}
-                  to={section.link}
-                  variant="contained"
-                  color="primary"
-                  sx={{ mt: 2, borderRadius: 2 }}
-                  fullWidth
-                >
-                  Explore
-                </Button>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
-      <Box sx={{ maxWidth: 700, mx: "auto", mt: 8 }}>
-        <Paper
-          elevation={6}
-          sx={{
-            p: 4,
-            background: "rgba(255,255,255,0.95)",
-            borderRadius: 4,
-            textAlign: "center"
+        {/* Welcome Message */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          style={{
+            background: "#ffffff",
+            padding: "2rem",
+            borderRadius: "8px",
+            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+            textAlign: "center",
           }}
         >
-          <Typography variant="h4" gutterBottom sx={{ color: "primary.main", fontWeight: 700 }}>
-            Inspiration
+          <Typography
+            variant="h4"
+            sx={{ color: "#1a237e", fontWeight: "bold", marginBottom: "1rem" }}
+          >
+            Welcome to ZBRIDGE!
           </Typography>
-          {quotes.map((q, idx) => (
-            <Typography
-              key={idx}
-              variant="h6"
-              align="center"
-              sx={{ fontStyle: "italic", mb: 2, color: "text.secondary" }}
-            >
-              "{q.text}"<br />— {q.author}
-            </Typography>
-          ))}
-        </Paper>
-      </Box>
-    </Box>
-  </Box>
-);
+          <Typography
+            variant="body1"
+            sx={{ color: "#333", marginBottom: "1rem" }}
+          >
+            Empowering professionals and students with real-world opportunities.
+          </Typography>
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{ padding: "0.5rem 2rem", fontWeight: "bold" }}
+          >
+            Get Started
+          </Button>
+        </motion.div>
 
-export default Home;
+        {/* About Section */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          style={{
+            background: "#1a237e", // Deep blue background
+            padding: "2rem",
+            borderRadius: "8px",
+          }}
+        >
+          <Typography
+            variant="h4"
+            align="center"
+            gutterBottom
+            sx={{ color: "white", fontWeight: "bold" }}
+          >
+            What's ZBRIDGE About?
+          </Typography>
+          <Typography
+            variant="body1"
+            align="center"
+            sx={{ color: "white", marginBottom: 2 }}
+          >
+            ZBRIDGE is a platform designed to empower students and professionals by connecting them with real-world
+            opportunities. Our mission is to bridge the gap between theoretical knowledge and practical experience,
+            enabling individuals to thrive in their careers and personal growth.
+          </Typography>
+          <Typography variant="body1" align="center" sx={{ color: "white" }}>
+            Whether you're looking to enhance your skills, explore new career paths, or simply grow as a person, ZBRIDGE
+            offers a range of simulations, resources, and tools to help you achieve your goals. Join us on this journey
+            of discovery and transformation.
+          </Typography>
+        </motion.div>
+
+        {/* Tour Section */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          style={{
+            background: "#ffffff",
+            padding: "2rem",
+            borderRadius: "8px",
+            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+          }}
+        >
+          <Typography
+            variant="h4"
+            align="center"
+            gutterBottom
+            sx={{ color: "#1a237e", fontWeight: "bold" }}
+          >
+            Take a Tour of ZBRIDGE
+          </Typography>
+          <Typography
+            variant="body1"
+            align="center"
+            sx={{ color: "#333", marginBottom: 2 }}
+          >
+            ZBRIDGE is more than just a platform. Here's what you can explore:
+          </Typography>
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+              gap: 4,
+              marginTop: 2,
+            }}
+          >
+            {/* Simulations */}
+            <motion.div
+              whileHover={{ scale: 1.1 }}
+              style={{
+                textAlign: "center",
+                padding: "1rem",
+                border: "1px solid #ddd",
+                borderRadius: "8px",
+                background: "#f9f9f9",
+              }}
+            >
+              <img
+                src="https://via.placeholder.com/100"
+                alt="Simulations"
+                style={{ marginBottom: "1rem", borderRadius: "8px", width: "100%" }}
+              />
+              <Typography variant="h6" sx={{ color: "#1a237e", fontWeight: "bold" }}>
+                Simulations
+              </Typography>
+              <Typography variant="body2" sx={{ color: "#333" }}>
+                Dive into real-world scenarios across various fields to gain practical experience.
+              </Typography>
+            </motion.div>
+
+            {/* Forums */}
+            <motion.div
+              whileHover={{ scale: 1.1 }}
+              style={{
+                textAlign: "center",
+                padding: "1rem",
+                border: "1px solid #ddd",
+                borderRadius: "8px",
+                background: "#f9f9f9",
+              }}
+            >
+              <img
+                src="https://via.placeholder.com/100"
+                alt="Forums"
+                style={{ marginBottom: "1rem", borderRadius: "8px", width: "100%" }}
+              />
+              <Typography variant="h6" sx={{ color: "#1a237e", fontWeight: "bold" }}>
+                Forums
+              </Typography>
+              <Typography variant="body2" sx={{ color: "#333" }}>
+                Publish articles, engage in open debates, and connect with like-minded professionals.
+              </Typography>
+            </motion.div>
+
+            {/* Podcasts */}
+            <motion.div
+              whileHover={{ scale: 1.1 }}
+              style={{
+                textAlign: "center",
+                padding: "1rem",
+                border: "1px solid #ddd",
+                borderRadius: "8px",
+                background: "#f9f9f9",
+              }}
+            >
+              <img
+                src="https://via.placeholder.com/100"
+                alt="Podcasts"
+                style={{ marginBottom: "1rem", borderRadius: "8px", width: "100%" }}
+              />
+              <Typography variant="h6" sx={{ color: "#1a237e", fontWeight: "bold" }}>
+                Podcasts
+              </Typography>
+              <Typography variant="body2" sx={{ color: "#333" }}>
+                Listen to discussions on diverse topics to stay informed and inspired.
+              </Typography>
+            </motion.div>
+
+            {/* Library */}
+            <motion.div
+              whileHover={{ scale: 1.1 }}
+              style={{
+                textAlign: "center",
+                padding: "1rem",
+                border: "1px solid #ddd",
+                borderRadius: "8px",
+                background: "#f9f9f9",
+              }}
+            >
+              <img
+                src="https://via.placeholder.com/100"
+                alt="Library"
+                style={{ marginBottom: "1rem", borderRadius: "8px", width: "100%" }}
+              />
+              <Typography variant="h6" sx={{ color: "#1a237e", fontWeight: "bold" }}>
+                Library
+              </Typography>
+              <Typography variant="body2" sx={{ color: "#333" }}>
+                Access a rich catalog of resources to upskill and stay ahead in your career.
+              </Typography>
+            </motion.div>
+          </Box>
+        </motion.div>
+
+        {/* Words of Wisdom Section */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          style={{
+            background: "#1a237e", // Deep blue background
+            padding: "2rem",
+            borderRadius: "8px",
+          }}
+        >
+          <Typography
+            variant="h4"
+            align="center"
+            gutterBottom
+            sx={{ color: "white", fontWeight: "bold" }}
+          >
+            Words of Wisdom
+          </Typography>
+          <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
+            {motivationalQuotes.map((quote, idx) => (
+              <Typography
+                key={idx}
+                variant="body1"
+                align="center"
+                sx={{
+                  color: "white",
+                  fontStyle: "italic",
+                  maxWidth: "600px",
+                  fontWeight: "bold",
+                }}
+              >
+                "{quote.text}" - <strong>{quote.author}</strong>
+              </Typography>
+            ))}
+          </Box>
+        </motion.div>
+
+        {/* Contact Section */}
+        <ContactSection />
+
+        {/* Guide Avatar */}
+        <GuideAvatar />
+      </Box>
+    </ThemeProvider>
+  );
+}

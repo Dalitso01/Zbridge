@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, Typography, Button, Box, TextField, LinearProgress } from "@mui/material";
 import firebase from "firebase/compat/app";
 import app from "./firebase";
-
-const db = firebase.firestore();
+import { collection, getDocs, addDoc, serverTimestamp } from "firebase/firestore";
+import { db } from "./firebase";
 
 const tasks = [
   { id: 1, title: "Introduction & Onboarding", description: "Read the onboarding materials and introduce yourself." },
@@ -15,6 +15,7 @@ const InternshipSimulation = () => {
   const [completed, setCompleted] = useState({});
   const [answers, setAnswers] = useState({});
   const [saving, setSaving] = useState({});
+  const [internships, setInternships] = useState([]);
 
   const handleInput = (id, value) => {
     setAnswers({ ...answers, [id]: value });
@@ -23,10 +24,10 @@ const InternshipSimulation = () => {
   const handleComplete = async (id) => {
     setSaving({ ...saving, [id]: true });
     try {
-      await db.collection("submissions").add({
+      await addDoc(collection(db, "submissions"), {
         taskId: id,
         answer: answers[id],
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        timestamp: serverTimestamp(),
       });
       setCompleted({ ...completed, [id]: true });
     } catch (error) {
@@ -34,6 +35,16 @@ const InternshipSimulation = () => {
     }
     setSaving({ ...saving, [id]: false });
   };
+
+  // Fetch internships from Firestore
+ const fetchInternships = async () => {
+  const snapshot = await getDocs(collection(db, "internships"));
+  setInternships(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+};
+  // Call fetchInternships on component mount
+  useEffect(() => {
+    fetchInternships();
+  }, []);
 
   // Progress calculation
   const progress = (Object.keys(completed).length / tasks.length) * 100;

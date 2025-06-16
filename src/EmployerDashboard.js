@@ -10,9 +10,8 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import firebase from "firebase/compat/app";
-import app from "./firebase";
-
-const db = firebase.firestore();
+import { db, auth } from "./firebase"; // Import Firestore instance and auth from firebase.js
+import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
 
 const EmployerDashboard = () => {
   const [company, setCompany] = useState({ name: "", description: "", logo: "" });
@@ -22,40 +21,41 @@ const EmployerDashboard = () => {
   const [selectedSubmission, setSelectedSubmission] = useState(null);
   const [logoUrl, setLogoUrl] = useState("");
   const [saving, setSaving] = useState(false);
-  const [taskTimes, setTaskTimes] = useState({}); // { taskId: timeAllocated }
-  const [fileUrl, setFileUrl] = useState(""); // For file preview in dialog
+  const [taskTimes, setTaskTimes] = useState({});
 
   // Fetch company profile and applicants
   useEffect(() => {
-    const userId = firebase.auth().currentUser?.uid;
+    const userId = auth.currentUser?.uid;
     if (!userId) return;
 
-    // Fetch company profile
-    db.collection("companies").doc(userId).get().then(doc => {
-      if (doc.exists) setCompany(doc.data());
-    });
+    const fetchCompanyProfile = async () => {
+      const companyDoc = await getDoc(doc(db, "companies", userId));
+      if (companyDoc.exists()) {
+        setCompany(companyDoc.data());
+      }
+    };
 
-    // Fetch applicants
-    db.collection("applications")
-      .where("employerId", "==", userId)
-      .get()
-      .then(snapshot => {
-        setApplicants(snapshot.docs.map(doc => doc.data()));
-      });
+    const fetchApplicants = async () => {
+      const applicantsQuery = query(collection(db, "applications"), where("employerId", "==", userId));
+      const snapshot = await getDocs(applicantsQuery);
+      setApplicants(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    };
 
-    // Fetch submissions for review
-    db.collection("submissions")
-      .where("employerId", "==", userId)
-      .get()
-      .then(snapshot => {
-        setSubmissions(snapshot.docs.map(doc => doc.data()));
-      });
+    const fetchSubmissions = async () => {
+      const submissionsQuery = query(collection(db, "submissions"), where("employerId", "==", userId));
+      const snapshot = await getDocs(submissionsQuery);
+      setSubmissions(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    };
+
+    fetchCompanyProfile();
+    fetchApplicants();
+    fetchSubmissions();
   }, []);
 
   // Save company profile (with logo)
   const handleSaveProfile = async () => {
     setSaving(true);
-    const userId = firebase.auth().currentUser?.uid;
+    const userId = auth.currentUser?.uid;
     await db.collection("companies").doc(userId).set({
       ...company,
       logo: logoUrl || company.logo || ""
@@ -85,8 +85,6 @@ const EmployerDashboard = () => {
   // Set time allocation for a task
   const handleTimeChange = (taskId, value) => {
     setTaskTimes({ ...taskTimes, [taskId]: value });
-    // Optionally, update in Firestore for persistence
-    // db.collection("tasks").doc(taskId).update({ timeAllocated: value });
   };
 
   // File type check helper
@@ -206,13 +204,13 @@ const EmployerDashboard = () => {
                       </>
                     }
                   >
-                    <ListItemText
+                   <ListItemText
                       primary={app.studentName || app.studentEmail || "Applicant"}
                       secondary={`Status: ${app.status || "Pending"}`}
                     />
                   </ListItem>
                 ))
-              }
+              )}
             </List>
           </Paper>
         </Grid>
@@ -270,7 +268,7 @@ const EmployerDashboard = () => {
                     />
                   </ListItem>
                 ))
-              }
+              )}
             </List>
           </Paper>
         </Grid>
@@ -304,7 +302,7 @@ const EmployerDashboard = () => {
                   src={selectedSubmission.fileUrl}
                   title="PDF Preview"
                   width="100%"
-                  height="400px"
+                  height
                   style={{ border: "1px solid #ccc" }}
                 />
               )}

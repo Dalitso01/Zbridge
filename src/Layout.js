@@ -1,7 +1,6 @@
 import React from "react";
 import { Container, Box } from "@mui/material";
 import Navbar from "./Navbar";
-import Footer from "./Footer";
 
 const Layout = ({ children }) => (
   <>
@@ -11,7 +10,6 @@ const Layout = ({ children }) => (
         {children}
       </Box>
     </Container>
-    <Footer />
   </>
 );
 

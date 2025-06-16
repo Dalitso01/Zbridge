@@ -2,13 +2,21 @@ import React, { useEffect, useState } from "react";
 import { Card, CardContent, Typography, Box, TextField, Button } from "@mui/material";
 import firebase from "firebase/compat/app";
 import app from "./firebase";
+import { collection, getDocs } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 
-const db = firebase.firestore();
+import { db } from "./firebase";
 
 const ReviewSubmissions = () => {
   const [submissions, setSubmissions] = useState([]);
   const [feedback, setFeedback] = useState({});
   const [saving, setSaving] = useState({});
+
+  const fetchSubmissions = async () => {
+    const snapshot = await getDocs(collection(db, "submissions"));
+    setSubmissions(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+  };
 
   useEffect(() => {
     // Fetch all submissions from Firestore
@@ -19,6 +27,10 @@ const ReviewSubmissions = () => {
         setSubmissions(data);
       });
     return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    fetchSubmissions();
   }, []);
 
   const handleFeedbackChange = (id, value) => {
