@@ -19,9 +19,9 @@ const quotes = [
 ];
 
 const stats = [
-  { num: "12+", label: "Simulations" },
+  { num: "16", label: "Simulations" },
   { num: "Free", label: "To join" },
-  { num: "8", label: "Industries" },
+  { num: "16", label: "Industries" },
 ];
 
 const fadeUp = (delay = 0) => ({

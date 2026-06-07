@@ -9,7 +9,9 @@ import { ZB_COLORS } from "./theme";
 const categoryColors = {
   Finance: "#00e5ff", Agriculture: "#9dff00", Healthcare: "#ff2d78",
   Energy: "#ffb300", Education: "#00e5ff", Logistics: "#b388ff",
-  Business: "#1de9b6",
+  Business: "#1de9b6", Banking: "#00e5ff", Accounting: "#1de9b6",
+  Mining: "#ff8a00", Marketing: "#ff2d78", Law: "#b388ff",
+  "Human Resources": "#9dff00", "Real Estate": "#ffb300", Tourism: "#1de9b6",
 };
 
 const leaderboard = [
