@@ -101,7 +101,7 @@ export default function Home({ isLoggedIn }) {
 
         <motion.div {...fadeUp(0.3)}>
           <Box sx={{ display: "flex", gap: 1.5, justifyContent: "center", flexWrap: "wrap" }}>
-            <Button component={Link} to={isLoggedIn ? "/simulations" : "/profile"} variant="contained" size="large" sx={{ px: 4, py: 1.3, fontSize: "1rem" }}>
+            <Button component={Link} to={isLoggedIn ? "/simulations" : "/signup"} variant="contained" size="large" sx={{ px: 4, py: 1.3, fontSize: "1rem" }}>
               {isLoggedIn ? "Browse simulations" : "Get started free"}
             </Button>
             <Button component={Link} to="/about" size="large"
@@ -194,7 +194,7 @@ export default function Home({ isLoggedIn }) {
             "&::before": { content: '""', position: "absolute", top: "-50%", left: "50%", transform: "translateX(-50%)", width: 500, height: 350, background: "radial-gradient(ellipse, rgba(0,229,255,0.12) 0%, transparent 70%)", pointerEvents: "none" } }}>
           <Typography variant="h3" sx={{ fontSize: { xs: "1.7rem", md: "2.2rem" }, color: "#fff", mb: 1.5, position: "relative" }}>Ready to start your journey?</Typography>
           <Typography sx={{ color: ZB_COLORS.textMuted, fontFamily: "'Space Grotesk', sans-serif", mb: 3.5, position: "relative", fontSize: "1.05rem" }}>Join Zambian students and professionals building real-world skills on ZBRIDGE.</Typography>
-          <Button component={Link} to="/profile" variant="contained" size="large" sx={{ px: 4.5, py: 1.4, fontSize: "1.05rem", position: "relative" }}>Create your free account</Button>
+          <Button component={Link} to="/signup" variant="contained" size="large" sx={{ px: 4.5, py: 1.4, fontSize: "1.05rem", position: "relative" }}>Create your free account</Button>
         </Box>
       </Section>
     </>

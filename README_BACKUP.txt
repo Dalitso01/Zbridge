@@ -25,7 +25,18 @@ KEY NOTES
   (They don't run under plain `npm start`; use `vercel dev` to test locally.)
 - vercel.json sends every page URL to the app, so refreshing a page like
   /Simulation/fintech works instead of showing a 404.
-- Logged-in user is remembered in the browser, so refresh no longer logs out.
+- Accounts use Firebase (email/password + Google). Profiles are stored in
+  Firestore at users/{uid}; firestore.rules lets each user see only their own.
+  Without Firebase settings the site runs in "demo mode" (no real accounts).
+
+FIREBASE SETUP (one time)
+1. console.firebase.google.com -> Add project (Google Analytics optional).
+2. Build -> Authentication -> Get started -> enable "Email/Password" and "Google".
+3. Authentication -> Settings -> Authorized domains -> add your Vercel domain(s).
+4. Build -> Firestore Database -> Create database (production mode, region
+   europe-west or nearest), then Rules tab -> paste firestore.rules -> Publish.
+5. Project settings (gear) -> Your apps -> Web (</>) -> register app -> copy the
+   config values into Vercel env vars named as in .env.example -> Redeploy.
 
 ENHANCED PAGES
 Home, SimulationsList, SimulationRunner (model answers + AI feedback +

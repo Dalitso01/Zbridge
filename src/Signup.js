@@ -3,27 +3,29 @@ import { Box, TextField, Button, Alert } from "@mui/material";
 import { Link, Navigate, useLocation } from "react-router-dom";
 import { ZB_COLORS } from "./theme";
 import { firebaseReady } from "./firebase";
-import { signIn, signInWithGoogle, resetPassword, authErrorMessage } from "./auth";
+import { signUp, signInWithGoogle, authErrorMessage } from "./auth";
 import AuthCard, { GoogleButton } from "./components/AuthCard";
 
-export default function Login({ user, onDemoLogin }) {
+export default function Signup({ user, onDemoLogin, onProfileChange }) {
   const location = useLocation();
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [notice, setNotice] = useState("");
   const [busy, setBusy] = useState(false);
+  const [started, setStarted] = useState(false);
 
-  // Once signed in, go back to the page that sent them here.
-  if (user) return <Navigate to={location.state?.from || "/dashboard"} replace />;
+  // New accounts go on to finish their profile; anyone already signed in goes to the dashboard.
+  if (user) return <Navigate to={started ? "/profile" : location.state?.from || "/dashboard"} replace />;
 
   const run = async (action) => {
     setError("");
-    setNotice("");
     setBusy(true);
+    setStarted(true);
     try {
       await action();
     } catch (err) {
+      setStarted(false);
       setError(authErrorMessage(err));
     } finally {
       setBusy(false);
@@ -32,41 +34,46 @@ export default function Login({ user, onDemoLogin }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!firebaseReady) {
-      onDemoLogin({ email, name: email.split("@")[0] });
+    if (password.length < 6) {
+      setError("Please choose a password with at least 6 characters.");
       return;
     }
-    run(() => signIn(email, password));
-  };
-
-  const handleForgot = () => {
-    if (!email) {
-      setError("Enter your email address above, then click \"Forgot password?\" again.");
+    if (!firebaseReady) {
+      setStarted(true);
+      onDemoLogin({ email, name });
       return;
     }
     run(async () => {
-      await resetPassword(email);
-      setNotice(`If an account exists for ${email}, a password reset link is on its way.`);
+      await signUp({ name, email, password });
+      onProfileChange({ name, email });
     });
   };
 
   return (
     <AuthCard
-      title="Welcome back"
-      subtitle="Sign in to your ZBRIDGE account"
+      title="Create your account"
+      subtitle="Free forever. Start your first simulation in minutes."
       footer={
         <>
-          Don't have an account?{" "}
-          <Box component={Link} to="/signup" state={location.state} sx={{ color: ZB_COLORS.gold, textDecoration: "none", fontWeight: 600 }}>
-            Create one free
+          Already have an account?{" "}
+          <Box component={Link} to="/login" state={location.state} sx={{ color: ZB_COLORS.gold, textDecoration: "none", fontWeight: 600 }}>
+            Sign in
           </Box>
         </>
       }
     >
       {error && <Alert severity="error" sx={{ mb: 1 }}>{error}</Alert>}
-      {notice && <Alert severity="success" sx={{ mb: 1 }}>{notice}</Alert>}
 
       <form onSubmit={handleSubmit}>
+        <TextField
+          label="Full name"
+          autoComplete="name"
+          fullWidth
+          margin="normal"
+          value={name}
+          onChange={e => setName(e.target.value)}
+          required
+        />
         <TextField
           label="Email address"
           type="email"
@@ -80,29 +87,23 @@ export default function Login({ user, onDemoLogin }) {
         <TextField
           label="Password"
           type="password"
-          autoComplete="current-password"
+          autoComplete="new-password"
+          helperText="At least 6 characters"
           fullWidth
           margin="normal"
           value={password}
           onChange={e => setPassword(e.target.value)}
           required
         />
-        {firebaseReady && (
-          <Box sx={{ textAlign: "right" }}>
-            <Button size="small" onClick={handleForgot} disabled={busy} sx={{ textTransform: "none", color: ZB_COLORS.textMuted }}>
-              Forgot password?
-            </Button>
-          </Box>
-        )}
         <Button
           type="submit"
           variant="contained"
           fullWidth
           size="large"
           disabled={busy}
-          sx={{ mt: 1.5, py: 1.3, fontSize: "0.95rem" }}
+          sx={{ mt: 2, py: 1.3, fontSize: "0.95rem" }}
         >
-          {busy ? "Signing in…" : "Sign in"}
+          {busy ? "Creating account…" : "Create account"}
         </Button>
       </form>
 

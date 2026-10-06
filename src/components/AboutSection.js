@@ -89,7 +89,7 @@ export default function AboutSection() {
             "&::before": { content: '""', position: "absolute", top: "-50%", left: "50%", transform: "translateX(-50%)", width: 400, height: 280, background: "radial-gradient(ellipse, rgba(0,229,255,0.12) 0%, transparent 70%)", pointerEvents: "none" } }}>
           <Typography variant="h3" sx={{ fontSize: { xs: "1.5rem", md: "1.9rem" }, color: "#fff", mb: 1.5, position: "relative" }}>Ready to bridge the gap?</Typography>
           <Typography sx={{ color: ZB_COLORS.textMuted, fontFamily: "'Space Grotesk', sans-serif", mb: 3, position: "relative" }}>Join the community building real-world skills for the African economy.</Typography>
-          <Button component={Link} to="/profile" variant="contained" size="large" sx={{ px: 4, py: 1.3, fontSize: "1rem", position: "relative" }}>Get started free</Button>
+          <Button component={Link} to="/signup" variant="contained" size="large" sx={{ px: 4, py: 1.3, fontSize: "1rem", position: "relative" }}>Get started free</Button>
         </Box>
       </motion.div>
     </Box>
