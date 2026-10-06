@@ -20,17 +20,16 @@ Give concise, constructive feedback in 3 parts:
 Keep your total response under 150 words. Be encouraging but honest. Write as if speaking directly to the student.`;
 
   try {
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
+    const response = await fetch("/api/claude", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 1000,
-        messages: [{ role: "user", content: prompt }],
-      }),
+      body: JSON.stringify({ messages: [{ role: "user", content: prompt }] }),
     });
-    const data = await response.json();
-    return data.content?.[0]?.text || "Unable to generate feedback. Please try again.";
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok || !data.text) {
+      return "AI feedback is temporarily unavailable. Please review the model answer above.";
+    }
+    return data.text;
   } catch (err) {
     return "AI feedback is temporarily unavailable. Please review the model answer above.";
   }

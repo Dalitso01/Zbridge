@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { ThemeProvider, CssBaseline } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { ThemeProvider, CssBaseline, Box, Typography, Button } from "@mui/material";
 import theme from "./theme";
 import Layout from "./Layout";
 import Home from "./Home";
@@ -20,8 +20,38 @@ import Login from "./Login";
 import PrivacyPolicy from "./PrivacyPolicy";
 import AboutSection from "./components/AboutSection";
 
+const USER_KEY = "zbridge_user";
+
+function loadUser() {
+  try {
+    return JSON.parse(localStorage.getItem(USER_KEY)) || null;
+  } catch {
+    return null;
+  }
+}
+
+function NotFound() {
+  return (
+    <Box sx={{ minHeight: "60vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 2, px: 2, textAlign: "center" }}>
+      <Typography variant="h4">Page not found</Typography>
+      <Typography color="text.secondary">The page you're looking for doesn't exist.</Typography>
+      <Button component={Link} to="/" variant="contained">Go home</Button>
+    </Box>
+  );
+}
+
 function App() {
-  const [user, setUser] = useState(null);
+  // Remember the signed-in user so a page refresh doesn't log them out.
+  const [user, setUser] = useState(loadUser);
+
+  useEffect(() => {
+    try {
+      if (user) localStorage.setItem(USER_KEY, JSON.stringify(user));
+      else localStorage.removeItem(USER_KEY);
+    } catch {
+      // Storage unavailable (private mode) — stay signed in for this visit only.
+    }
+  }, [user]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -45,6 +75,7 @@ function App() {
             <Route path="/simulations" element={<SimulationsList isLoggedIn={!!user} />} />
             <Route path="/login" element={<Login onLogin={setUser} />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>
       </Router>
