@@ -18,9 +18,14 @@ KEY NOTES
 - Data file is simulationsData.js (NOT simulations.js — renamed to avoid
   a Windows/Linux case-sensitivity clash that would break Vercel deploys).
 - Simulations.js (capital) = route redirect to the list page.
-- AI features (ZBridgeGuide chatbot + simulation AI feedback) work locally
-  but need a Vercel serverless backend + Anthropic API key to work on the
-  live site. Until then they show fallback messages.
+- AI features (ZBridgeGuide chatbot + simulation AI feedback) go through
+  api/claude.js, a Vercel serverless function. To switch them on, add
+  ANTHROPIC_API_KEY in Vercel -> Project -> Settings -> Environment Variables
+  and redeploy. Without the key they show friendly fallback messages.
+  (They don't run under plain `npm start`; use `vercel dev` to test locally.)
+- vercel.json sends every page URL to the app, so refreshing a page like
+  /Simulation/fintech works instead of showing a 404.
+- Logged-in user is remembered in the browser, so refresh no longer logs out.
 
 ENHANCED PAGES
 Home, SimulationsList, SimulationRunner (model answers + AI feedback +

@@ -72,19 +72,17 @@ export default function ZBridgeGuide({ profile }) {
         content: m.text,
       }));
 
-      const response = await fetch("https://api.anthropic.com/v1/messages", {
+      const response = await fetch("/api/claude", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 1000,
           system: SYSTEM_CONTEXT + (profile?.name ? `\n\nThe user's name is ${profile.name}.` : ""),
           messages: apiMessages,
         }),
       });
 
-      const data = await response.json();
-      const reply = data.content?.[0]?.text || "Sorry, I couldn't respond just now. Please try again.";
+      const data = await response.json().catch(() => ({}));
+      const reply = (response.ok && data.text) || "Sorry, I couldn't respond just now. Please try again.";
       setMessages([...newMessages, { role: "assistant", text: reply }]);
     } catch (err) {
       setMessages([...newMessages, { role: "assistant", text: "I'm having trouble connecting right now. Please check your internet and try again." }]);
