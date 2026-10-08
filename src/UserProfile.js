@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
-  Box, TextField, Button, Checkbox, FormControlLabel, Typography, Avatar, Chip,
+  Box, TextField, Button, Typography, Avatar, Chip, Alert,
 } from "@mui/material";
 import Grid from "./components/Grid";
 import { useNavigate } from "react-router-dom";
@@ -27,6 +27,24 @@ const SectionLabel = ({ children }) => (
   </Typography>
 );
 
+// Shrink a photo to a small square-ish JPEG so it fits comfortably in the database.
+function resizeImage(file, maxSize = 256) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.round(img.width * scale);
+      canvas.height = Math.round(img.height * scale);
+      canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+      URL.revokeObjectURL(img.src);
+      resolve(canvas.toDataURL("image/jpeg", 0.85));
+    };
+    img.onerror = reject;
+    img.src = URL.createObjectURL(file);
+  });
+}
+
 export default function UserProfile({ user, onSave }) {
   const navigate = useNavigate();
   const [profile, setProfile] = useState({
@@ -39,6 +57,22 @@ export default function UserProfile({ user, onSave }) {
     avatarUrl: user?.avatarUrl || "",
   });
 
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+
+  // The saved profile can arrive after this page opens — fill in anything still blank.
+  useEffect(() => {
+    if (!user) return;
+    setProfile(prev => {
+      const next = { ...prev };
+      for (const key of Object.keys(prev)) {
+        const empty = Array.isArray(prev[key]) ? prev[key].length === 0 : !prev[key];
+        if (empty && user[key]) next[key] = user[key];
+      }
+      return next;
+    });
+  }, [user]);
+
   const handleChange = (e) => setProfile({ ...profile, [e.target.name]: e.target.value });
 
   const toggle = (type, value) => {
@@ -50,19 +84,29 @@ export default function UserProfile({ user, onSave }) {
     }));
   };
 
-  const handleAvatarChange = (e) => {
+  const handleAvatarChange = async (e) => {
     const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => setProfile(prev => ({ ...prev, avatarUrl: reader.result }));
-      reader.readAsDataURL(file);
+    if (!file) return;
+    try {
+      const avatarUrl = await resizeImage(file);
+      setProfile(prev => ({ ...prev, avatarUrl }));
+    } catch {
+      setError("That image couldn't be read. Please try a JPG or PNG.");
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSave(profile);
-    navigate("/dashboard");
+    setError("");
+    setSaving(true);
+    try {
+      await onSave(profile);
+      navigate("/dashboard");
+    } catch (err) {
+      console.error("Profile save failed", err);
+      setError("Your profile couldn't be saved. Check your connection and try again.");
+      setSaving(false);
+    }
   };
 
   return (
@@ -97,7 +141,7 @@ export default function UserProfile({ user, onSave }) {
               Upload photo
               <input type="file" accept="image/*" hidden onChange={handleAvatarChange} />
             </Button>
-            <Typography sx={{ fontSize: "0.75rem", color: ZB_COLORS.textMuted, mt: 0.5, fontFamily: "DM Sans" }}>JPG or PNG, max 2MB</Typography>
+            <Typography sx={{ fontSize: "0.75rem", color: ZB_COLORS.textMuted, mt: 0.5, fontFamily: "DM Sans" }}>JPG or PNG</Typography>
           </Box>
         </Box>
 
@@ -154,8 +198,10 @@ export default function UserProfile({ user, onSave }) {
           ))}
         </Box>
 
-        <Button type="submit" variant="contained" size="large" sx={{ mt: 4, px: 4 }}>
-          Save profile
+        {error && <Alert severity="error" sx={{ mt: 3 }}>{error}</Alert>}
+
+        <Button type="submit" variant="contained" size="large" disabled={saving} sx={{ mt: 4, px: 4 }}>
+          {saving ? "Saving…" : "Save profile"}
         </Button>
       </Box>
     </Box>

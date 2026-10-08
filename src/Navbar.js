@@ -127,7 +127,7 @@ const Navbar = ({ user, onLogout }) => {
               </Button>
               <Button
                 component={Link}
-                to="/profile"
+                to="/signup"
                 variant="contained"
                 size="small"
                 sx={{ fontFamily: "DM Sans", fontWeight: 600, fontSize: "0.875rem", px: 2 }}
@@ -190,7 +190,7 @@ const Navbar = ({ user, onLogout }) => {
             <Button fullWidth onClick={onLogout} sx={{ color: "rgba(255,255,255,0.6)" }}>Logout</Button>
           ) : (
             <Button
-              fullWidth variant="contained" component={Link} to="/profile"
+              fullWidth variant="contained" component={Link} to="/signup"
               onClick={() => setDrawerOpen(false)}
               sx={{ mt: 1 }}
             >
