@@ -22,7 +22,7 @@ const skillsList = [
 ];
 
 const SectionLabel = ({ children }) => (
-  <Typography sx={{ fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.08em", color: ZB_COLORS.gold, fontWeight: 600, mb: 1.5, mt: 3, fontFamily: "DM Sans" }}>
+  <Typography sx={{ fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.08em", color: ZB_COLORS.gold, fontWeight: 600, mb: 1.5, mt: 3, fontFamily: "'Space Grotesk', sans-serif" }}>
     {children}
   </Typography>
 );
@@ -111,8 +111,8 @@ export default function UserProfile({ user, onSave }) {
 
   return (
     <Box sx={{ maxWidth: 760, mx: "auto", px: { xs: 2, md: 3 }, py: { xs: 4, md: 6 } }}>
-      <Typography variant="h4" sx={{ color: "#fff", mb: 0.5 }}>Your profile</Typography>
-      <Typography sx={{ color: ZB_COLORS.textMuted, fontFamily: "DM Sans", mb: 4 }}>
+      <Typography variant="h4" sx={{ color: "#14110f", mb: 0.5 }}>Your profile</Typography>
+      <Typography sx={{ color: ZB_COLORS.textMuted, fontFamily: "'Space Grotesk', sans-serif", mb: 4 }}>
         Tell us about yourself so we can personalise your experience.
       </Typography>
 
@@ -121,7 +121,7 @@ export default function UserProfile({ user, onSave }) {
         onSubmit={handleSubmit}
         sx={{
           background: ZB_COLORS.navyMid,
-          border: `0.5px solid ${ZB_COLORS.border}`,
+          border: `2px solid ${ZB_COLORS.border}`,
           borderRadius: "16px",
           p: { xs: 2.5, md: 4 },
         }}
@@ -136,12 +136,12 @@ export default function UserProfile({ user, onSave }) {
           </Avatar>
           <Box>
             <Button variant="outlined" component="label" size="small"
-              sx={{ borderColor: ZB_COLORS.border, color: "rgba(255,255,255,0.7)", fontFamily: "DM Sans" }}
+              sx={{ borderColor: ZB_COLORS.border, color: "rgba(20,17,15,0.7)", fontFamily: "'Space Grotesk', sans-serif" }}
             >
               Upload photo
               <input type="file" accept="image/*" hidden onChange={handleAvatarChange} />
             </Button>
-            <Typography sx={{ fontSize: "0.75rem", color: ZB_COLORS.textMuted, mt: 0.5, fontFamily: "DM Sans" }}>JPG or PNG</Typography>
+            <Typography sx={{ fontSize: "0.75rem", color: ZB_COLORS.textMuted, mt: 0.5, fontFamily: "'Space Grotesk', sans-serif" }}>JPG or PNG</Typography>
           </Box>
         </Box>
 
@@ -169,11 +169,11 @@ export default function UserProfile({ user, onSave }) {
               onClick={() => toggle("interests", interest)}
               sx={{
                 cursor: "pointer",
-                background: profile.interests.includes(interest) ? "rgba(255,214,0,0.15)" : "rgba(255,255,255,0.05)",
-                border: `0.5px solid ${profile.interests.includes(interest) ? ZB_COLORS.gold : ZB_COLORS.border}`,
-                color: profile.interests.includes(interest) ? ZB_COLORS.gold : "rgba(255,255,255,0.65)",
-                fontFamily: "DM Sans",
-                "&:hover": { background: "rgba(255,214,0,0.1)" },
+                background: profile.interests.includes(interest) ? "rgba(255,194,26,0.15)" : "rgba(20,17,15,0.05)",
+                border: `2px solid ${profile.interests.includes(interest) ? ZB_COLORS.gold : ZB_COLORS.border}`,
+                color: profile.interests.includes(interest) ? ZB_COLORS.gold : "rgba(20,17,15,0.65)",
+                fontFamily: "'Space Grotesk', sans-serif",
+                "&:hover": { background: "rgba(255,194,26,0.1)" },
               }}
             />
           ))}
@@ -188,11 +188,11 @@ export default function UserProfile({ user, onSave }) {
               onClick={() => toggle("skills", skill)}
               sx={{
                 cursor: "pointer",
-                background: profile.skills.includes(skill) ? "rgba(255,214,0,0.15)" : "rgba(255,255,255,0.05)",
-                border: `0.5px solid ${profile.skills.includes(skill) ? ZB_COLORS.gold : ZB_COLORS.border}`,
-                color: profile.skills.includes(skill) ? ZB_COLORS.gold : "rgba(255,255,255,0.65)",
-                fontFamily: "DM Sans",
-                "&:hover": { background: "rgba(255,214,0,0.1)" },
+                background: profile.skills.includes(skill) ? "rgba(255,194,26,0.15)" : "rgba(20,17,15,0.05)",
+                border: `2px solid ${profile.skills.includes(skill) ? ZB_COLORS.gold : ZB_COLORS.border}`,
+                color: profile.skills.includes(skill) ? ZB_COLORS.gold : "rgba(20,17,15,0.65)",
+                fontFamily: "'Space Grotesk', sans-serif",
+                "&:hover": { background: "rgba(255,194,26,0.1)" },
               }}
             />
           ))}

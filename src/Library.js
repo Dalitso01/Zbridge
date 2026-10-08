@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { ZB_COLORS } from "./theme";
 
 const CYAN = ZB_COLORS.cyan;
-const LIME = "#9dff00";
+const LIME = "#0e8a5f";
 const GLOW = ZB_COLORS.cyanGlow;
 
 const Mono = ({ children, sx }) => (
@@ -13,7 +13,7 @@ const Mono = ({ children, sx }) => (
 
 const categories = ["All", "Career", "Finance", "Law", "Technology", "Marketing", "Procurement", "Business", "Other"];
 
-const typeColor = { Course: CYAN, Book: LIME, Video: "#ffb300", Article: "#b388ff" };
+const typeColor = { Course: CYAN, Book: LIME, Video: "#c97a00", Article: "#6b3fd9" };
 
 const defaultResources = [
   { title: "Introduction to Information Technology", link: "https://www.open.edu/openlearn/science-maths-technology/introduction-information-technology/content-section-0", category: "Technology", featured: true, description: "Free Open University course covering IT fundamentals.", type: "Course" },
@@ -31,19 +31,19 @@ const defaultResources = [
 const ResourceCard = ({ r, onClick }) => (
   <Box onClick={onClick}
     sx={{
-      background: r.featured ? "rgba(0,229,255,0.06)" : ZB_COLORS.cardBg,
-      border: `0.5px solid ${r.featured ? ZB_COLORS.borderBright : ZB_COLORS.border}`,
+      background: r.featured ? "rgba(31,64,214,0.06)" : ZB_COLORS.cardBg,
+      border: `2px solid ${r.featured ? ZB_COLORS.borderBright : ZB_COLORS.border}`,
       borderRadius: "12px", p: 2.5, cursor: "pointer", height: "100%",
       display: "flex", flexDirection: "column", boxSizing: "border-box",
       transition: "all 0.2s",
-      "&:hover": { background: ZB_COLORS.cardHover, borderColor: ZB_COLORS.borderBright, transform: "translateY(-3px)", boxShadow: `0 0 24px rgba(0,229,255,0.12)` },
+      "&:hover": { background: ZB_COLORS.cardHover, borderColor: ZB_COLORS.borderBright, transform: "translate(-3px, -3px)", boxShadow: "5px 5px 0 #14110f" },
     }}>
     <Box sx={{ display: "flex", gap: 0.75, mb: 1.25, flexWrap: "wrap" }}>
-      <Chip label={r.category} size="small" sx={{ background: "rgba(255,255,255,0.06)", color: "rgba(230,247,255,0.7)", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.64rem" }} />
-      <Chip label={r.type} size="small" sx={{ background: (typeColor[r.type] || CYAN) + "1e", color: typeColor[r.type] || CYAN, border: `0.5px solid ${(typeColor[r.type] || CYAN)}44`, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.64rem" }} />
-      {r.featured && <Chip label="★" size="small" sx={{ background: "rgba(0,229,255,0.12)", color: CYAN, fontSize: "0.64rem" }} />}
+      <Chip label={r.category} size="small" sx={{ background: "rgba(20,17,15,0.06)", color: "rgba(20,17,15,0.7)", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.64rem" }} />
+      <Chip label={r.type} size="small" sx={{ background: (typeColor[r.type] || CYAN) + "1e", color: typeColor[r.type] || CYAN, border: `2px solid ${(typeColor[r.type] || CYAN)}44`, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.64rem" }} />
+      {r.featured && <Chip label="★" size="small" sx={{ background: "rgba(31,64,214,0.12)", color: CYAN, fontSize: "0.64rem" }} />}
     </Box>
-    <Typography sx={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, color: "#fff", fontSize: "0.92rem", mb: 0.75, flexGrow: 1 }}>{r.title}</Typography>
+    <Typography sx={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, color: "#14110f", fontSize: "0.92rem", mb: 0.75, flexGrow: 1 }}>{r.title}</Typography>
     <Typography sx={{ fontSize: "0.78rem", color: ZB_COLORS.textMuted, fontFamily: "'Space Grotesk', sans-serif", lineHeight: 1.5 }}>{r.description}</Typography>
   </Box>
 );
@@ -66,7 +66,7 @@ export default function Library() {
   return (
     <Box sx={{ maxWidth: 1200, mx: "auto", px: { xs: 2, md: 4 }, py: { xs: 4, md: 6 } }}>
       <Mono sx={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.15em", color: CYAN, fontWeight: 500, mb: 1 }}>{"// resources"}</Mono>
-      <Typography variant="h3" sx={{ fontSize: { xs: "1.9rem", md: "2.4rem" }, color: "#fff", mb: 0.5 }}>Library</Typography>
+      <Typography variant="h3" sx={{ fontSize: { xs: "1.9rem", md: "2.4rem" }, color: "#14110f", mb: 0.5 }}>Library</Typography>
       <Typography sx={{ color: ZB_COLORS.textMuted, fontFamily: "'Space Grotesk', sans-serif", mb: 4 }}>Curated free courses, books, and tools to grow your career.</Typography>
 
       {/* Featured */}
@@ -90,7 +90,7 @@ export default function Library() {
       <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mb: 3 }}>
         {categories.map(cat => (
           <Chip key={cat} label={cat} onClick={() => setCategory(cat)} size="small"
-            sx={{ cursor: "pointer", background: category === cat ? "rgba(0,229,255,0.15)" : "rgba(0,229,255,0.03)", border: `0.5px solid ${category === cat ? CYAN : ZB_COLORS.border}`, color: category === cat ? CYAN : "rgba(230,247,255,0.6)", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.7rem", boxShadow: category === cat ? `0 0 12px ${GLOW}` : "none" }} />
+            sx={{ cursor: "pointer", background: category === cat ? "rgba(31,64,214,0.15)" : "rgba(31,64,214,0.03)", border: `2px solid ${category === cat ? CYAN : ZB_COLORS.border}`, color: category === cat ? CYAN : "rgba(20,17,15,0.6)", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.7rem", boxShadow: category === cat ? `0 0 12px ${GLOW}` : "none" }} />
         ))}
       </Box>
 
@@ -110,8 +110,8 @@ export default function Library() {
       )}
 
       {/* Suggest */}
-      <Box sx={{ background: ZB_COLORS.bgMid, border: `0.5px solid ${ZB_COLORS.border}`, borderRadius: "12px", p: 3 }}>
-        <Typography sx={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, color: "#fff", mb: 2 }}>Suggest a resource</Typography>
+      <Box sx={{ background: ZB_COLORS.bgMid, border: `2px solid ${ZB_COLORS.border}`, borderRadius: "12px", p: 3 }}>
+        <Typography sx={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, color: "#14110f", mb: 2 }}>Suggest a resource</Typography>
         {suggested ? (
           <Typography sx={{ color: LIME, fontFamily: "'Space Grotesk', sans-serif" }}>✓ Thanks! Your suggestion will be reviewed.</Typography>
         ) : (
@@ -132,11 +132,11 @@ export default function Library() {
       </Box>
 
       {/* Detail dialog */}
-      <Dialog open={!!openResource} onClose={() => setOpenResource(null)} maxWidth="sm" fullWidth PaperProps={{ sx: { background: ZB_COLORS.bgMid, border: `0.5px solid ${ZB_COLORS.borderBright}`, borderRadius: "14px" } }}>
-        <DialogTitle sx={{ color: "#fff", fontFamily: "'Space Grotesk', sans-serif" }}>{openResource?.title}</DialogTitle>
+      <Dialog open={!!openResource} onClose={() => setOpenResource(null)} maxWidth="sm" fullWidth PaperProps={{ sx: { background: ZB_COLORS.bgMid, border: `2px solid ${ZB_COLORS.borderBright}`, borderRadius: "14px" } }}>
+        <DialogTitle sx={{ color: "#14110f", fontFamily: "'Space Grotesk', sans-serif" }}>{openResource?.title}</DialogTitle>
         <DialogContent>
           <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
-            <Chip label={openResource?.category} size="small" sx={{ background: "rgba(255,255,255,0.06)", color: "rgba(230,247,255,0.7)", fontFamily: "'JetBrains Mono', monospace" }} />
+            <Chip label={openResource?.category} size="small" sx={{ background: "rgba(20,17,15,0.06)", color: "rgba(20,17,15,0.7)", fontFamily: "'JetBrains Mono', monospace" }} />
             {openResource?.type && <Chip label={openResource.type} size="small" sx={{ background: (typeColor[openResource.type] || CYAN) + "1e", color: typeColor[openResource.type] || CYAN, fontFamily: "'JetBrains Mono', monospace" }} />}
           </Box>
           <Typography sx={{ color: ZB_COLORS.textMuted, fontFamily: "'Space Grotesk', sans-serif", mb: 3 }}>{openResource?.description}</Typography>

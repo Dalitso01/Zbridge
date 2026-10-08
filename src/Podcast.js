@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { ZB_COLORS } from "./theme";
 
 const CYAN = ZB_COLORS.cyan;
-const LIME = "#9dff00";
+const LIME = "#0e8a5f";
 const GLOW = ZB_COLORS.cyanGlow;
 
 const Mono = ({ children, sx }) => (
@@ -21,32 +21,32 @@ export function Podcast() {
   return (
     <Box sx={{ maxWidth: 860, mx: "auto", px: { xs: 2, md: 4 }, py: { xs: 4, md: 6 } }}>
       <Mono sx={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.15em", color: CYAN, fontWeight: 500, mb: 1 }}>{"// listen"}</Mono>
-      <Typography variant="h3" sx={{ fontSize: { xs: "1.9rem", md: "2.4rem" }, color: "#fff", mb: 0.5 }}>Making of an Industry Giant</Typography>
+      <Typography variant="h3" sx={{ fontSize: { xs: "1.9rem", md: "2.4rem" }, color: "#14110f", mb: 0.5 }}>Making of an Industry Giant</Typography>
       <Typography sx={{ color: ZB_COLORS.textMuted, fontFamily: "'Space Grotesk', sans-serif", mb: 4 }}>
         Conversations with Zambia's top professionals, entrepreneurs, and innovators.
       </Typography>
 
       {podcastEpisodes.map((ep, idx) => (
         <motion.div key={ep.id} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.07 }}>
-          <Box sx={{ background: ZB_COLORS.bgMid, border: `0.5px solid ${ZB_COLORS.border}`, borderRadius: "12px", p: 3, mb: 2, display: "flex", gap: 2.5, alignItems: "flex-start", flexWrap: "wrap", transition: "all 0.2s", "&:hover": { borderColor: ZB_COLORS.borderBright } }}>
-            <Box sx={{ width: 60, height: 60, borderRadius: "12px", background: "rgba(0,229,255,0.1)", border: `0.5px solid ${ZB_COLORS.borderBright}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, position: "relative" }}>
-              <IconButton sx={{ color: CYAN, "&:hover": { boxShadow: `0 0 16px ${GLOW}` } }}>
+          <Box sx={{ background: ZB_COLORS.bgMid, border: `2px solid ${ZB_COLORS.border}`, borderRadius: "12px", p: 3, mb: 2, display: "flex", gap: 2.5, alignItems: "flex-start", flexWrap: "wrap", transition: "all 0.2s", "&:hover": { borderColor: ZB_COLORS.borderBright } }}>
+            <Box sx={{ width: 60, height: 60, borderRadius: "12px", background: "rgba(31,64,214,0.1)", border: `2px solid ${ZB_COLORS.borderBright}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, position: "relative" }}>
+              <IconButton sx={{ color: CYAN, "&:hover": { boxShadow: "5px 5px 0 #14110f" } }}>
                 <Box sx={{ fontSize: "1.4rem", lineHeight: 1 }}>▶</Box>
               </IconButton>
             </Box>
             <Box sx={{ flexGrow: 1, minWidth: 220 }}>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.5, flexWrap: "wrap" }}>
-                <Mono sx={{ fontSize: "0.66rem", color: CYAN, background: "rgba(0,229,255,0.1)", px: 0.75, py: 0.25, borderRadius: "3px", border: `0.5px solid ${ZB_COLORS.border}` }}>EP {String(ep.id).padStart(2, "0")}</Mono>
+                <Mono sx={{ fontSize: "0.66rem", color: CYAN, background: "rgba(31,64,214,0.1)", px: 0.75, py: 0.25, borderRadius: "3px", border: `2px solid ${ZB_COLORS.border}` }}>EP {String(ep.id).padStart(2, "0")}</Mono>
                 <Mono sx={{ fontSize: "0.66rem", color: ZB_COLORS.textMuted }}>{ep.duration}</Mono>
               </Box>
-              <Typography sx={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, color: "#fff", fontSize: "1.05rem", mb: 0.25 }}>{ep.title}</Typography>
+              <Typography sx={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, color: "#14110f", fontSize: "1.05rem", mb: 0.25 }}>{ep.title}</Typography>
               <Typography sx={{ fontSize: "0.8rem", color: CYAN, fontFamily: "'Space Grotesk', sans-serif", mb: 1 }}>{ep.guest} · {ep.role}</Typography>
               <Typography sx={{ fontSize: "0.875rem", color: ZB_COLORS.textMuted, fontFamily: "'Space Grotesk', sans-serif", mb: 2, lineHeight: 1.55 }}>{ep.description}</Typography>
               {ep.audioUrl ? (
                 <audio controls src={ep.audioUrl} style={{ width: "100%", filter: "invert(0.85) hue-rotate(150deg)" }} />
               ) : (
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1, background: "rgba(0,229,255,0.04)", border: `0.5px solid ${ZB_COLORS.border}`, borderRadius: "8px", p: 1.5 }}>
-                  <Box sx={{ width: 6, height: 6, borderRadius: "50%", background: LIME, boxShadow: `0 0 8px ${LIME}` }} />
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1, background: "rgba(31,64,214,0.04)", border: `2px solid ${ZB_COLORS.border}`, borderRadius: "8px", p: 1.5 }}>
+                  <Box sx={{ width: 6, height: 6, borderRadius: "50%", background: LIME, boxShadow: "none" }} />
                   <Mono sx={{ fontSize: "0.74rem", color: ZB_COLORS.textMuted }}>Coming soon — subscribe to be notified</Mono>
                 </Box>
               )}
@@ -67,15 +67,15 @@ export function Contact() {
   return (
     <Box sx={{ maxWidth: 720, mx: "auto", px: { xs: 2, md: 4 }, py: { xs: 4, md: 8 }, textAlign: "center" }}>
       <Mono sx={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.15em", color: CYAN, fontWeight: 500, mb: 1 }}>{"// get in touch"}</Mono>
-      <Typography variant="h3" sx={{ fontSize: { xs: "1.9rem", md: "2.4rem" }, color: "#fff", mb: 0.5 }}>Contact us</Typography>
+      <Typography variant="h3" sx={{ fontSize: { xs: "1.9rem", md: "2.4rem" }, color: "#14110f", mb: 0.5 }}>Contact us</Typography>
       <Typography sx={{ color: ZB_COLORS.textMuted, fontFamily: "'Space Grotesk', sans-serif", mb: 4 }}>We'd love to hear from you. Reach out via any of these channels.</Typography>
 
       <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "repeat(3, 1fr)" }, gap: 2 }}>
         {channels.map((c, i) => (
           <motion.div key={c.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}>
             <Box component="a" href={c.href} target="_blank" rel="noopener noreferrer"
-              sx={{ display: "block", textDecoration: "none", background: ZB_COLORS.bgMid, border: `0.5px solid ${ZB_COLORS.border}`, borderRadius: "12px", p: 3, textAlign: "center", transition: "all 0.2s", "&:hover": { borderColor: ZB_COLORS.borderBright, transform: "translateY(-3px)", boxShadow: `0 0 24px rgba(0,229,255,0.12)` } }}>
-              <Box sx={{ width: 44, height: 44, borderRadius: "10px", background: "rgba(0,229,255,0.1)", border: `0.5px solid ${ZB_COLORS.borderBright}`, display: "flex", alignItems: "center", justifyContent: "center", mx: "auto", mb: 1.5, color: CYAN, fontSize: "1.1rem", fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700 }}>{c.icon}</Box>
+              sx={{ display: "block", textDecoration: "none", background: ZB_COLORS.bgMid, border: `2px solid ${ZB_COLORS.border}`, borderRadius: "12px", p: 3, textAlign: "center", transition: "all 0.2s", "&:hover": { borderColor: ZB_COLORS.borderBright, transform: "translateY(-3px)", boxShadow: "5px 5px 0 #14110f" } }}>
+              <Box sx={{ width: 44, height: 44, borderRadius: "10px", background: "rgba(31,64,214,0.1)", border: `2px solid ${ZB_COLORS.borderBright}`, display: "flex", alignItems: "center", justifyContent: "center", mx: "auto", mb: 1.5, color: CYAN, fontSize: "1.1rem", fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700 }}>{c.icon}</Box>
               <Mono sx={{ fontSize: "0.64rem", textTransform: "uppercase", letterSpacing: "0.08em", color: ZB_COLORS.textMuted, mb: 0.5 }}>{c.label}</Mono>
               <Typography sx={{ color: CYAN, fontFamily: "'Space Grotesk', sans-serif", fontSize: "0.875rem" }}>{c.value}</Typography>
             </Box>
@@ -97,11 +97,11 @@ export function PrivacyPolicy() {
   return (
     <Box sx={{ maxWidth: 760, mx: "auto", px: { xs: 2, md: 4 }, py: { xs: 4, md: 6 } }}>
       <Mono sx={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.15em", color: CYAN, fontWeight: 500, mb: 1 }}>{"// legal"}</Mono>
-      <Typography variant="h3" sx={{ fontSize: { xs: "1.9rem", md: "2.4rem" }, color: "#fff", mb: 0.5 }}>Privacy Policy</Typography>
+      <Typography variant="h3" sx={{ fontSize: { xs: "1.9rem", md: "2.4rem" }, color: "#14110f", mb: 0.5 }}>Privacy Policy</Typography>
       <Mono sx={{ color: ZB_COLORS.textMuted, fontSize: "0.74rem", mb: 4 }}>last updated: january 2025</Mono>
       {sections.map(s => (
         <Box key={s.title} sx={{ mb: 3, pl: 2, borderLeft: `2px solid ${ZB_COLORS.border}` }}>
-          <Typography sx={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, color: "#fff", mb: 1 }}>{s.title}</Typography>
+          <Typography sx={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, color: "#14110f", mb: 1 }}>{s.title}</Typography>
           <Typography sx={{ color: ZB_COLORS.textMuted, fontFamily: "'Space Grotesk', sans-serif", lineHeight: 1.7 }}>{s.body}</Typography>
         </Box>
       ))}

@@ -9,8 +9,8 @@ import resources from "./ResourceLibrary";
 import { ZB_COLORS } from "./theme";
 
 const CYAN = ZB_COLORS.cyan;
-const LIME = "#9dff00";
-const MAGENTA = "#ff2d78";
+const LIME = "#0e8a5f";
+const MAGENTA = "#e8432e";
 const GLOW = ZB_COLORS.cyanGlow;
 
 const Mono = ({ children, sx }) => (
@@ -39,16 +39,16 @@ const getLevel = (xp) => {
 };
 
 const StatCard = ({ label, value, accent }) => (
-  <Box sx={{ background: ZB_COLORS.cardBg, border: `0.5px solid ${ZB_COLORS.border}`, borderRadius: "12px", p: 2.5, textAlign: "center" }}>
-    <Typography sx={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: "1.8rem", color: accent || CYAN, textShadow: `0 0 14px ${accent ? accent + "66" : GLOW}` }}>{value}</Typography>
+  <Box sx={{ background: ZB_COLORS.cardBg, border: `2px solid ${ZB_COLORS.border}`, borderRadius: "12px", p: 2.5, textAlign: "center" }}>
+    <Typography sx={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: "1.8rem", color: accent || CYAN, textShadow: "none" }}>{value}</Typography>
     <Mono sx={{ fontSize: "0.66rem", color: ZB_COLORS.textMuted, textTransform: "uppercase", letterSpacing: "0.08em", mt: 0.25 }}>{label}</Mono>
   </Box>
 );
 
 const SectionCard = ({ title, children, action }) => (
-  <Box sx={{ background: ZB_COLORS.bgMid, border: `0.5px solid ${ZB_COLORS.border}`, borderRadius: "12px", p: 3, mb: 2 }}>
+  <Box sx={{ background: ZB_COLORS.bgMid, border: `2px solid ${ZB_COLORS.border}`, borderRadius: "12px", p: 3, mb: 2 }}>
     <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
-      <Typography sx={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, color: "#fff", fontSize: "1rem" }}>{title}</Typography>
+      <Typography sx={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, color: "#14110f", fontSize: "1rem" }}>{title}</Typography>
       {action}
     </Box>
     {children}
@@ -90,26 +90,26 @@ export default function StudentDashboard({ profile }) {
       {/* Header with XP/level */}
       <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
         <Box sx={{
-          background: "rgba(0,229,255,0.05)", border: `0.5px solid ${ZB_COLORS.borderBright}`,
+          background: "rgba(31,64,214,0.05)", border: `2px solid ${ZB_COLORS.borderBright}`,
           borderRadius: "16px", p: { xs: 2.5, md: 4 }, mb: 4,
           display: "flex", alignItems: "center", gap: 3, flexWrap: "wrap",
           position: "relative", overflow: "hidden",
         }}>
-          <Box sx={{ position: "absolute", top: "-60%", right: "-5%", width: 300, height: 300, background: `radial-gradient(circle, rgba(0,229,255,0.1) 0%, transparent 70%)`, pointerEvents: "none" }} />
-          <Avatar src={profile?.avatarUrl} sx={{ width: 68, height: 68, background: ZB_COLORS.bgMid, fontSize: "1.5rem", fontWeight: 700, color: CYAN, border: `2px solid ${CYAN}`, boxShadow: `0 0 20px ${GLOW}`, position: "relative" }}>
+          <Box sx={{ position: "absolute", top: "-60%", right: "-5%", width: 300, height: 300, background: `radial-gradient(circle, rgba(31,64,214,0.1) 0%, transparent 70%)`, pointerEvents: "none" }} />
+          <Avatar src={profile?.avatarUrl} sx={{ width: 68, height: 68, background: ZB_COLORS.bgMid, fontSize: "1.5rem", fontWeight: 700, color: CYAN, border: `2px solid ${CYAN}`, boxShadow: "5px 5px 0 #14110f", position: "relative" }}>
             {profile?.name?.[0] || "S"}
           </Avatar>
           <Box sx={{ flexGrow: 1, minWidth: 200, position: "relative" }}>
-            <Typography variant="h4" sx={{ color: "#fff", fontSize: { xs: "1.4rem", md: "1.8rem" } }}>
+            <Typography variant="h4" sx={{ color: "#14110f", fontSize: { xs: "1.4rem", md: "1.8rem" } }}>
               Welcome back, {profile?.name || "Student"}
             </Typography>
             <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 0.5, flexWrap: "wrap" }}>
-              <Chip label={lvl.name} size="small" sx={{ background: "rgba(0,229,255,0.12)", color: CYAN, border: `0.5px solid ${ZB_COLORS.borderBright}`, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.66rem" }} />
+              <Chip label={lvl.name} size="small" sx={{ background: "rgba(31,64,214,0.12)", color: CYAN, border: `2px solid ${ZB_COLORS.borderBright}`, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.66rem" }} />
               <Mono sx={{ fontSize: "0.72rem", color: ZB_COLORS.textMuted }}>{xp} XP{next ? ` · ${next.min - xp} to ${next.name}` : " · max level"}</Mono>
             </Box>
             {/* XP bar */}
-            <Box sx={{ mt: 1, maxWidth: 260, height: 5, background: "rgba(0,229,255,0.1)", borderRadius: 3, overflow: "hidden" }}>
-              <Box sx={{ width: `${levelProgress}%`, height: "100%", background: `linear-gradient(90deg, ${CYAN}, ${LIME})`, borderRadius: 3, transition: "width 0.6s ease", boxShadow: `0 0 10px ${GLOW}` }} />
+            <Box sx={{ mt: 1, maxWidth: 260, height: 5, background: "rgba(31,64,214,0.1)", borderRadius: 3, overflow: "hidden" }}>
+              <Box sx={{ width: `${levelProgress}%`, height: "100%", background: `linear-gradient(90deg, ${CYAN}, ${LIME})`, borderRadius: 3, transition: "width 0.6s ease", boxShadow: "none" }} />
             </Box>
           </Box>
           <Button component={Link} to="/simulations" variant="contained" sx={{ whiteSpace: "nowrap", position: "relative" }}>
@@ -121,7 +121,7 @@ export default function StudentDashboard({ profile }) {
       {/* Stats */}
       <Grid container spacing={1.5} sx={{ mb: 4 }}>
         <Grid item xs={6} sm={3}><StatCard label="Completed" value={completed.length} /></Grid>
-        <Grid item xs={6} sm={3}><StatCard label="Available" value={simulations.length} accent="rgba(230,247,255,0.85)" /></Grid>
+        <Grid item xs={6} sm={3}><StatCard label="Available" value={simulations.length} accent="rgba(20,17,15,0.85)" /></Grid>
         <Grid item xs={6} sm={3}><StatCard label="Progress" value={`${progress}%`} /></Grid>
         <Grid item xs={6} sm={3}><StatCard label="Reflections" value={reflections.length} accent={LIME} /></Grid>
       </Grid>
@@ -133,8 +133,8 @@ export default function StudentDashboard({ profile }) {
               <Mono sx={{ fontSize: "0.72rem", color: ZB_COLORS.textMuted }}>{completed.length} of {simulations.length} simulations</Mono>
               <Mono sx={{ fontSize: "0.72rem", color: CYAN }}>{progress}%</Mono>
             </Box>
-            <Box sx={{ height: 8, background: "rgba(0,229,255,0.1)", borderRadius: 4, overflow: "hidden" }}>
-              <Box sx={{ width: `${progress}%`, height: "100%", background: CYAN, borderRadius: 4, transition: "width 0.5s ease", boxShadow: `0 0 12px ${GLOW}` }} />
+            <Box sx={{ height: 8, background: "rgba(31,64,214,0.1)", borderRadius: 4, overflow: "hidden" }}>
+              <Box sx={{ width: `${progress}%`, height: "100%", background: CYAN, borderRadius: 4, transition: "width 0.5s ease", boxShadow: "none" }} />
             </Box>
           </SectionCard>
 
@@ -144,8 +144,8 @@ export default function StudentDashboard({ profile }) {
             ) : (
               <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "repeat(3, 1fr)" }, gap: 1.5 }}>
                 {recommended.map(sim => (
-                  <Box key={sim.id} sx={{ background: ZB_COLORS.cardBg, border: `0.5px solid ${ZB_COLORS.border}`, borderRadius: "10px", p: 2, display: "flex", flexDirection: "column" }}>
-                    <Typography sx={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, color: "#fff", fontSize: "0.875rem", mb: 0.75 }}>{sim.title}</Typography>
+                  <Box key={sim.id} sx={{ background: ZB_COLORS.cardBg, border: `2px solid ${ZB_COLORS.border}`, borderRadius: "10px", p: 2, display: "flex", flexDirection: "column" }}>
+                    <Typography sx={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, color: "#14110f", fontSize: "0.875rem", mb: 0.75 }}>{sim.title}</Typography>
                     <Typography sx={{ fontSize: "0.76rem", color: ZB_COLORS.textMuted, fontFamily: "'Space Grotesk', sans-serif", mb: 1.5, flexGrow: 1 }}>{sim.description.slice(0, 55)}…</Typography>
                     <Button component={Link} to={`/Simulation/${sim.id}`} variant="contained" size="small" fullWidth sx={{ fontSize: "0.76rem" }}>Start</Button>
                   </Box>
@@ -159,7 +159,7 @@ export default function StudentDashboard({ profile }) {
               {posts.map((p, i) => (
                 <Box key={i} sx={{ mb: 1.5 }}>
                   <Mono sx={{ fontSize: "0.68rem", color: CYAN }}>{p.user} · {p.timestamp.toLocaleTimeString()}</Mono>
-                  <Typography sx={{ color: "rgba(230,247,255,0.85)", fontFamily: "'Space Grotesk', sans-serif", fontSize: "0.875rem" }}>{p.text}</Typography>
+                  <Typography sx={{ color: "rgba(20,17,15,0.85)", fontFamily: "'Space Grotesk', sans-serif", fontSize: "0.875rem" }}>{p.text}</Typography>
                   <Divider sx={{ borderColor: ZB_COLORS.border, mt: 1 }} />
                 </Box>
               ))}
@@ -179,9 +179,9 @@ export default function StudentDashboard({ profile }) {
             {reflections.length > 0 && (
               <Box sx={{ mt: 3 }}>
                 {reflections.map((r, i) => (
-                  <Box key={i} sx={{ background: ZB_COLORS.cardBg, border: `0.5px solid ${ZB_COLORS.border}`, borderRadius: "8px", p: 2, mb: 1.5 }}>
+                  <Box key={i} sx={{ background: ZB_COLORS.cardBg, border: `2px solid ${ZB_COLORS.border}`, borderRadius: "8px", p: 2, mb: 1.5 }}>
                     <Mono sx={{ fontSize: "0.68rem", color: ZB_COLORS.textMuted, mb: 0.5 }}>{r.timestamp.toLocaleString()}</Mono>
-                    <Typography sx={{ color: "rgba(230,247,255,0.8)", fontFamily: "'Space Grotesk', sans-serif", fontSize: "0.875rem" }}>{r.text}</Typography>
+                    <Typography sx={{ color: "rgba(20,17,15,0.8)", fontFamily: "'Space Grotesk', sans-serif", fontSize: "0.875rem" }}>{r.text}</Typography>
                   </Box>
                 ))}
               </Box>
@@ -212,7 +212,7 @@ export default function StudentDashboard({ profile }) {
             ) : (
               mentors.map((m, i) => (
                 <Box key={i} sx={{ mb: 2 }}>
-                  <Typography sx={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, color: "#fff", fontSize: "0.9rem" }}>{m.name}</Typography>
+                  <Typography sx={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, color: "#14110f", fontSize: "0.9rem" }}>{m.name}</Typography>
                   <Typography sx={{ fontSize: "0.8rem", color: ZB_COLORS.textMuted, fontFamily: "'Space Grotesk', sans-serif", mb: 0.75 }}>{m.bio}</Typography>
                   <Button href={`mailto:${m.email}`} size="small" sx={{ color: CYAN, fontSize: "0.76rem", p: 0, fontFamily: "'JetBrains Mono', monospace" }}>request feedback →</Button>
                   {i < mentors.length - 1 && <Divider sx={{ borderColor: ZB_COLORS.border, mt: 1.5 }} />}
@@ -224,8 +224,8 @@ export default function StudentDashboard({ profile }) {
           <SectionCard title="Upcoming events">
             {events.map((ev, i) => (
               <Box key={i} sx={{ mb: 2 }}>
-                <Typography sx={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, color: "#fff", fontSize: "0.875rem" }}>{ev.title}</Typography>
-                <Chip label={ev.date} size="small" sx={{ background: "rgba(0,229,255,0.1)", color: CYAN, border: `0.5px solid ${ZB_COLORS.borderBright}`, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.64rem", my: 0.75 }} />
+                <Typography sx={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, color: "#14110f", fontSize: "0.875rem" }}>{ev.title}</Typography>
+                <Chip label={ev.date} size="small" sx={{ background: "rgba(31,64,214,0.1)", color: CYAN, border: `2px solid ${ZB_COLORS.borderBright}`, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.64rem", my: 0.75 }} />
                 <Typography sx={{ fontSize: "0.8rem", color: ZB_COLORS.textMuted, fontFamily: "'Space Grotesk', sans-serif", mb: 0.5 }}>{ev.description}</Typography>
                 <Button href={ev.link} target="_blank" size="small" sx={{ color: CYAN, fontSize: "0.76rem", p: 0, fontFamily: "'JetBrains Mono', monospace" }}>learn more →</Button>
                 {i < events.length - 1 && <Divider sx={{ borderColor: ZB_COLORS.border, mt: 1.5 }} />}
