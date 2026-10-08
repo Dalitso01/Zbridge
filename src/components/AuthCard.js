@@ -11,7 +11,7 @@ export default function AuthCard({ title, subtitle, children, footer }) {
         sx={{
           width: "100%", maxWidth: 420,
           background: ZB_COLORS.navyMid,
-          border: `0.5px solid ${ZB_COLORS.border}`,
+          border: `2px solid ${ZB_COLORS.border}`,
           borderRadius: "16px",
           p: { xs: 3, md: 4 },
         }}
@@ -25,10 +25,10 @@ export default function AuthCard({ title, subtitle, children, footer }) {
               mx: "auto", mb: 2,
             }}
           >
-            <Typography sx={{ color: "#0a0a0a", fontWeight: 800, fontSize: "1.1rem", fontFamily: "Sora" }}>Z</Typography>
+            <Typography sx={{ color: "#fffaf0", fontWeight: 800, fontSize: "1.1rem", fontFamily: "'Syne', sans-serif" }}>Z</Typography>
           </Box>
-          <Typography variant="h5" sx={{ color: "#fff", fontFamily: "Sora", mb: 0.5 }}>{title}</Typography>
-          <Typography sx={{ color: ZB_COLORS.textMuted, fontSize: "0.875rem", fontFamily: "DM Sans" }}>
+          <Typography variant="h5" sx={{ color: "#14110f", fontFamily: "'Syne', sans-serif", mb: 0.5 }}>{title}</Typography>
+          <Typography sx={{ color: ZB_COLORS.textMuted, fontSize: "0.875rem", fontFamily: "'Space Grotesk', sans-serif" }}>
             {subtitle}
           </Typography>
         </Box>
@@ -41,7 +41,7 @@ export default function AuthCard({ title, subtitle, children, footer }) {
 
         {children}
 
-        <Typography sx={{ textAlign: "center", mt: 2.5, fontSize: "0.875rem", color: ZB_COLORS.textMuted, fontFamily: "DM Sans" }}>
+        <Typography sx={{ textAlign: "center", mt: 2.5, fontSize: "0.875rem", color: ZB_COLORS.textMuted, fontFamily: "'Space Grotesk', sans-serif" }}>
           {footer}
         </Typography>
       </Box>
@@ -62,7 +62,7 @@ export function GoogleButton({ onClick, disabled }) {
         size="large"
         onClick={onClick}
         disabled={disabled}
-        sx={{ py: 1.2, borderColor: ZB_COLORS.border, color: "#fff", textTransform: "none", fontSize: "0.95rem" }}
+        sx={{ py: 1.2, borderColor: ZB_COLORS.border, color: "#14110f", textTransform: "none", fontSize: "0.95rem" }}
       >
         Continue with Google
       </Button>
