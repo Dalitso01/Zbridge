@@ -3,17 +3,17 @@ import { Box, Typography, IconButton, TextField, Avatar, Fade, Zoom } from "@mui
 import { useNavigate } from "react-router-dom";
 import { ZB_COLORS } from "../theme";
 
-const RobotIcon = ({ size = 20, color = "#0d1f3c" }) => (
+const RobotIcon = ({ size = 20, color = "#fffaf0" }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
     <rect x="5" y="8" width="14" height="11" rx="3" fill={color} />
-    <circle cx="9" cy="13" r="1.5" fill="#ffd600" />
-    <circle cx="15" cy="13" r="1.5" fill="#ffd600" />
+    <circle cx="9" cy="13" r="1.5" fill="#b97800" />
+    <circle cx="15" cy="13" r="1.5" fill="#b97800" />
     <path d="M12 4v3M9 16h6" stroke={color} strokeWidth="1.5" strokeLinecap="round" />
     <circle cx="12" cy="3.5" r="1.5" fill={color} />
   </svg>
 );
 
-const SendIcon = ({ color = "#0d1f3c" }) => (
+const SendIcon = ({ color = "#fffaf0" }) => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
     <path d="M2 8l12-5-5 12-2.5-4.5L2 8z" fill={color} />
   </svg>
@@ -109,14 +109,14 @@ export default function ZBridgeGuide({ profile }) {
             alignItems: "center",
             justifyContent: "center",
             cursor: "pointer",
-            boxShadow: "0 4px 20px rgba(255,214,0,0.4)",
+            boxShadow: "0 4px 20px rgba(255,194,26,0.4)",
             zIndex: 1300,
             transition: "transform 0.2s",
             "&:hover": { transform: "scale(1.08)" },
           }}
         >
           <RobotIcon size={30} />
-          <Box sx={{ position: "absolute", top: 4, right: 4, width: 12, height: 12, background: "#4caf50", borderRadius: "50%", border: "2px solid #ffd600" }} />
+          <Box sx={{ position: "absolute", top: 4, right: 4, width: 12, height: 12, background: "#4caf50", borderRadius: "50%", border: "2px solid #b97800" }} />
         </Box>
       </Zoom>
 
@@ -131,17 +131,17 @@ export default function ZBridgeGuide({ profile }) {
             height: 540,
             maxHeight: "calc(100vh - 48px)",
             background: ZB_COLORS.navyMid,
-            border: `0.5px solid rgba(255,255,255,0.12)`,
+            border: `2px solid rgba(20,17,15,0.12)`,
             borderRadius: "16px",
             overflow: "hidden",
             display: "flex",
             flexDirection: "column",
             zIndex: 1300,
-            boxShadow: "0 12px 48px rgba(0,0,0,0.5)",
+            boxShadow: "8px 8px 0 #14110f",
           }}
         >
           {/* Header */}
-          <Box sx={{ background: ZB_COLORS.blue, p: "14px 16px", display: "flex", alignItems: "center", gap: 1.5, borderBottom: "0.5px solid rgba(255,255,255,0.1)" }}>
+          <Box sx={{ background: ZB_COLORS.blue, p: "14px 16px", display: "flex", alignItems: "center", gap: 1.5, borderBottom: "2px solid rgba(20,17,15,0.1)" }}>
             <Box sx={{ position: "relative" }}>
               <Avatar sx={{ width: 38, height: 38, background: ZB_COLORS.gold }}>
                 <RobotIcon size={20} />
@@ -149,10 +149,10 @@ export default function ZBridgeGuide({ profile }) {
               <Box sx={{ position: "absolute", bottom: 0, right: 0, width: 10, height: 10, background: "#4caf50", borderRadius: "50%", border: `2px solid ${ZB_COLORS.blue}` }} />
             </Box>
             <Box sx={{ flexGrow: 1 }}>
-              <Typography sx={{ color: "#fff", fontSize: "0.875rem", fontWeight: 600, fontFamily: "Sora" }}>ZBRIDGE Guide</Typography>
-              <Typography sx={{ color: "rgba(255,255,255,0.55)", fontSize: "0.7rem", fontFamily: "DM Sans" }}>AI career assistant · Online</Typography>
+              <Typography sx={{ color: "#14110f", fontSize: "0.875rem", fontWeight: 600, fontFamily: "'Syne', sans-serif" }}>ZBRIDGE Guide</Typography>
+              <Typography sx={{ color: "rgba(20,17,15,0.55)", fontSize: "0.7rem", fontFamily: "'Space Grotesk', sans-serif" }}>AI career assistant · Online</Typography>
             </Box>
-            <IconButton onClick={() => setOpen(false)} sx={{ color: "rgba(255,255,255,0.6)" }} size="small">
+            <IconButton onClick={() => setOpen(false)} sx={{ color: "rgba(20,17,15,0.6)" }} size="small">
               ✕
             </IconButton>
           </Box>
@@ -167,8 +167,8 @@ export default function ZBridgeGuide({ profile }) {
                   </Avatar>
                 )}
                 <Box sx={{
-                  background: msg.role === "user" ? ZB_COLORS.gold : "rgba(255,255,255,0.06)",
-                  border: msg.role === "user" ? "none" : "0.5px solid rgba(255,255,255,0.08)",
+                  background: msg.role === "user" ? ZB_COLORS.gold : "rgba(20,17,15,0.06)",
+                  border: msg.role === "user" ? "none" : "2px solid rgba(20,17,15,0.08)",
                   borderRadius: "12px",
                   borderTopRightRadius: msg.role === "user" ? "2px" : "12px",
                   borderTopLeftRadius: msg.role === "assistant" ? "2px" : "12px",
@@ -176,10 +176,10 @@ export default function ZBridgeGuide({ profile }) {
                   maxWidth: "75%",
                 }}>
                   <Typography sx={{
-                    color: msg.role === "user" ? "#0a0a0a" : "rgba(255,255,255,0.9)",
+                    color: msg.role === "user" ? "#fffaf0" : "rgba(20,17,15,0.9)",
                     fontSize: "0.8rem",
                     lineHeight: 1.55,
-                    fontFamily: "DM Sans",
+                    fontFamily: "'Space Grotesk', sans-serif",
                     whiteSpace: "pre-wrap",
                   }}>
                     {msg.text}
@@ -193,11 +193,11 @@ export default function ZBridgeGuide({ profile }) {
                 <Avatar sx={{ width: 26, height: 26, background: ZB_COLORS.gold, flexShrink: 0 }}>
                   <RobotIcon size={14} />
                 </Avatar>
-                <Box sx={{ background: "rgba(255,255,255,0.06)", border: "0.5px solid rgba(255,255,255,0.08)", borderRadius: "12px", borderTopLeftRadius: "2px", p: "12px 14px" }}>
+                <Box sx={{ background: "rgba(20,17,15,0.06)", border: "2px solid rgba(20,17,15,0.08)", borderRadius: "12px", borderTopLeftRadius: "2px", p: "12px 14px" }}>
                   <Box sx={{ display: "flex", gap: 0.5 }}>
                     {[0, 1, 2].map(d => (
                       <Box key={d} sx={{
-                        width: 6, height: 6, borderRadius: "50%", background: "rgba(255,255,255,0.4)",
+                        width: 6, height: 6, borderRadius: "50%", background: "rgba(20,17,15,0.4)",
                         animation: "pulse 1.4s infinite", animationDelay: `${d * 0.2}s`,
                         "@keyframes pulse": { "0%, 60%, 100%": { opacity: 0.3 }, "30%": { opacity: 1 } },
                       }} />
@@ -219,12 +219,12 @@ export default function ZBridgeGuide({ profile }) {
                   sx={{
                     fontSize: "0.72rem",
                     color: ZB_COLORS.gold,
-                    border: `0.5px solid rgba(255,214,0,0.3)`,
+                    border: `2px solid rgba(255,194,26,0.3)`,
                     borderRadius: "16px",
                     px: 1.5, py: 0.5,
                     cursor: "pointer",
-                    fontFamily: "DM Sans",
-                    "&:hover": { background: "rgba(255,214,0,0.1)" },
+                    fontFamily: "'Space Grotesk', sans-serif",
+                    "&:hover": { background: "rgba(255,194,26,0.1)" },
                   }}
                 >
                   {q}
@@ -234,7 +234,7 @@ export default function ZBridgeGuide({ profile }) {
           )}
 
           {/* Input */}
-          <Box sx={{ p: "12px 16px", borderTop: "0.5px solid rgba(255,255,255,0.1)", display: "flex", gap: 1, alignItems: "center" }}>
+          <Box sx={{ p: "12px 16px", borderTop: "2px solid rgba(20,17,15,0.1)", display: "flex", gap: 1, alignItems: "center" }}>
             <TextField
               placeholder="Ask me anything…"
               value={input}
@@ -245,11 +245,11 @@ export default function ZBridgeGuide({ profile }) {
               sx={{
                 "& .MuiOutlinedInput-root": {
                   borderRadius: "20px",
-                  background: "rgba(255,255,255,0.06)",
+                  background: "rgba(20,17,15,0.06)",
                   fontSize: "0.8rem",
-                  "& fieldset": { borderColor: "rgba(255,255,255,0.12)" },
+                  "& fieldset": { borderColor: "rgba(20,17,15,0.12)" },
                 },
-                "& input": { color: "#fff", fontFamily: "DM Sans" },
+                "& input": { color: "#14110f", fontFamily: "'Space Grotesk', sans-serif" },
               }}
             />
             <Box

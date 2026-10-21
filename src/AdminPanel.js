@@ -6,8 +6,8 @@ import Grid from "./components/Grid";
 import { ZB_COLORS } from "./theme";
 
 const SectionCard = ({ title, children }) => (
-  <Box sx={{ background: ZB_COLORS.navyMid, border: `0.5px solid ${ZB_COLORS.border}`, borderRadius: "12px", p: 3, mb: 3 }}>
-    {title && <Typography sx={{ fontFamily: "Sora", fontWeight: 600, color: "#fff", mb: 2 }}>{title}</Typography>}
+  <Box sx={{ background: ZB_COLORS.navyMid, border: `2px solid ${ZB_COLORS.border}`, borderRadius: "12px", p: 3, mb: 3 }}>
+    {title && <Typography sx={{ fontFamily: "'Syne', sans-serif", fontWeight: 600, color: "#14110f", mb: 2 }}>{title}</Typography>}
     {children}
   </Box>
 );
@@ -41,8 +41,8 @@ const AdminPanel = () => {
 
   return (
     <Box sx={{ maxWidth: 1100, mx: "auto", px: { xs: 2, md: 4 }, py: { xs: 4, md: 6 } }}>
-      <Typography sx={{ fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.1em", color: ZB_COLORS.gold, fontWeight: 600, mb: 1, fontFamily: "DM Sans" }}>Admin</Typography>
-      <Typography variant="h4" sx={{ color: "#fff", mb: 4 }}>Admin panel</Typography>
+      <Typography sx={{ fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.1em", color: ZB_COLORS.gold, fontWeight: 600, mb: 1, fontFamily: "'Space Grotesk', sans-serif" }}>Admin</Typography>
+      <Typography variant="h4" sx={{ color: "#14110f", mb: 4 }}>Admin panel</Typography>
 
       {/* Stats */}
       <Grid container spacing={1.5} sx={{ mb: 4 }}>
@@ -52,9 +52,9 @@ const AdminPanel = () => {
           { label: "Users", value: "—" },
         ].map(s => (
           <Grid item xs={4} key={s.label}>
-            <Box sx={{ background: ZB_COLORS.cardBg, border: `0.5px solid ${ZB_COLORS.border}`, borderRadius: "12px", p: 2.5, textAlign: "center" }}>
-              <Typography sx={{ fontFamily: "Sora", fontWeight: 700, fontSize: "1.75rem", color: ZB_COLORS.gold }}>{s.value}</Typography>
-              <Typography sx={{ fontSize: "0.75rem", color: ZB_COLORS.textMuted, textTransform: "uppercase", letterSpacing: "0.05em", fontFamily: "DM Sans" }}>{s.label}</Typography>
+            <Box sx={{ background: ZB_COLORS.cardBg, border: `2px solid ${ZB_COLORS.border}`, borderRadius: "12px", p: 2.5, textAlign: "center" }}>
+              <Typography sx={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: "1.75rem", color: ZB_COLORS.gold }}>{s.value}</Typography>
+              <Typography sx={{ fontSize: "0.75rem", color: ZB_COLORS.textMuted, textTransform: "uppercase", letterSpacing: "0.05em", fontFamily: "'Space Grotesk', sans-serif" }}>{s.label}</Typography>
             </Box>
           </Grid>
         ))}
@@ -68,16 +68,16 @@ const AdminPanel = () => {
             <TableHead>
               <TableRow>
                 {["Title", "Description", "Actions"].map(h => (
-                  <TableCell key={h} sx={{ color: ZB_COLORS.textMuted, fontFamily: "DM Sans", fontSize: "0.78rem", borderBottom: `0.5px solid ${ZB_COLORS.border}` }}>{h}</TableCell>
+                  <TableCell key={h} sx={{ color: ZB_COLORS.textMuted, fontFamily: "'Space Grotesk', sans-serif", fontSize: "0.78rem", borderBottom: `2px solid ${ZB_COLORS.border}` }}>{h}</TableCell>
                 ))}
               </TableRow>
             </TableHead>
             <TableBody>
               {simulations.map(s => (
                 <TableRow key={s.id}>
-                  <TableCell sx={{ color: "#fff", fontFamily: "DM Sans", fontSize: "0.875rem", borderBottom: `0.5px solid ${ZB_COLORS.border}` }}>{s.title}</TableCell>
-                  <TableCell sx={{ color: ZB_COLORS.textMuted, fontFamily: "DM Sans", fontSize: "0.8rem", borderBottom: `0.5px solid ${ZB_COLORS.border}` }}>{s.description?.slice(0, 60)}…</TableCell>
-                  <TableCell sx={{ borderBottom: `0.5px solid ${ZB_COLORS.border}` }}>
+                  <TableCell sx={{ color: "#14110f", fontFamily: "'Space Grotesk', sans-serif", fontSize: "0.875rem", borderBottom: `2px solid ${ZB_COLORS.border}` }}>{s.title}</TableCell>
+                  <TableCell sx={{ color: ZB_COLORS.textMuted, fontFamily: "'Space Grotesk', sans-serif", fontSize: "0.8rem", borderBottom: `2px solid ${ZB_COLORS.border}` }}>{s.description?.slice(0, 60)}…</TableCell>
+                  <TableCell sx={{ borderBottom: `2px solid ${ZB_COLORS.border}` }}>
                     <Button size="small" onClick={() => openDialog("simulation", s)} sx={{ color: ZB_COLORS.gold, fontSize: "0.75rem", mr: 1 }}>Edit</Button>
                     <Button size="small" onClick={() => setSimulations(prev => prev.filter(x => x.id !== s.id))} sx={{ color: "#f44336", fontSize: "0.75rem" }}>Delete</Button>
                   </TableCell>
@@ -96,16 +96,16 @@ const AdminPanel = () => {
             <TableHead>
               <TableRow>
                 {["Title", "Date", "Actions"].map(h => (
-                  <TableCell key={h} sx={{ color: ZB_COLORS.textMuted, fontFamily: "DM Sans", fontSize: "0.78rem", borderBottom: `0.5px solid ${ZB_COLORS.border}` }}>{h}</TableCell>
+                  <TableCell key={h} sx={{ color: ZB_COLORS.textMuted, fontFamily: "'Space Grotesk', sans-serif", fontSize: "0.78rem", borderBottom: `2px solid ${ZB_COLORS.border}` }}>{h}</TableCell>
                 ))}
               </TableRow>
             </TableHead>
             <TableBody>
               {events.map(e => (
                 <TableRow key={e.id}>
-                  <TableCell sx={{ color: "#fff", fontFamily: "DM Sans", fontSize: "0.875rem", borderBottom: `0.5px solid ${ZB_COLORS.border}` }}>{e.title}</TableCell>
-                  <TableCell sx={{ color: ZB_COLORS.textMuted, fontFamily: "DM Sans", fontSize: "0.8rem", borderBottom: `0.5px solid ${ZB_COLORS.border}` }}>{e.date}</TableCell>
-                  <TableCell sx={{ borderBottom: `0.5px solid ${ZB_COLORS.border}` }}>
+                  <TableCell sx={{ color: "#14110f", fontFamily: "'Space Grotesk', sans-serif", fontSize: "0.875rem", borderBottom: `2px solid ${ZB_COLORS.border}` }}>{e.title}</TableCell>
+                  <TableCell sx={{ color: ZB_COLORS.textMuted, fontFamily: "'Space Grotesk', sans-serif", fontSize: "0.8rem", borderBottom: `2px solid ${ZB_COLORS.border}` }}>{e.date}</TableCell>
+                  <TableCell sx={{ borderBottom: `2px solid ${ZB_COLORS.border}` }}>
                     <Button size="small" onClick={() => openDialog("event", e)} sx={{ color: ZB_COLORS.gold, fontSize: "0.75rem", mr: 1 }}>Edit</Button>
                     <Button size="small" onClick={() => setEvents(prev => prev.filter(x => x.id !== e.id))} sx={{ color: "#f44336", fontSize: "0.75rem" }}>Delete</Button>
                   </TableCell>
@@ -116,8 +116,8 @@ const AdminPanel = () => {
         </Box>
       </SectionCard>
 
-      <Dialog open={dialog.open} onClose={() => setDialog({ open: false, type: "", data: null })} maxWidth="sm" fullWidth PaperProps={{ sx: { background: ZB_COLORS.navyMid, border: `0.5px solid ${ZB_COLORS.border}` } }}>
-        <DialogTitle sx={{ color: "#fff", fontFamily: "Sora" }}>{form.id ? "Edit" : "Add"} {dialog.type}</DialogTitle>
+      <Dialog open={dialog.open} onClose={() => setDialog({ open: false, type: "", data: null })} maxWidth="sm" fullWidth PaperProps={{ sx: { background: ZB_COLORS.navyMid, border: `2px solid ${ZB_COLORS.border}` } }}>
+        <DialogTitle sx={{ color: "#14110f", fontFamily: "'Syne', sans-serif" }}>{form.id ? "Edit" : "Add"} {dialog.type}</DialogTitle>
         <DialogContent>
           <TextField label="Title" fullWidth sx={{ mb: 2, mt: 1 }} value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} />
           <TextField label="Description" fullWidth multiline rows={2} sx={{ mb: 2 }} value={form.description || ""} onChange={e => setForm({ ...form, description: e.target.value })} />

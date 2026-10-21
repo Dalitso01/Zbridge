@@ -10,10 +10,8 @@ import Home from "./Home";
 import Contact from "./Contact";
 import UserProfile from "./UserProfile";
 import StudentDashboard from "./StudentDashboard";
-import EmployerDashboard from "./EmployerDashboard";
+import ForEmployers from "./ForEmployers";
 import Podcast from "./Podcast";
-import AdminPanel from "./AdminPanel";
-import ReviewSubmissions from "./ReviewSubmissions";
 import Library from "./Library";
 import Forum from "./Forum";
 import Simulations from "./Simulations";
@@ -120,17 +118,15 @@ function App() {
           <Routes>
             <Route path="/" element={<Home isLoggedIn={!!user} />} />
             <Route path="/about" element={<AboutSection />} />
-            <Route path="/contact" element={<Contact />} />
+            <Route path="/contact" element={<Contact user={user} />} />
             <Route path="/profile" element={guard(<UserProfile user={user} onSave={handleSaveProfile} />)} />
             <Route path="/dashboard" element={guard(<StudentDashboard profile={user} />)} />
-            <Route path="/employer" element={<EmployerDashboard />} />
+            <Route path="/employer" element={<ForEmployers />} />
             <Route path="/podcast" element={<Podcast />} />
-            <Route path="/admin" element={<AdminPanel />} />
             <Route path="/Simulation" element={<Simulations />} />
             <Route path="/Simulation/:simId" element={guard(<SimulationRunner profile={user} />)} />
-            <Route path="/review" element={<ReviewSubmissions />} />
             <Route path="/library" element={<Library />} />
-            <Route path="/forum" element={<Forum />} />
+            <Route path="/forum" element={<Forum user={user} />} />
             <Route path="/simulations" element={<SimulationsList isLoggedIn={!!user} />} />
             <Route path="/login" element={<Login user={user} onDemoLogin={setUser} />} />
             <Route path="/signup" element={<Signup user={user} onDemoLogin={setUser} onProfileChange={updateUser} />} />
