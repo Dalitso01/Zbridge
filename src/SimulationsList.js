@@ -7,11 +7,11 @@ import simulations from "./simulationsData";
 import { ZB_COLORS } from "./theme";
 
 const categoryColors = {
-  Finance: "#1f40d6", Agriculture: "#0e8a5f", Healthcare: "#e8432e",
-  Energy: "#c97a00", Education: "#1f40d6", Logistics: "#6b3fd9",
-  Business: "#0f8f80", Banking: "#1f40d6", Accounting: "#0f8f80",
-  Mining: "#d9581b", Marketing: "#e8432e", Law: "#6b3fd9",
-  "Human Resources": "#0e8a5f", "Real Estate": "#c97a00", Tourism: "#0f8f80",
+  Finance: "#1d4f91", Agriculture: "#0f7b5f", Healthcare: "#b4443a",
+  Energy: "#a8741f", Education: "#1d4f91", Logistics: "#55489a",
+  Business: "#0f8f80", Banking: "#1d4f91", Accounting: "#0f8f80",
+  Mining: "#b4622a", Marketing: "#b4443a", Law: "#55489a",
+  "Human Resources": "#0f7b5f", "Real Estate": "#a8741f", Tourism: "#0f8f80",
 };
 
 const leaderboard = [
@@ -52,8 +52,8 @@ export default function SimulationsList({ isLoggedIn }) {
       <Mono sx={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.15em", color: ZB_COLORS.cyan, fontWeight: 500, mb: 1 }}>
         {"// explore"}
       </Mono>
-      <Typography variant="h3" sx={{ fontSize: { xs: "1.9rem", md: "2.4rem" }, color: "#14110f", mb: 0.75 }}>All simulations</Typography>
-      <Typography sx={{ color: ZB_COLORS.textMuted, fontFamily: "'Space Grotesk', sans-serif", mb: 4, fontSize: "1.02rem", maxWidth: 600 }}>
+      <Typography variant="h3" sx={{ fontSize: { xs: "1.9rem", md: "2.4rem" }, color: "#0b1f3a", mb: 0.75 }}>All simulations</Typography>
+      <Typography sx={{ color: ZB_COLORS.textMuted, fontFamily: "'Inter', sans-serif", mb: 4, fontSize: "1.02rem", maxWidth: 600 }}>
         {simulations.length} real-world scenarios across African industries. Each includes model answers and AI feedback.
       </Typography>
 
@@ -82,9 +82,9 @@ export default function SimulationsList({ isLoggedIn }) {
               <Chip key={cat} label={cat} onClick={() => setFilter(cat)} size="small"
                 sx={{
                   cursor: "pointer",
-                  background: filter === cat ? "rgba(31,64,214,0.15)" : "rgba(31,64,214,0.03)",
-                  border: "2px solid " + (filter === cat ? ZB_COLORS.cyan : ZB_COLORS.border),
-                  color: filter === cat ? ZB_COLORS.cyan : "rgba(20,17,15,0.6)",
+                  background: filter === cat ? "rgba(29,79,145,0.15)" : "rgba(29,79,145,0.03)",
+                  border: "1px solid " + (filter === cat ? ZB_COLORS.cyan : ZB_COLORS.border),
+                  color: filter === cat ? ZB_COLORS.cyan : "rgba(11,31,58,0.6)",
                   fontFamily: "'JetBrains Mono', monospace",
                   fontSize: "0.72rem",
                   boxShadow: filter === cat ? `0 0 12px ${ZB_COLORS.cyanGlow}` : "none",
@@ -107,15 +107,15 @@ export default function SimulationsList({ isLoggedIn }) {
                 <motion.div key={sim.id} {...fadeUp(i * 0.05)} style={{ height: "100%" }}>
                   <Box sx={{
                     background: ZB_COLORS.cardBg,
-                    border: "2px solid " + ZB_COLORS.border,
+                    border: "1px solid " + ZB_COLORS.border,
                     borderRadius: "12px", p: 2.5,
                     height: "100%", display: "flex", flexDirection: "column",
                     boxSizing: "border-box",
                     transition: "all 0.2s ease",
-                    "&:hover": { background: ZB_COLORS.cardHover, borderColor: ZB_COLORS.borderBright, transform: "translate(-3px, -3px)", boxShadow: "5px 5px 0 #14110f" },
+                    "&:hover": { background: ZB_COLORS.cardHover, borderColor: ZB_COLORS.borderBright, transform: "translateY(-2px)", boxShadow: "0 2px 4px rgba(11,31,58,0.06), 0 12px 28px rgba(11,31,58,0.1)" },
                   }}>
                     <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1.5, flexWrap: "wrap", gap: 0.75 }}>
-                      <Chip label={sim.category} size="small" sx={{ background: catColor + "18", color: catColor, border: "2px solid " + catColor + "44", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.66rem" }} />
+                      <Chip label={sim.category} size="small" sx={{ background: catColor + "18", color: catColor, border: "1px solid " + catColor + "44", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.66rem" }} />
                       {sim.partner && (
                         <Mono sx={{ fontSize: "0.62rem", color: ZB_COLORS.textMuted, alignSelf: "center", display: "flex", alignItems: "center", gap: 0.5 }}>
                           <Box sx={{ width: 4, height: 4, borderRadius: "50%", background: ZB_COLORS.lime }} />
@@ -123,10 +123,10 @@ export default function SimulationsList({ isLoggedIn }) {
                         </Mono>
                       )}
                     </Box>
-                    <Typography sx={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, color: "#14110f", fontSize: "1rem", mb: 0.75 }}>
+                    <Typography sx={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, color: "#0b1f3a", fontSize: "1rem", mb: 0.75 }}>
                       {sim.title}
                     </Typography>
-                    <Typography sx={{ fontSize: "0.84rem", color: ZB_COLORS.textMuted, fontFamily: "'Space Grotesk', sans-serif", lineHeight: 1.55, flexGrow: 1, mb: 2 }}>
+                    <Typography sx={{ fontSize: "0.84rem", color: ZB_COLORS.textMuted, fontFamily: "'Inter', sans-serif", lineHeight: 1.55, flexGrow: 1, mb: 2 }}>
                       {sim.description.slice(0, 95)}…
                     </Typography>
                     <Box sx={{ height: "0.5px", background: ZB_COLORS.border, mb: 1.5 }} />
@@ -151,7 +151,7 @@ export default function SimulationsList({ isLoggedIn }) {
 
           {filtered.length === 0 && (
             <Box sx={{ textAlign: "center", py: 6, border: `0.5px dashed ${ZB_COLORS.border}`, borderRadius: "12px" }}>
-              <Typography sx={{ color: ZB_COLORS.textMuted, fontFamily: "'Space Grotesk', sans-serif" }}>
+              <Typography sx={{ color: ZB_COLORS.textMuted, fontFamily: "'Inter', sans-serif" }}>
                 No simulations match your search.
               </Typography>
             </Box>
@@ -160,10 +160,10 @@ export default function SimulationsList({ isLoggedIn }) {
 
         {/* Leaderboard sidebar */}
         <Grid item xs={12} md={4}>
-          <Box sx={{ background: ZB_COLORS.bgMid, border: "2px solid " + ZB_COLORS.border, borderRadius: "12px", p: 3, position: { md: "sticky" }, top: 88 }}>
+          <Box sx={{ background: ZB_COLORS.bgMid, border: "1px solid " + ZB_COLORS.border, borderRadius: "12px", p: 3, position: { md: "sticky" }, top: 88 }}>
             <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.5 }}>
               <Box sx={{ fontSize: "1.1rem", color: ZB_COLORS.cyan, textShadow: "none" }}>◆</Box>
-              <Typography sx={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, color: "#14110f" }}>
+              <Typography sx={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, color: "#0b1f3a" }}>
                 Leaderboard
               </Typography>
             </Box>
@@ -173,12 +173,12 @@ export default function SimulationsList({ isLoggedIn }) {
             {leaderboard.map((entry, i) => (
               <Box key={i} sx={{
                 display: "flex", alignItems: "center", gap: 1.5, mb: 1.5,
-                pb: 1.5, borderBottom: i < leaderboard.length - 1 ? "2px solid " + ZB_COLORS.border : "none",
+                pb: 1.5, borderBottom: i < leaderboard.length - 1 ? "1px solid " + ZB_COLORS.border : "none",
               }}>
                 <Box sx={{
                   width: 28, height: 28, borderRadius: "6px",
-                  background: i === 0 ? "rgba(31,64,214,0.18)" : i === 1 ? "rgba(14,138,95,0.12)" : i === 2 ? "rgba(232,67,46,0.12)" : "rgba(20,17,15,0.04)",
-                  border: i < 3 ? `2px solid ${i === 0 ? ZB_COLORS.cyan : i === 1 ? ZB_COLORS.lime : ZB_COLORS.magenta}44` : "none",
+                  background: i === 0 ? "rgba(29,79,145,0.18)" : i === 1 ? "rgba(15,123,95,0.12)" : i === 2 ? "rgba(232,67,46,0.12)" : "rgba(11,31,58,0.04)",
+                  border: i < 3 ? `1px solid ${i === 0 ? ZB_COLORS.cyan : i === 1 ? ZB_COLORS.lime : ZB_COLORS.magenta}44` : "none",
                   display: "flex", alignItems: "center", justifyContent: "center",
                   fontSize: "0.72rem", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace",
                   color: i === 0 ? ZB_COLORS.cyan : i === 1 ? ZB_COLORS.lime : i === 2 ? ZB_COLORS.magenta : ZB_COLORS.textMuted,
@@ -187,15 +187,15 @@ export default function SimulationsList({ isLoggedIn }) {
                   {i + 1}
                 </Box>
                 <Box sx={{ flexGrow: 1, minWidth: 0 }}>
-                  <Typography sx={{ color: "#14110f", fontFamily: "'Space Grotesk', sans-serif", fontSize: "0.85rem", fontWeight: 500 }}>{entry.name}</Typography>
-                  <Typography sx={{ color: ZB_COLORS.textMuted, fontFamily: "'Space Grotesk', sans-serif", fontSize: "0.7rem", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{entry.sim}</Typography>
+                  <Typography sx={{ color: "#0b1f3a", fontFamily: "'Inter', sans-serif", fontSize: "0.85rem", fontWeight: 500 }}>{entry.name}</Typography>
+                  <Typography sx={{ color: ZB_COLORS.textMuted, fontFamily: "'Inter', sans-serif", fontSize: "0.7rem", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{entry.sim}</Typography>
                 </Box>
                 <Mono sx={{ color: ZB_COLORS.cyan, fontWeight: 500, fontSize: "0.85rem", flexShrink: 0, textShadow: "none" }}>
                   {entry.score}
                 </Mono>
               </Box>
             ))}
-            <Box sx={{ mt: 2, p: 1.5, background: "rgba(31,64,214,0.04)", borderRadius: "8px", border: `2px solid ${ZB_COLORS.border}` }}>
+            <Box sx={{ mt: 2, p: 1.5, background: "rgba(29,79,145,0.04)", borderRadius: "8px", border: `1px solid ${ZB_COLORS.border}` }}>
               <Mono sx={{ fontSize: "0.68rem", color: ZB_COLORS.textMuted, textAlign: "center", lineHeight: 1.5 }}>
                 Complete simulations to climb the ranks
               </Mono>

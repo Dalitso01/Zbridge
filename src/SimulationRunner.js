@@ -10,7 +10,7 @@ import { notifySimulationComplete } from "./notifications";
 import { FeedbackForm } from "./components/Feedback";
 
 const CYAN = ZB_COLORS.cyan;
-const LIME = "#0e8a5f";
+const LIME = "#0f7b5f";
 const GLOW = ZB_COLORS.cyanGlow;
 
 const Mono = ({ children, sx }) => (
@@ -44,7 +44,7 @@ export default function SimulationRunner({ profile }) {
   if (!sim) {
     return (
       <Box sx={{ textAlign: "center", py: 10 }}>
-        <Typography variant="h5" sx={{ color: "#14110f", mb: 2 }}>Simulation not found</Typography>
+        <Typography variant="h5" sx={{ color: "#0b1f3a", mb: 2 }}>Simulation not found</Typography>
         <Button component={Link} to="/simulations" variant="contained">Back to simulations</Button>
       </Box>
     );
@@ -86,23 +86,23 @@ export default function SimulationRunner({ profile }) {
     return (
       <Box sx={{ maxWidth: 640, mx: "auto", px: 2, py: 8, textAlign: "center" }}>
         <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}>
-          <Box sx={{ width: 80, height: 80, borderRadius: "50%", background: "rgba(14,138,95,0.12)", border: `2px solid ${LIME}55`, display: "flex", alignItems: "center", justifyContent: "center", mx: "auto", mb: 3, boxShadow: "5px 5px 0 #14110f" }}>
+          <Box sx={{ width: 80, height: 80, borderRadius: "50%", background: "rgba(15,123,95,0.12)", border: `1px solid ${LIME}55`, display: "flex", alignItems: "center", justifyContent: "center", mx: "auto", mb: 3, boxShadow: "0 1px 2px rgba(11,31,58,0.06), 0 2px 8px rgba(11,31,58,0.05)" }}>
             <CheckIcon color={LIME} />
           </Box>
         </motion.div>
         <Mono sx={{ fontSize: "0.7rem", color: LIME, letterSpacing: "0.15em", mb: 1.5 }}>{"// simulation complete"}</Mono>
-        <Typography variant="h4" sx={{ color: "#14110f", mb: 1 }}>Well done!</Typography>
-        <Typography sx={{ color: ZB_COLORS.textMuted, fontFamily: "'Space Grotesk', sans-serif", mb: 0.5 }}>
+        <Typography variant="h4" sx={{ color: "#0b1f3a", mb: 1 }}>Well done!</Typography>
+        <Typography sx={{ color: ZB_COLORS.textMuted, fontFamily: "'Inter', sans-serif", mb: 0.5 }}>
           You completed all {sim.tasks.length} tasks in
         </Typography>
-        <Typography sx={{ color: CYAN, fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, fontSize: "1.1rem", mb: 3, textShadow: "none" }}>
+        <Typography sx={{ color: CYAN, fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: "1.1rem", mb: 3, textShadow: "none" }}>
           {sim.title}
         </Typography>
 
         {sim.partner && (
-          <Box sx={{ background: "rgba(31,64,214,0.05)", border: `2px solid ${ZB_COLORS.border}`, borderRadius: "12px", p: 2, mb: 3 }}>
+          <Box sx={{ background: "rgba(29,79,145,0.05)", border: `1px solid ${ZB_COLORS.border}`, borderRadius: "12px", p: 2, mb: 3 }}>
             <Mono sx={{ fontSize: "0.65rem", color: ZB_COLORS.textMuted, mb: 0.5, letterSpacing: "0.1em" }}>IN PARTNERSHIP WITH</Mono>
-            <Typography sx={{ color: CYAN, fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600 }}>{sim.partner}</Typography>
+            <Typography sx={{ color: CYAN, fontFamily: "'Inter', sans-serif", fontWeight: 600 }}>{sim.partner}</Typography>
           </Box>
         )}
 
@@ -110,10 +110,10 @@ export default function SimulationRunner({ profile }) {
           <Button variant="contained" size="large" onClick={handleDownloadCert} sx={{ py: 1.3, fontSize: "0.95rem" }}>
             ⤓ Download certificate
           </Button>
-          <Alert severity="info" sx={{ textAlign: "left", fontSize: "0.78rem", background: "rgba(31,64,214,0.06)", border: `2px solid ${ZB_COLORS.border}`, color: "rgba(20,17,15,0.8)", "& .MuiAlert-icon": { color: CYAN } }}>
+          <Alert severity="info" sx={{ textAlign: "left", fontSize: "0.78rem", background: "rgba(29,79,145,0.06)", border: `1px solid ${ZB_COLORS.border}`, color: "rgba(11,31,58,0.8)", "& .MuiAlert-icon": { color: CYAN } }}>
             Add your certificate to LinkedIn and your CV, and use what you did here as examples in interviews.
           </Alert>
-          <Button component={Link} to="/simulations" sx={{ color: CYAN, border: `2px solid ${ZB_COLORS.borderBright}`, borderRadius: "6px", "&:hover": { background: "rgba(31,64,214,0.06)" } }}>
+          <Button component={Link} to="/simulations" sx={{ color: CYAN, border: `1px solid ${ZB_COLORS.borderBright}`, borderRadius: "6px", "&:hover": { background: "rgba(29,79,145,0.06)" } }}>
             Try another simulation
           </Button>
           <Button component={Link} to="/dashboard" sx={{ color: ZB_COLORS.textMuted, fontSize: "0.875rem" }}>
@@ -121,7 +121,7 @@ export default function SimulationRunner({ profile }) {
           </Button>
         </Box>
 
-        <Box sx={{ mt: 5, textAlign: "left", background: ZB_COLORS.cardBg, border: "2px solid #14110f", boxShadow: "5px 5px 0 #14110f", p: { xs: 2.5, md: 3.5 } }}>
+        <Box sx={{ mt: 5, textAlign: "left", background: ZB_COLORS.cardBg, border: "1px solid #dde3eb", boxShadow: "0 1px 2px rgba(11,31,58,0.06), 0 2px 8px rgba(11,31,58,0.05)", p: { xs: 2.5, md: 3.5 } }}>
           <FeedbackForm user={profile} defaultType="Content" simulationId={sim.id} compact prompt={`How useful was ${sim.title}?`} />
         </Box>
       </Box>
@@ -137,12 +137,12 @@ export default function SimulationRunner({ profile }) {
         </Button>
         <Box sx={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 2, flexWrap: "wrap" }}>
           <Box sx={{ flex: 1, minWidth: 220 }}>
-            <Typography variant="h4" sx={{ color: "#14110f", mb: 0.5 }}>{sim.title}</Typography>
-            <Typography sx={{ color: ZB_COLORS.textMuted, fontFamily: "'Space Grotesk', sans-serif", fontSize: "0.9rem" }}>{sim.description}</Typography>
+            <Typography variant="h4" sx={{ color: "#0b1f3a", mb: 0.5 }}>{sim.title}</Typography>
+            <Typography sx={{ color: ZB_COLORS.textMuted, fontFamily: "'Inter', sans-serif", fontSize: "0.9rem" }}>{sim.description}</Typography>
           </Box>
           {sim.partner && (
             <Chip label={sim.partner} size="small"
-              sx={{ background: "rgba(31,64,214,0.08)", color: CYAN, border: `2px solid ${ZB_COLORS.borderBright}`, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.66rem", whiteSpace: "nowrap" }} />
+              sx={{ background: "rgba(29,79,145,0.08)", color: CYAN, border: `1px solid ${ZB_COLORS.borderBright}`, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.66rem", whiteSpace: "nowrap" }} />
           )}
         </Box>
       </Box>
@@ -156,9 +156,9 @@ export default function SimulationRunner({ profile }) {
               display: "flex", alignItems: "center", justifyContent: "center",
               fontSize: "0.78rem", fontFamily: "'JetBrains Mono', monospace", fontWeight: 600,
               cursor: i <= activeStep ? "pointer" : "default",
-              background: i < activeStep ? "rgba(14,138,95,0.15)" : i === activeStep ? CYAN : "rgba(31,64,214,0.04)",
-              color: i < activeStep ? LIME : i === activeStep ? "#fffaf0" : "rgba(20,17,15,0.4)",
-              border: i < activeStep ? `2px solid ${LIME}55` : i === activeStep ? "none" : `2px solid ${ZB_COLORS.border}`,
+              background: i < activeStep ? "rgba(15,123,95,0.15)" : i === activeStep ? CYAN : "rgba(29,79,145,0.04)",
+              color: i < activeStep ? LIME : i === activeStep ? "#ffffff" : "rgba(11,31,58,0.4)",
+              border: i < activeStep ? `1px solid ${LIME}55` : i === activeStep ? "none" : `1px solid ${ZB_COLORS.border}`,
               boxShadow: i === activeStep ? `0 0 16px ${GLOW}` : "none",
               transition: "all 0.2s",
             }}>
@@ -176,17 +176,17 @@ export default function SimulationRunner({ profile }) {
           <Mono sx={{ fontSize: "0.72rem", color: CYAN }}>{Math.round((activeStep / sim.tasks.length) * 100)}% complete</Mono>
           <Mono sx={{ fontSize: "0.72rem", color: ZB_COLORS.textMuted }}>{sim.duration}</Mono>
         </Box>
-        <Box sx={{ height: 4, background: "rgba(31,64,214,0.1)", borderRadius: 2, overflow: "hidden" }}>
+        <Box sx={{ height: 4, background: "rgba(29,79,145,0.1)", borderRadius: 2, overflow: "hidden" }}>
           <Box sx={{ width: `${(activeStep / sim.tasks.length) * 100}%`, height: "100%", background: CYAN, borderRadius: 2, transition: "width 0.4s ease", boxShadow: "none" }} />
         </Box>
       </Box>
 
       {/* Task Card */}
       <motion.div key={task.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
-        <Box sx={{ background: ZB_COLORS.bgMid, border: `2px solid ${ZB_COLORS.border}`, borderRadius: "16px", p: { xs: 2.5, md: 4 }, mb: 2 }}>
+        <Box sx={{ background: ZB_COLORS.bgMid, border: `1px solid ${ZB_COLORS.border}`, borderRadius: "16px", p: { xs: 2.5, md: 4 }, mb: 2 }}>
           <Chip label={`TASK ${activeStep + 1}`} size="small"
-            sx={{ background: "rgba(31,64,214,0.1)", color: CYAN, border: `2px solid ${ZB_COLORS.borderBright}`, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.66rem", mb: 2 }} />
-          <Typography sx={{ color: "#14110f", fontFamily: "'Space Grotesk', sans-serif", fontSize: "1.05rem", lineHeight: 1.7, mb: 3 }}>
+            sx={{ background: "rgba(29,79,145,0.1)", color: CYAN, border: `1px solid ${ZB_COLORS.borderBright}`, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.66rem", mb: 2 }} />
+          <Typography sx={{ color: "#0b1f3a", fontFamily: "'Inter', sans-serif", fontSize: "1.05rem", lineHeight: 1.7, mb: 3 }}>
             {task.question}
           </Typography>
 
@@ -197,11 +197,11 @@ export default function SimulationRunner({ profile }) {
             sx={{ mb: 2 }} />
 
           {task.fileType && (
-            <Box sx={{ mb: 3, p: 1.5, background: "rgba(31,64,214,0.03)", borderRadius: "8px", border: `2px solid ${ZB_COLORS.border}` }}>
+            <Box sx={{ mb: 3, p: 1.5, background: "rgba(29,79,145,0.03)", borderRadius: "8px", border: `1px solid ${ZB_COLORS.border}` }}>
               <Mono sx={{ fontSize: "0.7rem", color: ZB_COLORS.textMuted, mb: 1 }}>
                 optional: attach a file ({task.fileType.toUpperCase()})
               </Mono>
-              <input type="file" accept={task.fileType.split(",").map(t => "." + t.trim()).join(",")} style={{ color: "rgba(20,17,15,0.5)", fontFamily: "'Space Grotesk', sans-serif", fontSize: "0.8rem" }} />
+              <input type="file" accept={task.fileType.split(",").map(t => "." + t.trim()).join(",")} style={{ color: "rgba(11,31,58,0.5)", fontFamily: "'Inter', sans-serif", fontSize: "0.8rem" }} />
             </Box>
           )}
 
@@ -209,19 +209,19 @@ export default function SimulationRunner({ profile }) {
           <Box sx={{ display: "flex", gap: 1.5, flexWrap: "wrap", mb: 2 }}>
             {!taskSubmitted[task.id] && (
               <Button variant="contained" onClick={handleSubmitTask} disabled={!answers[task.id]?.trim()} sx={{ fontSize: "0.875rem" }}>
-                <CheckIcon color="#fffaf0" /> Submit answer
+                <CheckIcon color="#ffffff" /> Submit answer
               </Button>
             )}
             {taskSubmitted[task.id] && !aiFeedback[task.id] && (
               <Button onClick={handleGetAIFeedback} disabled={loadingFeedback[task.id]}
-                sx={{ background: "rgba(31,64,214,0.1)", color: CYAN, border: `2px solid ${ZB_COLORS.borderBright}`, borderRadius: "6px", fontSize: "0.875rem", "&:hover": { background: "rgba(31,64,214,0.18)", boxShadow: "5px 5px 0 #14110f" } }}>
+                sx={{ background: "rgba(29,79,145,0.1)", color: CYAN, border: `1px solid ${ZB_COLORS.borderBright}`, borderRadius: "6px", fontSize: "0.875rem", "&:hover": { background: "rgba(29,79,145,0.18)", boxShadow: "0 1px 2px rgba(11,31,58,0.06), 0 2px 8px rgba(11,31,58,0.05)" } }}>
                 {loadingFeedback[task.id] ? <CircularProgress size={16} sx={{ color: CYAN, mr: 1 }} /> : <SparkIcon />}
                 {loadingFeedback[task.id] ? "Analysing…" : "Get AI feedback"}
               </Button>
             )}
             {taskSubmitted[task.id] && (
               <Button onClick={() => setShowModel(prev => ({ ...prev, [task.id]: !prev[task.id] }))}
-                sx={{ background: "rgba(20,17,15,0.04)", color: "rgba(20,17,15,0.65)", border: `2px solid ${ZB_COLORS.border}`, borderRadius: "6px", fontSize: "0.875rem", "&:hover": { background: "rgba(20,17,15,0.08)" } }}>
+                sx={{ background: "rgba(11,31,58,0.04)", color: "rgba(11,31,58,0.65)", border: `1px solid ${ZB_COLORS.border}`, borderRadius: "6px", fontSize: "0.875rem", "&:hover": { background: "rgba(11,31,58,0.08)" } }}>
                 {showModel[task.id] ? "Hide model answer" : "See model answer"}
               </Button>
             )}
@@ -229,12 +229,12 @@ export default function SimulationRunner({ profile }) {
 
           {/* AI Feedback */}
           <Collapse in={!!aiFeedback[task.id]}>
-            <Box sx={{ background: "rgba(31,64,214,0.06)", border: `2px solid ${ZB_COLORS.borderBright}`, borderRadius: "12px", p: 2.5, mb: 2 }}>
+            <Box sx={{ background: "rgba(29,79,145,0.06)", border: `1px solid ${ZB_COLORS.borderBright}`, borderRadius: "12px", p: 2.5, mb: 2 }}>
               <Box sx={{ display: "flex", alignItems: "center", mb: 1.5 }}>
                 <SparkIcon />
-                <Typography sx={{ color: CYAN, fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, fontSize: "0.875rem" }}>AI Feedback</Typography>
+                <Typography sx={{ color: CYAN, fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: "0.875rem" }}>AI Feedback</Typography>
               </Box>
-              <Typography sx={{ color: "rgba(20,17,15,0.85)", fontFamily: "'Space Grotesk', sans-serif", fontSize: "0.875rem", lineHeight: 1.7, whiteSpace: "pre-wrap" }}>
+              <Typography sx={{ color: "rgba(11,31,58,0.85)", fontFamily: "'Inter', sans-serif", fontSize: "0.875rem", lineHeight: 1.7, whiteSpace: "pre-wrap" }}>
                 {aiFeedback[task.id]}
               </Typography>
             </Box>
@@ -242,12 +242,12 @@ export default function SimulationRunner({ profile }) {
 
           {/* Model Answer */}
           <Collapse in={!!showModel[task.id]}>
-            <Box sx={{ background: "rgba(14,138,95,0.05)", border: `2px solid ${LIME}33`, borderRadius: "12px", p: 2.5, mb: 2 }}>
+            <Box sx={{ background: "rgba(15,123,95,0.05)", border: `1px solid ${LIME}33`, borderRadius: "12px", p: 2.5, mb: 2 }}>
               <Box sx={{ display: "flex", alignItems: "center", mb: 1.5 }}>
                 <CheckIcon color={LIME} />
-                <Typography sx={{ color: LIME, fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, fontSize: "0.875rem" }}>Model answer</Typography>
+                <Typography sx={{ color: LIME, fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: "0.875rem" }}>Model answer</Typography>
               </Box>
-              <Typography sx={{ color: "rgba(20,17,15,0.8)", fontFamily: "'Space Grotesk', sans-serif", fontSize: "0.875rem", lineHeight: 1.75 }}>
+              <Typography sx={{ color: "rgba(11,31,58,0.8)", fontFamily: "'Inter', sans-serif", fontSize: "0.875rem", lineHeight: 1.75 }}>
                 {task.modelAnswer}
               </Typography>
             </Box>
@@ -258,7 +258,7 @@ export default function SimulationRunner({ profile }) {
       {/* Navigation */}
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         {activeStep > 0 ? (
-          <Button onClick={() => setActiveStep(prev => prev - 1)} sx={{ color: ZB_COLORS.textMuted, border: `2px solid ${ZB_COLORS.border}`, borderRadius: "6px", px: 2, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.8rem" }}>
+          <Button onClick={() => setActiveStep(prev => prev - 1)} sx={{ color: ZB_COLORS.textMuted, border: `1px solid ${ZB_COLORS.border}`, borderRadius: "6px", px: 2, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.8rem" }}>
             ← prev
           </Button>
         ) : <Box />}

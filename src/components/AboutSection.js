@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { ZB_COLORS } from "../theme";
 
 const CYAN = ZB_COLORS.cyan;
-const LIME = "#0e8a5f";
+const LIME = "#0f7b5f";
 const GLOW = ZB_COLORS.cyanGlow;
 
 const Mono = ({ children, sx }) => (
@@ -37,15 +37,15 @@ export default function AboutSection() {
       {/* Intro */}
       <motion.div {...fadeUp(0)}>
         <Mono sx={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.15em", color: CYAN, fontWeight: 500, mb: 1 }}>{"// our story"}</Mono>
-        <Typography variant="h2" sx={{ fontSize: { xs: "2rem", md: "2.8rem" }, color: "#14110f", mb: 2.5 }}>
+        <Typography variant="h2" sx={{ fontSize: { xs: "2rem", md: "2.8rem" }, color: "#0b1f3a", mb: 2.5 }}>
           About <Box component="span" sx={{ color: CYAN, textShadow: "none" }}>ZBRIDGE</Box>
         </Typography>
-        <Typography sx={{ color: ZB_COLORS.textMuted, fontFamily: "'Space Grotesk', sans-serif", mb: 2.5, fontSize: "1.05rem", lineHeight: 1.75, maxWidth: 720 }}>
+        <Typography sx={{ color: ZB_COLORS.textMuted, fontFamily: "'Inter', sans-serif", mb: 2.5, fontSize: "1.05rem", lineHeight: 1.75, maxWidth: 720 }}>
           ZBRIDGE is a career-readiness platform that transforms education into action. Through industry-inspired
           simulations and guided reflections, we help students and young professionals build real skills, explore
           career paths, and stand out in a competitive world — all before their first job.
         </Typography>
-        <Typography sx={{ color: ZB_COLORS.textMuted, fontFamily: "'Space Grotesk', sans-serif", mb: 5, fontSize: "1.05rem", lineHeight: 1.75, maxWidth: 720 }}>
+        <Typography sx={{ color: ZB_COLORS.textMuted, fontFamily: "'Inter', sans-serif", mb: 5, fontSize: "1.05rem", lineHeight: 1.75, maxWidth: 720 }}>
           Whether you're preparing for your future or sharpening your edge, ZBRIDGE bridges the gap between what you
           know and what the world expects. Learn by doing. Grow with confidence. Enter the world ready.
         </Typography>
@@ -53,10 +53,10 @@ export default function AboutSection() {
 
       {/* Stats strip */}
       <motion.div {...fadeUp(0.15)}>
-        <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1px", background: ZB_COLORS.border, mb: 6, borderRadius: "10px", overflow: "hidden", border: `2px solid ${ZB_COLORS.border}` }}>
+        <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1px", background: ZB_COLORS.border, mb: 6, borderRadius: "10px", overflow: "hidden", border: `1px solid ${ZB_COLORS.border}` }}>
           {stats.map(s => (
             <Box key={s.label} sx={{ background: ZB_COLORS.bg, py: 3, textAlign: "center" }}>
-              <Typography sx={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: "1.9rem", color: CYAN, textShadow: "none" }}>{s.num}</Typography>
+              <Typography sx={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: "1.9rem", color: CYAN, textShadow: "none" }}>{s.num}</Typography>
               <Mono sx={{ fontSize: "0.66rem", color: ZB_COLORS.textMuted, textTransform: "uppercase", letterSpacing: "0.1em" }}>{s.label}</Mono>
             </Box>
           ))}
@@ -66,17 +66,17 @@ export default function AboutSection() {
       {/* Values */}
       <motion.div {...fadeUp(0.25)}>
         <Mono sx={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.15em", color: CYAN, fontWeight: 500, mb: 1 }}>{"// what drives us"}</Mono>
-        <Typography variant="h3" sx={{ fontSize: { xs: "1.6rem", md: "2rem" }, color: "#14110f", mb: 3 }}>Our values</Typography>
+        <Typography variant="h3" sx={{ fontSize: { xs: "1.6rem", md: "2rem" }, color: "#0b1f3a", mb: 3 }}>Our values</Typography>
       </motion.div>
 
       <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)" }, gap: 2, mb: 6 }}>
         {values.map((v, i) => (
           <motion.div key={v.title} {...fadeUp(0.3 + i * 0.08)} style={{ height: "100%" }}>
-            <Box sx={{ background: ZB_COLORS.cardBg, border: `2px solid ${ZB_COLORS.border}`, borderRadius: "12px", p: 3, display: "flex", gap: 2, height: "100%", boxSizing: "border-box", transition: "all 0.2s", "&:hover": { borderColor: ZB_COLORS.borderBright, background: ZB_COLORS.cardHover } }}>
-              <Box sx={{ width: 44, height: 44, borderRadius: "10px", background: v.color + "18", border: `2px solid ${v.color}44`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: "1.3rem", color: v.color, textShadow: "none" }}>{v.icon}</Box>
+            <Box sx={{ background: ZB_COLORS.cardBg, border: `1px solid ${ZB_COLORS.border}`, borderRadius: "12px", p: 3, display: "flex", gap: 2, height: "100%", boxSizing: "border-box", transition: "all 0.2s", "&:hover": { borderColor: ZB_COLORS.borderBright, background: ZB_COLORS.cardHover } }}>
+              <Box sx={{ width: 44, height: 44, borderRadius: "10px", background: v.color + "18", border: `1px solid ${v.color}44`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: "1.3rem", color: v.color, textShadow: "none" }}>{v.icon}</Box>
               <Box>
-                <Typography sx={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, color: "#14110f", mb: 0.5 }}>{v.title}</Typography>
-                <Typography sx={{ fontSize: "0.875rem", color: ZB_COLORS.textMuted, fontFamily: "'Space Grotesk', sans-serif", lineHeight: 1.6 }}>{v.desc}</Typography>
+                <Typography sx={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, color: "#0b1f3a", mb: 0.5 }}>{v.title}</Typography>
+                <Typography sx={{ fontSize: "0.875rem", color: ZB_COLORS.textMuted, fontFamily: "'Inter', sans-serif", lineHeight: 1.6 }}>{v.desc}</Typography>
               </Box>
             </Box>
           </motion.div>
@@ -85,10 +85,10 @@ export default function AboutSection() {
 
       {/* CTA */}
       <motion.div {...fadeUp(0.5)}>
-        <Box sx={{ background: "rgba(31,64,214,0.05)", border: `2px solid ${ZB_COLORS.borderBright}`, borderRadius: "14px", p: { xs: 3.5, md: 5 }, textAlign: "center", position: "relative", overflow: "hidden",
-            "&::before": { content: '""', position: "absolute", top: "-50%", left: "50%", transform: "translateX(-50%)", width: 400, height: 280, background: "radial-gradient(ellipse, rgba(31,64,214,0.12) 0%, transparent 70%)", pointerEvents: "none" } }}>
-          <Typography variant="h3" sx={{ fontSize: { xs: "1.5rem", md: "1.9rem" }, color: "#14110f", mb: 1.5, position: "relative" }}>Ready to bridge the gap?</Typography>
-          <Typography sx={{ color: ZB_COLORS.textMuted, fontFamily: "'Space Grotesk', sans-serif", mb: 3, position: "relative" }}>Join the community building real-world skills for the African economy.</Typography>
+        <Box sx={{ background: "rgba(29,79,145,0.05)", border: `1px solid ${ZB_COLORS.borderBright}`, borderRadius: "14px", p: { xs: 3.5, md: 5 }, textAlign: "center", position: "relative", overflow: "hidden",
+            "&::before": { content: '""', position: "absolute", top: "-50%", left: "50%", transform: "translateX(-50%)", width: 400, height: 280, background: "radial-gradient(ellipse, rgba(29,79,145,0.12) 0%, transparent 70%)", pointerEvents: "none" } }}>
+          <Typography variant="h3" sx={{ fontSize: { xs: "1.5rem", md: "1.9rem" }, color: "#0b1f3a", mb: 1.5, position: "relative" }}>Ready to bridge the gap?</Typography>
+          <Typography sx={{ color: ZB_COLORS.textMuted, fontFamily: "'Inter', sans-serif", mb: 3, position: "relative" }}>Join the community building real-world skills for the African economy.</Typography>
           <Button component={Link} to="/signup" variant="contained" size="large" sx={{ px: 4, py: 1.3, fontSize: "1rem", position: "relative" }}>Get started free</Button>
         </Box>
       </motion.div>
