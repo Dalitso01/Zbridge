@@ -1,452 +1,1326 @@
+// Job simulations. Every company, person and figure in the briefs and documents is
+// fictional and made up for practice, unless it names a public body or law.
+//
+// Task types:
+//   numbers  - work out figures from the documents; checked automatically (fields[].answer, tolerance)
+//   decision - choose a course of action; every option explains why it is or isn't the best
+//   written  - write a real piece of work; checklist shows what a strong answer covers, AI can review it
+// Every task has a brief (email from a manager), optional documents and a modelAnswer (worked solution).
+
 const simulations = [
   {
     id: "fintech",
     title: "Fintech Startup in Africa",
     category: "Finance",
     partner: "Zanaco",
-    duration: "3-4 hours",
-    description: "You are part of a team launching a mobile payments startup in Africa. Tackle regulatory, technical, and marketing challenges.",
+    duration: "2-3 hours",
+    description: "You are a business analyst at KwachaPay, a Lusaka mobile payments startup. Work out whether the business makes money, handle a regulatory decision and advise the CEO on pricing.",
     tasks: [
       {
         id: "fintech1",
-        question: "Draft a pitch deck slide explaining your unique value proposition for unbanked populations.",
-        fileType: "pdf,docx",
-        modelAnswer: "A strong answer identifies that 60%+ of Zambians lack formal banking access and proposes a USSD-based mobile money solution (like MTN Mobile Money or Airtel Money) requiring no smartphone. The UVP should highlight: zero monthly fees, works on any phone, instant transfers, and agent network coverage in rural areas. Key slide elements: problem statement with stats, solution diagram, revenue model (transaction fees), and a map showing underserved regions."
+        type: "numbers",
+        title: "Work out the unit economics",
+        brief: {
+          from: "Chanda Mulenga, Head of Finance",
+          subject: "Numbers for Thursday's board pack",
+          body: "Hi,\n\nThe board wants to know if KwachaPay actually makes money on each transaction. I've pulled last month's figures below. Can you work out our fee revenue, our contribution after direct costs, and how many active users we need to break even?\n\nThanks,\nChanda",
+        },
+        documents: [
+          {
+            title: "KwachaPay operating data, September",
+            columns: ["Item", "Value"],
+            rows: [
+              ["Active users", "40,000"],
+              ["Transactions per user per month (average)", "6"],
+              ["Average transaction value", "K250"],
+              ["Fee charged to customer", "1.5% of transaction value"],
+              ["Agent commission paid", "0.5% of transaction value"],
+              ["USSD / SMS cost per transaction", "K0.20"],
+              ["Fixed costs per month (salaries, rent, systems)", "K180,000"],
+            ],
+            note: "Assume every user behaves like the average user.",
+          },
+        ],
+        question: "Use Document 1 to calculate the three figures Chanda needs. Round break-even users up to a whole user.",
+        fields: [
+          { id: "revenue", label: "Monthly fee revenue", prefix: "K", answer: 900000, tolerance: 1 },
+          { id: "contribution", label: "Monthly contribution (fee revenue less agent commission and USSD costs)", prefix: "K", answer: 552000, tolerance: 1 },
+          { id: "breakeven", label: "Active users needed to break even", suffix: "users", answer: 13044, tolerance: 1 },
+        ],
+        modelAnswer: "Transactions = 40,000 × 6 = 240,000. Value moved = 240,000 × K250 = K60,000,000.\nFee revenue = 1.5% × K60m = K900,000.\nAgent commission = 0.5% × K60m = K300,000. USSD cost = 240,000 × K0.20 = K48,000.\nContribution = K900,000 − K300,000 − K48,000 = K552,000 (profit after fixed costs = K372,000).\nContribution per user = K552,000 ÷ 40,000 = K13.80. Break-even users = K180,000 ÷ K13.80 = 13,043.5, so 13,044 users.\nWhat to tell the board: each user brings in K13.80 a month after direct costs, and the business covers its fixed costs once it passes about 13,000 active users.",
       },
       {
         id: "fintech2",
-        question: "Identify two regulatory hurdles for fintech in your country and propose solutions.",
-        fileType: "",
-        modelAnswer: "Strong answers for Zambia typically identify: (1) Bank of Zambia licensing requirements — solution is to partner with an existing licensed bank as a banking-as-a-service provider rather than applying for a full licence; (2) KYC/AML compliance for low-income users who lack formal ID — solution is tiered KYC where low-value accounts (under K500) require only a phone number, with full verification only at higher tiers. Reference the BoZ National Payment Systems Act 2007."
+        type: "decision",
+        title: "Launch date versus regulatory approval",
+        brief: {
+          from: "Bwalya Phiri, CEO",
+          subject: "Can we launch next week?",
+          body: "Marketing has the campaign ready and a competitor is about to launch. Our application to the Bank of Zambia is still under review. What should we do? I need your recommendation today.",
+        },
+        documents: [
+          {
+            title: "Compliance status note",
+            body: "• Application to the Bank of Zambia under the National Payment Systems Act submitted 8 weeks ago, no decision yet.\n• Regulator has asked two follow-up questions on our anti-money-laundering (AML) controls, answered last week.\n• Our systems have passed internal testing with 50 staff accounts.\n• Offering payment services to the public without authorisation can lead to penalties and refusal of the licence.",
+          },
+        ],
+        question: "Which recommendation do you give the CEO?",
+        options: [
+          { label: "Launch publicly next week. We can deal with the regulator once we have customers.", feedback: "This risks penalties and could get the application refused, which would end the business. Customer growth is worthless without the right to operate." },
+          { label: "Hold the public launch, keep testing with staff, and ask the regulator for an update and whether a limited pilot is possible.", best: true, feedback: "This protects the licence, keeps the team productive and opens a legitimate route to start early. Use the time to build the waiting list and agent network so you launch fast once approved." },
+          { label: "Launch under a different brand name so the regulator doesn't notice.", feedback: "This is deliberately misleading a regulator. It is unethical, likely illegal and would destroy trust with the Bank of Zambia permanently." },
+          { label: "Cancel the marketing campaign and wait silently until the decision arrives.", feedback: "Waiting is right, but doing nothing else wastes weeks. Engaging the regulator and preparing for launch is better than staying silent." },
+        ],
+        modelAnswer: "Recommend holding the public launch. Operating without authorisation puts the whole licence at risk. Keep the internal staff pilot running, write to the regulator for a status update and ask if a supervised pilot is possible, and use the wait to sign up agents and build a waiting list so you can launch the day approval arrives.",
       },
       {
         id: "fintech3",
-        question: "Design a social media campaign to build trust in your new app.",
-        fileType: "",
-        modelAnswer: "Top answers focus on WhatsApp (the primary platform in Zambia) over Instagram/Facebook. Campaign should include: community champion program (training trusted local figures as brand ambassadors), short video testimonials in Bemba and Nyanja, radio partnerships with Lusaka stations like Hot FM, and a free first-transfer promotion. Avoid heavy data-reliant content — most users are on limited bundles."
-      }
-    ]
+        type: "written",
+        title: "Advise the CEO on a price cut",
+        brief: {
+          from: "Bwalya Phiri, CEO",
+          subject: "Should we cut our fee to 1%?",
+          body: "A competitor charges 1.0%. Sales want us to drop from 1.5% to 1.0%. Using your numbers from earlier, write me a short email (about 150 words): what happens to our profit, how many users we'd need to stay as profitable as today, and what you recommend.",
+        },
+        documents: [
+          {
+            title: "Your figures from Task 1",
+            columns: ["", "Fee 1.5% (today)", "Fee 1.0%"],
+            rows: [
+              ["Fee revenue", "K900,000", "?"],
+              ["Agent commission", "K300,000", "K300,000"],
+              ["USSD costs", "K48,000", "K48,000"],
+              ["Fixed costs", "K180,000", "K180,000"],
+            ],
+            note: "Assume user numbers and behaviour stay the same unless you say otherwise.",
+          },
+        ],
+        question: "Write the email to the CEO.",
+        checklist: [
+          "Show that fee revenue falls to K600,000 and monthly profit falls from K372,000 to K72,000",
+          "Work out that users would need to more than double, to about 87,600, to keep today's profit",
+          "Give a clear recommendation, not just analysis",
+          "Suggest alternatives, such as a lower fee only for small transfers or a limited promotion",
+          "Be short and readable by a busy CEO",
+        ],
+        modelAnswer: "At 1.0%, fee revenue drops to K600,000. Contribution becomes K600,000 − K300,000 − K48,000 = K252,000, and profit after fixed costs falls from K372,000 to K72,000 a month, an 81% drop. Contribution per user falls from K13.80 to K6.30, so to earn today's K552,000 contribution we would need about 87,620 active users, more than double today's 40,000.\nRecommendation: don't cut the fee across the board. Instead, test a 1.0% fee on transfers under K100 (where price sensitivity is highest), or a 3-month promotion for new users, and compete on reliability and agent coverage. Review after one month with actual sign-up data.",
+      },
+    ],
   },
   {
     id: "agritech",
     title: "Smart Agriculture Solutions",
     category: "Agriculture",
     partner: "Zambia Agriculture Research Institute",
-    duration: "2-3 hours",
-    description: "You are a consultant for a farming cooperative adopting smart agriculture technologies.",
+    duration: "2 hours",
+    description: "You are a consultant to a 12-member farming cooperative in Chongwe. Decide if a shared crop-monitoring drone pays for itself, respond to a dry-spell forecast and explain the plan to members.",
     tasks: [
       {
         id: "agritech1",
-        question: "Analyze the benefits and risks of using drones for crop monitoring.",
-        fileType: "",
-        modelAnswer: "Benefits: early pest/disease detection (reduces crop loss by up to 30%), precise fertiliser mapping (cuts input costs), faster surveying of large farms. Risks for Zambia specifically: high upfront cost (a basic agricultural drone costs $2,000-$8,000), ZCAA (Zambia Civil Aviation Authority) regulations require pilot licensing, limited repair expertise locally, and battery performance in high-heat conditions. Recommendation: cooperative ownership model where 10+ farmers share one drone and costs."
+        type: "numbers",
+        title: "Does the drone pay for itself?",
+        brief: {
+          from: "Mrs Grace Tembo, Cooperative Chairperson",
+          subject: "Drone quote",
+          body: "We have a quote for a crop-monitoring drone that all 12 members would share. Members want to know what it really costs each year and whether the crop it saves is worth more than that. Please work it out from the figures attached.",
+        },
+        documents: [
+          {
+            title: "Drone quote and farm data",
+            columns: ["Item", "Value"],
+            rows: [
+              ["Drone purchase price", "K90,000"],
+              ["Useful life", "3 years, no resale value"],
+              ["Running costs per year (batteries, licence, insurance)", "K24,000"],
+              ["Members", "12, each farming 10 hectares of maize"],
+              ["Expected yield", "5 tonnes per hectare"],
+              ["Crop lost to pests and disease today", "15% of yield"],
+              ["Crop lost with drone monitoring", "9% of yield"],
+              ["Maize price (assume)", "K6,000 per tonne"],
+            ],
+          },
+        ],
+        question: "Work out the yearly cost of the drone, the value of crop it saves each year, and the net benefit per member per year.",
+        fields: [
+          { id: "cost", label: "Total cost per year (depreciation plus running costs)", prefix: "K", answer: 54000, tolerance: 1 },
+          { id: "saved", label: "Value of crop saved per year", prefix: "K", answer: 216000, tolerance: 1 },
+          { id: "net", label: "Net benefit per member per year", prefix: "K", answer: 13500, tolerance: 1 },
+        ],
+        modelAnswer: "Yearly cost = K90,000 ÷ 3 years + K24,000 = K30,000 + K24,000 = K54,000.\nTotal area = 12 × 10 ha = 120 ha. Potential crop = 120 × 5 t = 600 t. Loss falls by 15% − 9% = 6 points, so 6% × 600 t = 36 t saved × K6,000 = K216,000.\nNet benefit = K216,000 − K54,000 = K162,000 ÷ 12 members = K13,500 per member per year.\nThe drone pays for itself four times over, but only if the 6% loss reduction is realistic. Ask the supplier for evidence from similar farms.",
       },
       {
         id: "agritech2",
-        question: "Draft a training outline for farmers on using mobile apps for weather forecasting.",
-        fileType: "pdf,docx",
-        modelAnswer: "Effective training outlines include: Session 1 (30 min) — smartphone basics for feature-phone users; Session 2 (45 min) — downloading and navigating the Ignitia or AccuWeather app; Session 3 (60 min) — interpreting 7-day forecasts and rainfall probability; Session 4 (45 min) — linking forecasts to planting/harvesting decisions. Deliver in Nyanja with visual handouts. Partner with Zambia Meteorological Department for local data accuracy."
+        type: "decision",
+        title: "Respond to a dry-spell forecast",
+        brief: {
+          from: "Mrs Grace Tembo, Cooperative Chairperson",
+          subject: "Weather warning, what do we tell members?",
+          body: "The weather app shows a 70% chance of a three-week dry spell starting just after the first rains. Members are ready to plant all their maize this week. What do we advise?",
+        },
+        documents: [
+          {
+            title: "Forecast summary",
+            body: "• First rains expected this week (25–35 mm).\n• 70% probability of a dry spell of about 3 weeks from mid-November.\n• Normal rainfall expected to return in December.\n• Seed already bought: 80% standard variety, 20% early-maturing drought-tolerant variety.",
+          },
+        ],
+        question: "What do you advise members to do?",
+        options: [
+          { label: "Plant all the maize this week as usual. Forecasts are often wrong.", feedback: "A 70% chance is high. If the dry spell comes, seedlings planted all at once could fail together and members would have to buy seed again." },
+          { label: "Stagger planting: plant part now with drought-tolerant seed and conservation methods, and plant the rest when rains return.", best: true, feedback: "Spreading the risk means one bad spell can't wipe out the whole crop. It uses the seed members already have and keeps the season on track." },
+          { label: "Don't plant anything until December.", feedback: "This avoids the dry spell but shortens the growing season for everyone and loses the benefit of the first rains." },
+          { label: "Take a loan to install irrigation on all farms before planting.", feedback: "Irrigation can't be installed in a week, and taking on debt for one forecast is a large risk for small farmers." },
+        ],
+        modelAnswer: "Advise staggered planting. Plant the drought-tolerant 20% and part of the standard seed now, using mulching and planting basins to hold moisture, and plant the rest once rains return in December. This spreads the risk across two planting dates instead of betting the whole season on one forecast.",
       },
       {
         id: "agritech3",
-        question: "Propose a partnership with a local university to improve soil testing.",
-        fileType: "",
-        modelAnswer: "Strong proposals target the University of Zambia School of Agricultural Sciences or Copperbelt University. Structure: cooperative provides field access and soil samples; university provides lab analysis and student fieldwork hours. Deliverable: quarterly soil health reports per plot with fertiliser recommendations. Funding angle: apply jointly for FISP (Farmer Input Support Programme) or World Bank agriculture grants. Include a data-sharing agreement so university can publish research."
-      }
-    ]
+        type: "written",
+        title: "Explain the drone plan to members",
+        brief: {
+          from: "Mrs Grace Tembo, Cooperative Chairperson",
+          subject: "Message for the members' WhatsApp group",
+          body: "Please draft the message I'll post in our members' WhatsApp group explaining the drone scheme. Most members read on basic phones and English is a second language for many, so keep it short and simple.",
+        },
+        question: "Write the WhatsApp message (under 150 words).",
+        checklist: [
+          "Say what the drone does in one plain sentence",
+          "State the cost per member (K54,000 ÷ 12 = K4,500 a year) and the expected benefit (about K13,500 net each)",
+          "Explain how members book the drone and who flies it",
+          "Give a clear next step, such as a meeting date or a vote",
+          "Use short sentences and no jargon",
+        ],
+        modelAnswer: "Example: \"Dear members, the committee proposes we share one drone. It flies over our fields and spots pests and disease early, before we lose crop. Cost: K4,500 per member per year. Expected benefit: about K18,000 of extra maize each, so about K13,500 more in your pocket. One trained member will fly it. Each farm gets a check every 2 weeks, booked through the secretary. If pests are found, you get a photo and advice the same day. We will vote at the meeting on Saturday 9am at the depot. Please reply with questions. Thank you, Grace.\"",
+      },
+    ],
   },
   {
     id: "healthcare",
     title: "Healthcare Access Innovation",
     category: "Healthcare",
     partner: "Zambia Health Initiative",
-    duration: "3-4 hours",
-    description: "You are a project manager for a telemedicine pilot in rural Africa.",
+    duration: "2 hours",
+    description: "You are the project manager of a rural telemedicine pilot. Review the budget against actual spending, handle a patient privacy problem and report to the donor.",
     tasks: [
       {
         id: "healthcare1",
-        question: "Identify three barriers to telemedicine adoption and suggest solutions.",
-        fileType: "",
-        modelAnswer: "Key Zambian barriers: (1) Connectivity — solution: design SMS-first consultation flow for areas with no data; partner with Airtel/MTN for zero-rated health data. (2) Device access — solution: community health post tablet-sharing model, one device serves 50+ patients. (3) Patient trust and digital literacy — solution: train community health workers (CHWs) as telemedicine facilitators; initial consultations are CHW-assisted, not solo. Reference MoH Community Health Strategy 2021-2026."
+        type: "numbers",
+        title: "Budget versus actual",
+        brief: {
+          from: "Dr Musonda Lungu, Programme Director",
+          subject: "Pilot spending",
+          body: "The donor review is next week. Please compare our six-month spending against budget and tell me the total overspend, the percentage over budget, and what each consultation actually cost us.",
+        },
+        documents: [
+          {
+            title: "Telemedicine pilot: budget vs actual, months 1–6",
+            columns: ["Budget line", "Budget", "Actual"],
+            rows: [
+              ["Tablets for health posts", "K60,000", "K72,000"],
+              ["Mobile data bundles", "K18,000", "K25,200"],
+              ["Community health worker allowances", "K48,000", "K44,000"],
+              ["Training", "K20,000", "K20,000"],
+            ],
+            note: "Consultations completed in six months: 1,240.",
+          },
+        ],
+        question: "Calculate the overspend, the % over budget (one decimal place) and the cost per consultation.",
+        fields: [
+          { id: "variance", label: "Total overspend (actual minus budget)", prefix: "K", answer: 15200, tolerance: 1 },
+          { id: "pct", label: "Percentage over budget", suffix: "%", answer: 10.4, tolerance: 0.1 },
+          { id: "cpc", label: "Actual cost per consultation", prefix: "K", answer: 130, tolerance: 0.5 },
+        ],
+        modelAnswer: "Budget total = 60,000 + 18,000 + 48,000 + 20,000 = K146,000. Actual total = 72,000 + 25,200 + 44,000 + 20,000 = K161,200.\nOverspend = K15,200, which is 15,200 ÷ 146,000 = 10.4% over budget.\nCost per consultation = K161,200 ÷ 1,240 = K130.\nDrivers: tablets (+K12,000) and data (+K7,200, 40% over) caused it, partly offset by K4,000 saved on allowances.",
       },
       {
         id: "healthcare2",
-        question: "Draft a patient privacy policy for your telemedicine platform.",
-        fileType: "pdf,docx",
-        modelAnswer: "Essential clauses for Zambia: data stored locally (not overseas servers) per proposed Zambia Data Protection Act; patient consent obtained in preferred language; minimum data collection (name, age, complaint only — no unnecessary demographic data); data retention of 7 years per MoH guidelines; breach notification within 72 hours. Policy must be available in English, Bemba, and Nyanja. Include clear opt-out mechanism for data sharing with government health systems."
+        type: "decision",
+        title: "A patient privacy breach",
+        brief: {
+          from: "Nurse Thandiwe Zulu, Site Supervisor",
+          subject: "Urgent: patient photos in WhatsApp group",
+          body: "One of our community health workers posted photos of a patient's wound, with the patient's name, in a WhatsApp group of 60 people to get quick advice. The patient hasn't been told. What do we do?",
+        },
+        question: "What is your first course of action?",
+        options: [
+          { label: "Ask the worker to delete the photos and say nothing, so we don't scare patients.", feedback: "Deleting is part of it, but hiding a breach from the patient is a breach of trust and of data protection duties. If it surfaces later, the pilot's credibility is gone." },
+          { label: "Get the photos removed, inform the patient honestly, record the incident, and set up a secure channel for clinical advice.", best: true, feedback: "This contains the harm, respects the patient, meets your duty to report under Zambia's Data Protection Act 2021, and fixes the reason it happened: workers had no fast, safe way to ask for help." },
+          { label: "Dismiss the health worker immediately.", feedback: "Jumping to dismissal skips a fair process and ignores the system problem. The worker was trying to help the patient. Training and a proper channel prevent repeats better." },
+          { label: "Ban phones at all health posts.", feedback: "This would stop the telemedicine pilot from working at all. Fix the channel, not the tool." },
+        ],
+        modelAnswer: "Contain, inform, record, fix. Get the photos deleted from the group and ask members to delete copies. Explain to the patient what happened and apologise. Log the incident and report it as your data protection procedures require. Then fix the root cause: give health workers a secure, approved way to share clinical images with consent, and run a short privacy refresher for all staff.",
       },
       {
         id: "healthcare3",
-        question: "Design a poster to educate communities about remote consultations.",
-        fileType: "",
-        modelAnswer: "Effective health communication posters for rural Zambia: use high-contrast simple illustrations (not photos — doesn't print well on low-cost printers); maximum 20 words of text; include a USSD code prominently (*123# style); show the 3-step process visually (Call → Talk to nurse → Get advice); use green and white (associated with health/safety); include Ministry of Health logo for credibility. Distribute via churches, markets, and schools — not just clinics."
-      }
-    ]
+        type: "written",
+        title: "Explain the overspend to the donor",
+        brief: {
+          from: "Dr Musonda Lungu, Programme Director",
+          subject: "Paragraph for the donor report",
+          body: "Please write the 'Financial performance' paragraph for the donor report. Be honest about the overspend, explain why it happened, and say what we'll do in the next six months. Keep it to about 150 words.",
+        },
+        question: "Write the paragraph using your figures from Task 1.",
+        checklist: [
+          "State the overspend clearly: K15,200 or 10.4% over a K146,000 budget",
+          "Explain the main causes (tablet prices, data use) with numbers",
+          "Mention the saving on allowances",
+          "Link cost to results: 1,240 consultations at K130 each",
+          "Give concrete corrective actions and, if needed, a request to move budget between lines",
+        ],
+        modelAnswer: "Example: \"In the first six months the pilot spent K161,200 against a budget of K146,000, an overspend of K15,200 (10.4%). Tablets cost K12,000 more than planned because of exchange-rate movements between quotation and purchase, and data use was 40% higher than expected as consultations moved to video. These were partly offset by a K4,000 saving on health worker allowances. The pilot delivered 1,240 consultations at an average cost of K130. For the next six months we will switch to audio-first consultations with video only where clinically needed, negotiate a bulk data bundle, and report spending to the donor monthly. We request approval to move K8,000 from the training line to data to reflect actual usage.\"",
+      },
+    ],
   },
   {
     id: "renewable",
     title: "Renewable Energy for Communities",
     category: "Energy",
     partner: "ZESCO Innovation Fund",
-    duration: "3-4 hours",
-    description: "You are an engineer designing a solar microgrid for an off-grid village.",
+    duration: "2 hours",
+    description: "You are a junior engineer sizing a solar microgrid for an off-grid village of 100 households, setting a fair tariff and writing the funding summary.",
     tasks: [
       {
         id: "renewable1",
-        question: "Calculate the daily energy needs for a village of 100 households.",
-        fileType: "",
-        modelAnswer: "Standard calculation for rural Zambia: average household uses 3 lights (LED, 5W each) x 6 hours = 90Wh; phone charging = 10Wh/day; radio = 15Wh/day. Total per household: ~115Wh/day. For 100 households: 11,500Wh = 11.5kWh/day. Add 20% buffer for losses: 13.8kWh/day. Solar panel sizing: 13.8kWh ÷ 5 peak sun hours = 2.76kW installed capacity. Recommend: 12 x 250W panels. Battery storage: 2 days autonomy = 27.6kWh (approx 20 x 150Ah 12V batteries)."
+        type: "numbers",
+        title: "Size the solar system",
+        brief: {
+          from: "Eng. Mutale Kabwe, Project Lead",
+          subject: "Load calculation for the village",
+          body: "We've finished the household survey. Please work out the daily energy each household needs, the village total including a 20% buffer for losses, and how many 400 W panels we need. Round panels up.",
+        },
+        documents: [
+          {
+            title: "Household survey: typical daily use",
+            columns: ["Appliance", "Quantity", "Power", "Hours per day"],
+            rows: [
+              ["LED bulbs", "3", "5 W each", "6"],
+              ["Phone charging", "1", "—", "10 Wh per day total"],
+              ["Radio", "1", "—", "15 Wh per day total"],
+            ],
+            note: "Households: 100. Add 20% for system losses. Peak sun hours: 5 per day.",
+          },
+        ],
+        question: "Calculate the three figures.",
+        fields: [
+          { id: "hh", label: "Energy per household per day", suffix: "Wh", answer: 115, tolerance: 0.5 },
+          { id: "village", label: "Village total per day including 20% buffer", suffix: "kWh", answer: 13.8, tolerance: 0.05 },
+          { id: "panels", label: "Number of 400 W panels needed", suffix: "panels", answer: 7, tolerance: 0 },
+        ],
+        modelAnswer: "Lights = 3 × 5 W × 6 h = 90 Wh. Add phone 10 Wh and radio 15 Wh, so 115 Wh per household.\nVillage = 115 × 100 = 11,500 Wh = 11.5 kWh. With 20% buffer: 11.5 × 1.2 = 13.8 kWh per day.\nPanel capacity = 13,800 Wh ÷ 5 sun hours = 2,760 W. 2,760 ÷ 400 = 6.9, rounded up to 7 panels (2.8 kW).",
       },
       {
         id: "renewable2",
-        question: "Draft a proposal for funding from an international NGO.",
-        fileType: "pdf,docx",
-        modelAnswer: "Target funders: USAID Power Africa, EU Energy Initiative, or GIZ EnDev. Key proposal sections: Executive Summary (1 page max); Problem Statement with village-specific data (population, current energy source, cost burden); Technical Solution with system specs and diagram; Implementation Timeline (6-12 months); Budget Breakdown (equipment 60%, installation 20%, training 10%, M&E 10%); Sustainability Plan (user tariff of K20/month covers maintenance); Team Credentials. Keep to 10 pages. Lead with impact numbers — households served, hours of light gained, economic activity enabled."
+        type: "decision",
+        title: "Set the monthly tariff",
+        brief: {
+          from: "Eng. Mutale Kabwe, Project Lead",
+          subject: "Tariff for the community meeting",
+          body: "The system needs K4,500 a month for maintenance and a battery replacement fund. From similar projects we expect about 90% of households to pay each month. Which tariff should we propose?",
+        },
+        documents: [
+          {
+            title: "Tariff facts",
+            body: "• Monthly cost to cover: K4,500\n• Households connected: 100\n• Expected payment rate: 90%\n• Households currently spend about K80 a month on candles, paraffin and phone charging",
+          },
+        ],
+        question: "Which tariff do you propose?",
+        options: [
+          { label: "K20 per month, to keep it as cheap as possible.", feedback: "This collects at most K2,000, less than half the K4,500 needed. The batteries would fail in a few years with no money to replace them." },
+          { label: "K45 per month, which exactly covers K4,500.", feedback: "Close, but it assumes every household pays every month. At 90% payment you'd collect K4,050 and fall short by K450 each month." },
+          { label: "K50 per month, paid by mobile money.", best: true, feedback: "100 × K50 × 90% = K4,500, so it covers costs even with expected non-payment. It is still well below the K80 families spend today, so it's affordable and easy to justify." },
+          { label: "K100 per month, to build up savings quickly.", feedback: "This is more than households spend today, so many would refuse to connect. It undermines the project's purpose." },
+        ],
+        modelAnswer: "Propose K50 per month. Revenue = 100 households × K50 × 90% payment rate = K4,500, which exactly covers maintenance and the battery fund. It is K30 less than what families already spend on candles and paraffin, so it is a saving for them. Mobile money makes collection easy and transparent.",
       },
       {
         id: "renewable3",
-        question: "Create a community training plan for maintaining the microgrid.",
-        fileType: "",
-        modelAnswer: "Training plan: identify and train 2 community technicians (ideally women — better community trust retention per IRENA data); 5-day technical training on panel cleaning, battery checks, inverter troubleshooting, and fault reporting; establish monthly maintenance checklist with photo documentation sent to NGO via WhatsApp; create a community energy committee of 5 elected members to handle tariff collection and dispute resolution; set up a mobile money account for maintenance fund. Partner with TEVETA for formal technician certification."
-      }
-    ]
+        type: "written",
+        title: "Write the funding summary",
+        brief: {
+          from: "Eng. Mutale Kabwe, Project Lead",
+          subject: "Executive summary for the grant application",
+          body: "We are applying to an international energy access fund for K650,000 to build the system. Write the executive summary (about 200 words). Reviewers read hundreds of these, so lead with impact and be specific.",
+        },
+        question: "Write the executive summary.",
+        checklist: [
+          "Open with the problem and the number of people affected",
+          "Describe the solution with your technical figures (2.8 kW, 13.8 kWh per day)",
+          "State the amount requested and what it pays for",
+          "Show sustainability: the K50 tariff covers maintenance and battery replacement",
+          "Include measurable results (households connected, savings per household)",
+        ],
+        modelAnswer: "Example: \"100 households (about 550 people) in [village] have no grid connection and spend about K80 a month on candles and paraffin. We request K650,000 to install a 2.8 kW solar microgrid with battery storage, supplying 13.8 kWh a day: enough for lighting, phone charging and radios in every home. Funds cover panels and batteries (60%), installation (20%), training of two local technicians (10%) and monitoring (10%). A community-agreed tariff of K50 a month, collected by mobile money, covers all maintenance and battery replacement, so the system runs without further grants. Each household saves about K30 a month and children gain 4–6 hours of study light each evening. Success measures: 100 connections within 6 months, 90% monthly payment rate, and system uptime above 95%.\"",
+      },
+    ],
   },
   {
     id: "edtech",
     title: "EdTech for African Classrooms",
     category: "Education",
     partner: "Zambia Ministry of Education",
-    duration: "2-3 hours",
-    description: "You are launching an e-learning platform for secondary schools in Africa.",
+    duration: "2 hours",
+    description: "You are a programme officer at an e-learning startup. Measure whether your pilot actually improved results, fix a curriculum problem and report to head teachers.",
     tasks: [
       {
         id: "edtech1",
-        question: "Identify two challenges in digital content delivery and propose solutions.",
-        fileType: "",
-        modelAnswer: "Challenge 1: Intermittent electricity — solution: solar-powered tablet charging stations, offline-first app design using service workers to cache all content. Challenge 2: Teacher digital literacy gap — solution: cascade training model where 1 master trainer trains 10 school champions who each train 5 teachers; provide printed quick-reference cards alongside digital tools. For Zambia specifically, also address the ECZ (Examinations Council of Zambia) curriculum alignment requirement — all content must map to Grade 10-12 syllabi."
+        type: "numbers",
+        title: "Did the pilot work?",
+        brief: {
+          from: "Ms Natasha Mwanza, Programme Manager",
+          subject: "Pilot results",
+          body: "We ran our app in pilot schools for one term and tested comparison schools that didn't use it. Before we tell anyone it works, please work out the cost per student, the improvement that's really due to the app, and the cost of each extra percentage point per student.",
+        },
+        documents: [
+          {
+            title: "Term 2 pilot results, Grade 11 mathematics",
+            columns: ["", "Students", "Average score before", "Average score after"],
+            rows: [
+              ["Pilot schools (used the app)", "600", "48%", "57%"],
+              ["Comparison schools (no app)", "550", "45%", "49%"],
+            ],
+            note: "Total pilot cost: K84,000.",
+          },
+        ],
+        question: "Calculate the three figures.",
+        fields: [
+          { id: "cps", label: "Cost per pilot student", prefix: "K", answer: 140, tolerance: 0.5 },
+          { id: "net", label: "Improvement due to the app (pilot gain minus comparison gain)", suffix: "points", answer: 5, tolerance: 0.1 },
+          { id: "cpp", label: "Cost per extra percentage point per student", prefix: "K", answer: 28, tolerance: 0.5 },
+        ],
+        modelAnswer: "Cost per student = K84,000 ÷ 600 = K140.\nPilot schools gained 57 − 48 = 9 points, but comparison schools also gained 49 − 45 = 4 points without the app (normal progress over a term). So the app's effect is 9 − 4 = 5 points.\nCost per extra point = K140 ÷ 5 = K28 per student.\nThe key lesson: claiming a 9-point gain would overstate the app's impact by almost double.",
       },
       {
         id: "edtech2",
-        question: "Draft a partnership proposal for local teachers to create content.",
-        fileType: "pdf,docx",
-        modelAnswer: "Proposal should offer teachers: K500-K2,000 per module created (competitive with tutoring rates); recognition as named content authors (builds professional profile); 2-day content creation workshop in Lusaka; ongoing royalty of K50 per 100 student completions. In return, teachers provide: curriculum-aligned content in their subject, reviewed by Ministry of Education inspectors. Include IP clause: platform gets licence, teacher retains copyright. Target retired ECZ examiners first — they have the curriculum expertise and available time."
+        type: "decision",
+        title: "Content doesn't match the syllabus",
+        brief: {
+          from: "Mr Peter Banda, Head Teacher, pilot school",
+          subject: "Chemistry content problem",
+          body: "My Grade 11 chemistry teachers say two of the app's topics are not in the national syllabus and one required topic is missing. Exams are in four months. What will you do about it?",
+        },
+        question: "How do you respond?",
+        options: [
+          { label: "Tell teachers to skip the extra topics. The missing one can be added next year.", feedback: "Students sit the exam in four months. Leaving a required topic out for this year's class is a real harm, and the head teacher will stop trusting the platform." },
+          { label: "Thank him, check the content against the official syllabus, hide the off-syllabus topics and fast-track the missing topic with a local teacher.", best: true, feedback: "This takes the feedback seriously, fixes it in time for exams, and uses local teachers who know the syllabus. It also tells you to audit other subjects." },
+          { label: "Explain that the extra topics are useful enrichment, so it's not really a problem.", feedback: "Defending the content misses the point. Teachers are measured on exam results, and a missing required topic is a gap you must fill." },
+          { label: "Remove chemistry from the app until next year.", feedback: "Overreacting removes the content students are already using, when most of it is fine." },
+        ],
+        modelAnswer: "Acknowledge the problem and fix it fast. Check every topic against the official Grade 11 syllabus, hide or label the off-syllabus topics, and commission the missing topic from an experienced local teacher within four weeks. Then audit the other subjects the same way, and set up a teacher feedback form so issues come to you early.",
       },
       {
         id: "edtech3",
-        question: "Design a marketing flyer for parents and students.",
-        fileType: "",
-        modelAnswer: "Key messages for Zambian parents: 'Better exam results' (ECZ Grade 12 pass rate improvement), 'Free to access' or clear affordable price, 'Works on any phone'. Distribution channels: PTA meetings, end-of-term report cards insert, church bulletins. For students: emphasise peer usage ('Join 5,000 students already using it'), show relatable Zambian student imagery, include a QR code to download. Print on A5 (cheaper than A4), two-colour print to reduce cost. Avoid English-only — include a Nyanja tagline."
-      }
-    ]
+        type: "written",
+        title: "Report results to head teachers",
+        brief: {
+          from: "Ms Natasha Mwanza, Programme Manager",
+          subject: "Email to pilot head teachers",
+          body: "Please draft an email to the head teachers of the pilot schools sharing the results honestly, explaining the syllabus fix, and inviting them to continue next term.",
+        },
+        question: "Write the email (about 200 words).",
+        checklist: [
+          "Report the honest 5-point improvement versus comparison schools, not 9 points",
+          "Explain in plain words why the comparison matters",
+          "Acknowledge the chemistry issue and say exactly what has been fixed and when",
+          "Make a clear request: continue next term, with a date to confirm",
+          "Keep a respectful, professional tone",
+        ],
+        modelAnswer: "A strong email thanks the schools, states that pilot students improved 9 points but comparison schools improved 4, so the app added about 5 points in one term at K140 per student. It explains the chemistry issue was found by their teachers, the two off-syllabus topics are hidden and the missing topic will be live by a given date. It invites them to continue for Term 3, asks for confirmation by a set date, and offers a short call to discuss.",
+      },
+    ],
   },
   {
     id: "logistics",
     title: "Logistics and Supply Chain in Africa",
     category: "Logistics",
     partner: "Zambia Chamber of Commerce",
-    duration: "3-4 hours",
-    description: "You are a logistics manager optimizing delivery routes for a pan-African retailer.",
+    duration: "2 hours",
+    description: "You are a logistics coordinator at a Lusaka distribution company. Compare two delivery routes on cost, handle a breakdown with perishable stock and recommend savings.",
     tasks: [
       {
         id: "logistics1",
-        question: "Analyze the impact of poor infrastructure on delivery times.",
-        fileType: "",
-        modelAnswer: "For Zambia: Great North Road and Great East Road are key corridors but subject to seasonal flooding (Dec-March). Average truck speed on rural roads: 40km/h vs 80km/h on tarmac — doubles delivery time. RTSA (Road Transport and Safety Agency) roadblocks add 30-90 minutes per checkpoint. Weighbridge compliance: overloaded trucks are a common cost-cutting measure but risk K50,000+ fines. Recommendation: maintain a road condition database updated via driver WhatsApp reports; use rainy season buffer stock of 6 weeks at district distribution points."
+        type: "numbers",
+        title: "Compare two routes to Chipata",
+        brief: {
+          from: "Mr Joseph Sakala, Operations Manager",
+          subject: "Which route for the Chipata run?",
+          body: "Drivers want to use the shorter route with the gravel section. I want the real cost per trip of each route, not just the distance. Please work it out.",
+        },
+        documents: [
+          {
+            title: "Route data, Lusaka to Chipata (one truck, one way)",
+            columns: ["", "Route A (tarred)", "Route B (part gravel)"],
+            rows: [
+              ["Distance", "570 km", "520 km"],
+              ["Driving time", "9 hours", "11 hours"],
+              ["Fuel use", "0.35 litres/km", "0.40 litres/km"],
+              ["Tolls", "K400", "K0"],
+              ["Extra tyre and suspension wear", "K0", "K600"],
+            ],
+            note: "Assume diesel at K28 per litre and driver cost at K60 per hour.",
+          },
+        ],
+        question: "Calculate the full cost per trip for each route and the saving from using the cheaper one.",
+        fields: [
+          { id: "a", label: "Route A cost per trip", prefix: "K", answer: 6526, tolerance: 1 },
+          { id: "b", label: "Route B cost per trip", prefix: "K", answer: 7084, tolerance: 1 },
+          { id: "saving", label: "Saving per trip from the cheaper route", prefix: "K", answer: 558, tolerance: 1 },
+        ],
+        modelAnswer: "Route A: fuel 570 × 0.35 = 199.5 L × K28 = K5,586; driver 9 × K60 = K540; toll K400. Total K6,526.\nRoute B: fuel 520 × 0.40 = 208 L × K28 = K5,824; driver 11 × K60 = K660; wear K600. Total K7,084.\nRoute A is cheaper by K558 per trip even though it is 50 km longer. At 3 trips a week that's about K87,000 a year.",
       },
       {
         id: "logistics2",
-        question: "Propose a solution using technology to track shipments.",
-        fileType: "",
-        modelAnswer: "Best-fit solution for Zambia: GPS trackers (Teltonika FMB920, ~$50 each) installed on all fleet vehicles, integrated with a simple dashboard showing live location and estimated arrival. SMS alerts to depot managers when truck is 2 hours away. For informal transporters: share live Google Maps location via WhatsApp — no app needed. Total cost for 20-vehicle fleet: ~$3,000 hardware + $200/month SIM data. Consider: Africa's Talking SMS API for automated delay notifications to customers."
+        type: "decision",
+        title: "Breakdown with perishable stock",
+        brief: {
+          from: "Driver, via phone call",
+          subject: "Truck broken down near Luangwa Bridge",
+          body: "A refrigerated truck carrying K180,000 of dairy products has a gearbox failure 300 km from Lusaka. The fridge unit runs on its own battery for about 6 hours. The nearest mechanic says a repair will take 2 days.",
+        },
+        question: "What do you do?",
+        options: [
+          { label: "Wait for the mechanic and repair the truck, then continue.", feedback: "The fridge runs out in 6 hours and the repair takes 2 days. You'd lose the whole K180,000 load." },
+          { label: "Send the nearest available refrigerated truck to transfer the load, tell the customer the new arrival time, and arrange the repair separately.", best: true, feedback: "This saves the stock, which is worth far more than the cost of an extra truck, and keeps the customer informed. Repair the broken truck after the load is safe." },
+          { label: "Ask the driver to sell the dairy to local shops at a discount.", feedback: "This might recover some value but breaks your contract with the customer and isn't the driver's decision to make. Try to save the delivery first." },
+          { label: "Tell the customer the delivery is cancelled and claim insurance.", feedback: "Giving up too early. Many insurers won't pay if you didn't try to reduce the loss, and you damage the customer relationship." },
+        ],
+        modelAnswer: "Save the load first. Dispatch the nearest refrigerated truck (or hire one from a partner near Petauke or Lusaka) to arrive within the 6-hour window, transfer the stock, and inform the customer of the revised delivery time. Arrange recovery and repair of the broken truck separately. Afterwards, review maintenance records and add a breakdown plan to all cold-chain routes.",
       },
       {
         id: "logistics3",
-        question: "Draft a report for management on cost-saving opportunities.",
-        fileType: "pdf,docx",
-        modelAnswer: "Report structure: Executive Summary; Current Cost Baseline (fuel, labour, maintenance, third-party haulage); Top 3 Opportunities: (1) Route optimisation — eliminate empty return trips via load-matching platform, saves 20-30% fuel; (2) Fleet maintenance schedule — predictive maintenance reduces breakdown costs by 40%; (3) Consolidate suppliers — fewer, larger orders reduce last-mile frequency. Each opportunity should show: current cost, projected saving, implementation cost, payback period. Present in K (Kwacha) — not USD — for local management."
-      }
-    ]
+        type: "written",
+        title: "Cost-saving memo to management",
+        brief: {
+          from: "Mr Joseph Sakala, Operations Manager",
+          subject: "One-page memo for the MD",
+          body: "The MD wants a short memo on how we cut transport costs. Use the route analysis and suggest two or three other savings. Keep it to about 200 words.",
+        },
+        question: "Write the memo.",
+        checklist: [
+          "Lead with the recommendation and the saving (K558 per trip, about K87,000 a year at 3 trips a week)",
+          "Explain why the shorter route costs more",
+          "Suggest further practical savings (backloading empty trucks, fuel monitoring, preventive maintenance)",
+          "Note any risks or what needs to be checked",
+          "Use a clear memo format: To, From, Date, Subject",
+        ],
+        modelAnswer: "A strong memo recommends making Route A the standard for the Chipata run, saving K558 per trip (about K87,000 a year), and explains that the gravel route burns more fuel, takes longer and wears out trucks. It then proposes backloading (finding paying loads for return trips that currently run empty), monthly fuel-use checks per driver, and a preventive maintenance schedule to cut breakdowns like the Luangwa incident. It ends with a next step, such as a 3-month trial with monthly cost reports.",
+      },
+    ],
   },
   {
     id: "entrepreneurship",
     title: "Entrepreneurship Bootcamp",
     category: "Business",
     partner: "BongoHive Zambia",
-    duration: "4-5 hours",
-    description: "You are a participant in a pan-African entrepreneurship bootcamp.",
+    duration: "2 hours",
+    description: "You are starting a clean-water refill shop in Kalingalinga. Work out your break-even point, choose how to fund the business and write your investor pitch.",
     tasks: [
       {
         id: "entrepreneurship1",
-        question: "Identify a pressing problem in your community and propose a business idea to solve it.",
-        fileType: "",
-        modelAnswer: "Strong answers ground the problem in specific Zambian data (e.g., 'Lusaka has 3 million people but only 400 registered pharmacies — many areas have 4+ hour travel to access medication'). The business idea should be viable given local infrastructure: mobile-first, low capital to start, clear revenue model. Marks for: specificity of the problem, evidence/data cited, realistic solution, named target customer, and awareness of existing competitors or alternatives."
+        type: "numbers",
+        title: "Find your break-even point",
+        brief: {
+          from: "Bootcamp mentor",
+          subject: "Before you pitch, know your numbers",
+          body: "Investors will ask how many refills you need to sell to cover your costs. Work out your contribution per refill, your monthly break-even volume, and your profit if you sell 1,800 refills a month.",
+        },
+        documents: [
+          {
+            title: "Water refill shop cost sheet",
+            columns: ["Item", "Amount"],
+            rows: [
+              ["Price per 20-litre refill", "K10"],
+              ["Variable cost per refill (treatment, electricity, bottle cap)", "K2.50"],
+              ["Rent per month", "K3,500"],
+              ["Wages per month (2 staff)", "K4,000"],
+              ["Other fixed costs per month", "K1,500"],
+            ],
+          },
+        ],
+        question: "Calculate the three figures.",
+        fields: [
+          { id: "cpu", label: "Contribution per refill", prefix: "K", answer: 7.5, tolerance: 0.01 },
+          { id: "be", label: "Break-even refills per month", suffix: "refills", answer: 1200, tolerance: 1 },
+          { id: "profit", label: "Monthly profit at 1,800 refills", prefix: "K", answer: 4500, tolerance: 1 },
+        ],
+        modelAnswer: "Contribution per refill = K10 − K2.50 = K7.50.\nFixed costs = 3,500 + 4,000 + 1,500 = K9,000 a month. Break-even = 9,000 ÷ 7.50 = 1,200 refills a month, about 40 a day.\nProfit at 1,800 = 1,800 × 7.50 − 9,000 = K4,500.\nIn a pitch: \"We break even at 40 refills a day. Every refill after that adds K7.50 profit.\"",
       },
       {
         id: "entrepreneurship2",
-        question: "Draft a one-page business plan summary.",
-        fileType: "pdf,docx",
-        modelAnswer: "One-page plan must include: Problem (2 sentences); Solution (2 sentences); Target Market (specific segment with size estimate); Revenue Model (how you make money — be specific, e.g. '15% commission on each transaction'); Traction (any early evidence — even 10 interviews); Team (founder background relevant to the problem); Ask (what you need — funding, mentorship, partnerships). Avoid generic language like 'disruptive' or 'innovative' — show, don't tell. Should be readable in 90 seconds."
+        type: "decision",
+        title: "Choose how to fund the shop",
+        brief: {
+          from: "Bootcamp mentor",
+          subject: "Three funding offers",
+          body: "You need K50,000 for equipment. You have three offers. Your plan shows profit of about K4,500 a month once you reach 1,800 refills, which you expect by month 6. Which do you take?",
+        },
+        documents: [
+          {
+            title: "Funding offers",
+            body: "1. Angel investor: K50,000 for 40% of the business.\n2. Bank loan: K50,000 at 30% interest a year, repayments of about K4,850 a month over 12 months starting next month.\n3. Business grant competition: up to K50,000, no repayment, results in 3 months, about 1 in 10 applicants win.\n4. Equipment supplier: lease the equipment for K1,600 a month over 3 years, no deposit.",
+          },
+        ],
+        question: "Which option is best for this business right now?",
+        options: [
+          { label: "The angel investor: K50,000 for 40%.", feedback: "Giving away 40% of a small, simple business for K50,000 is very expensive. At K4,500 a month profit, the investor would take K1,800 a month forever." },
+          { label: "The bank loan.", feedback: "Repayments of K4,850 start immediately, but you won't make K4,500 profit until month 6. You'd run out of cash in the first months." },
+          { label: "Lease the equipment from the supplier, and apply for the grant at the same time.", best: true, feedback: "K1,600 a month is affordable even before you reach full sales, you keep 100% ownership, and if you win the grant you can pay off the lease early." },
+          { label: "Wait for the grant result before doing anything.", feedback: "Applying is smart, but a 1-in-10 chance shouldn't hold up the business for 3 months." },
+        ],
+        modelAnswer: "Lease the equipment and apply for the grant. The lease (K1,600 a month) matches your cash flow because it's small enough to pay while sales grow, and you keep full ownership. The loan's K4,850 repayments start before you're profitable, and the angel's 40% stake costs far more than K50,000 over time. Applying for the grant costs little and could clear the lease early.",
       },
       {
         id: "entrepreneurship3",
-        question: "Prepare a 2-minute pitch for potential investors.",
-        fileType: "",
-        modelAnswer: "Structure: Hook (10 sec — a surprising statistic or story); Problem (20 sec); Solution (20 sec — your product in one sentence); Traction (20 sec — what you've done so far); Market size (15 sec — how big is this?); Business model (15 sec); Ask (10 sec — specific amount and what it funds); Closing (10 sec — memorable statement). Practise transitions. Common mistakes: too much time on the problem, not enough on traction, vague ask. Investors in Zambia (BongoHive, FoundersBoost) prioritise team credibility and early customer validation over projections."
-      }
-    ]
+        type: "written",
+        title: "Write your 2-minute pitch",
+        brief: {
+          from: "Bootcamp mentor",
+          subject: "Demo day pitch",
+          body: "On demo day you have 2 minutes (about 250 words) in front of investors and partners. Write the script for your water refill shop.",
+        },
+        question: "Write the pitch script.",
+        checklist: [
+          "Open with the problem in your community, in human terms",
+          "Explain your solution and why customers will choose you",
+          "Use your real numbers: K10 a refill, break-even at 40 refills a day, K4,500 a month profit at 1,800 refills",
+          "Say what you need (funding, a site, partners) and what it will achieve",
+          "End with a memorable line",
+        ],
+        modelAnswer: "A strong pitch opens with a short story (for example a mother spending an hour a day queuing for unsafe water), states the size of the problem in the area, describes the refill shop and its quality testing, and gives the numbers: K10 a refill, break-even at 40 refills a day, K4,500 profit a month at 60 a day. It closes with a clear ask, such as help to open a second site, and a memorable last line.",
+      },
+    ],
   },
   {
     id: "publichealth",
     title: "Public Health Campaign",
     category: "Healthcare",
     partner: "Ministry of Health Zambia",
-    duration: "3-4 hours",
-    description: "Work with the Zambia Health Initiative to design a malaria awareness campaign.",
+    duration: "2 hours",
+    description: "You are a health promotion officer planning a malaria campaign for a rural district. Analyse the data, choose where to spend a K100,000 budget and announce the campaign.",
     tasks: [
       {
         id: "publichealth1",
-        question: "Research and summarize the current state of malaria in the target region.",
-        fileType: "pdf,docx",
-        modelAnswer: "Zambia has one of the highest malaria burdens globally — approximately 6 million cases annually, with children under 5 and pregnant women most vulnerable. Southern, Eastern, and Western provinces have the highest incidence. Peak transmission: December-April (rainy season). Key facts: malaria accounts for ~30% of outpatient visits in public health facilities; indoor residual spraying (IRS) and insecticide-treated nets (ITNs) are the primary prevention tools; Zambia has achieved a 60% reduction since 2000 but progress has stalled. Source: Zambia National Malaria Elimination Strategic Plan 2021-2025."
+        type: "numbers",
+        title: "Analyse the district malaria data",
+        brief: {
+          from: "Mrs Ruth Chileshe, District Health Officer",
+          subject: "Baseline figures for the campaign",
+          body: "Before we plan, I need the malaria incidence per 1,000 people for last year, the percentage drop from the year before, and how many more bed nets we need to reach one net for every two people.",
+        },
+        documents: [
+          {
+            title: "District malaria and bed net data",
+            columns: ["Item", "Value"],
+            rows: [
+              ["District population (both years)", "180,000"],
+              ["Confirmed malaria cases, 2024", "27,000"],
+              ["Confirmed malaria cases, 2025", "21,600"],
+              ["Bed nets currently in use", "54,000"],
+              ["Target", "1 net for every 2 people"],
+            ],
+            note: "Figures are for practice only.",
+          },
+        ],
+        question: "Calculate the three figures.",
+        fields: [
+          { id: "inc", label: "2025 incidence per 1,000 people", suffix: "per 1,000", answer: 120, tolerance: 0.5 },
+          { id: "drop", label: "Percentage drop in cases from 2024 to 2025", suffix: "%", answer: 20, tolerance: 0.1 },
+          { id: "gap", label: "Extra bed nets needed", suffix: "nets", answer: 36000, tolerance: 1 },
+        ],
+        modelAnswer: "2025 incidence = 21,600 ÷ 180,000 × 1,000 = 120 per 1,000 (down from 150).\nDrop = (27,000 − 21,600) ÷ 27,000 = 20%.\nNets needed = 180,000 ÷ 2 = 90,000. Gap = 90,000 − 54,000 = 36,000 nets.\nThe message: progress is real, but 1 in 8 people still got malaria last year and 40% of the nets we need are missing.",
       },
       {
         id: "publichealth2",
-        question: "Design a poster for the campaign using key statistics and a strong call to action.",
-        fileType: "pdf,docx",
-        modelAnswer: "Poster essentials: one headline stat ('Malaria kills a Zambian child every 2 hours'); single clear call to action ('Sleep under your net EVERY night'); simple illustration of a bed net in use; green/white colour scheme (health association); Ministry of Health logo; USSD code for free net distribution (*660#). Avoid: cluttered text, medical jargon, fear-based imagery of sick children (reduces trust, especially among men who make household decisions). Test with 5 community members before printing. Print in A3 for market stalls, A4 for homes."
+        type: "decision",
+        title: "Spend the K100,000 budget",
+        brief: {
+          from: "Mrs Ruth Chileshe, District Health Officer",
+          subject: "Channel choice",
+          body: "We have K100,000 for campaign activities. Most of the district is rural with patchy internet. Which combination of channels should we fund?",
+        },
+        documents: [
+          {
+            title: "Channel options",
+            columns: ["Channel", "Cost", "People reached", "Notes"],
+            rows: [
+              ["Community radio (3 months)", "K30,000", "120,000", "Listened to widely in rural areas"],
+              ["Community health worker door-to-door visits", "K60,000", "125,000", "Face-to-face, shows how to hang and use nets"],
+              ["Facebook and TikTok ads", "K20,000", "40,000", "Mostly urban young people"],
+              ["Billboards (4 sites)", "K80,000", "60,000", "Mainly people on the main road"],
+            ],
+          },
+        ],
+        question: "Which combination do you fund?",
+        options: [
+          { label: "Community radio and door-to-door visits (K90,000).", best: true, feedback: "Reaches the most rural people and combines awareness (radio) with face-to-face practical help, which is what changes behaviour. The K10,000 left over can buy printed materials for health workers." },
+          { label: "Billboards and social media ads (K100,000).", feedback: "Uses the whole budget to reach 100,000 people, mostly urban and on the main road. It misses the rural households most at risk." },
+          { label: "Social media ads only, five times over (K100,000).", feedback: "Spending more on the same urban audience doesn't reach rural families with poor internet." },
+          { label: "Billboards and radio (K110,000).", feedback: "Over budget, and billboards are the weakest value for money here." },
+        ],
+        modelAnswer: "Fund community radio and door-to-door visits for K90,000. Together they reach the rural population most at risk, and health worker visits are the only channel that shows families how to use nets correctly. Use the remaining K10,000 for printed leaflets and a few SMS reminders.",
       },
       {
         id: "publichealth3",
-        question: "Draft a press release to announce the campaign launch.",
-        fileType: "pdf,docx",
-        modelAnswer: "Press release format: Headline (action-oriented, e.g. 'Ministry of Health Launches Nationwide Net Distribution Drive Ahead of Rainy Season'); Dateline (Lusaka, [Date]); Lead paragraph (who, what, where, when, why); Quote from Minister or PS; Key statistics; Campaign details (duration, target reach, distribution points); Quote from community leader or beneficiary; Boilerplate (about Ministry of Health); Media contact. Send to: Zambia Daily Mail, Times of Zambia, ZNBC, and Hot FM. Embargo until launch date. Keep to one page."
-      }
-    ]
+        type: "written",
+        title: "Write the press release",
+        brief: {
+          from: "Mrs Ruth Chileshe, District Health Officer",
+          subject: "Press release for the launch",
+          body: "Please draft a press release for local radio stations and newspapers announcing the campaign. About 250 words.",
+        },
+        question: "Write the press release.",
+        checklist: [
+          "Use a clear headline and a dateline (place and date)",
+          "Put the most important facts in the first paragraph: what, where, when, who",
+          "Use your figures: cases fell 20% but 21,600 people still got malaria; 36,000 nets needed",
+          "Include a short quote from the District Health Officer",
+          "Tell the public exactly what to do, and end with contact details for media",
+        ],
+        modelAnswer: "A strong release has a headline such as \"District launches door-to-door push to close 36,000 bed-net gap\", a dateline, and a first paragraph covering what, when and where. It reports that cases fell 20% last year but 21,600 people still caught malaria, quotes the District Health Officer, explains that health workers will visit homes and radio programmes will run for three months, tells residents to sleep under a net every night and visit a clinic within 24 hours of fever, and ends with media contact details.",
+      },
+    ],
   },
   {
     id: "banking",
     title: "Microfinance & Collateral Lending",
     category: "Banking",
     partner: "Lupiya",
-    duration: "3-4 hours",
-    description: "You are a loan officer at a Zambian microfinance institution assessing borrowers and managing collateral-backed loans.",
+    duration: "2 hours",
+    description: "You are a loan officer at Tiyende Microfinance. Assess a K50,000 loan application against credit policy, make a lending decision and handle a borrower in arrears.",
     tasks: [
       {
         id: "banking1",
-        question: "A small business owner applies for a K50,000 loan offering their delivery vehicle as collateral. Outline how you would assess this application.",
-        fileType: "pdf,docx",
-        modelAnswer: "A strong assessment covers: (1) Borrower capacity — review 6 months of mobile money/bank statements, existing debt, and business cash flow to confirm repayment ability (debt-service ratio ideally below 40% of net income). (2) Collateral valuation — independent assessment of the vehicle's current market value, accounting for depreciation, mileage, and condition; lend no more than 60-70% of value (loan-to-value ratio) to protect against default. (3) Verification — confirm the vehicle's ownership via the white book / RTSA registration, check it's not already pledged elsewhere. (4) Character — references, repayment history with other lenders (consult the TransUnion Zambia credit bureau). Document everything for the credit committee."
+        type: "numbers",
+        title: "Assess the loan application",
+        brief: {
+          from: "Mr Kelvin Mwale, Branch Credit Manager",
+          subject: "Application: Mutinta's Deliveries",
+          body: "Mutinta runs a small delivery business and wants K50,000 over 12 months, offering her delivery van as collateral. Please run it against our policy: work out the monthly instalment, her monthly surplus, and what share of her surplus the instalment would take.",
+        },
+        documents: [
+          {
+            title: "Applicant's monthly figures (from 6 months of bank and mobile money statements)",
+            columns: ["Item", "Per month"],
+            rows: [
+              ["Revenue", "K38,000"],
+              ["Fuel and direct costs", "K21,000"],
+              ["Other operating expenses (wages, phone, rent)", "K8,500"],
+              ["Existing loan repayment", "K2,000"],
+            ],
+          },
+          {
+            title: "Tiyende credit policy (extract)",
+            body: "• Interest: 4% per month, flat, on the original amount.\n• Instalment = (loan ÷ months) + (loan × 4%).\n• The new instalment must not exceed 50% of the applicant's monthly surplus after all existing costs and repayments.\n• Loan must not exceed the collateral's forced sale value (60% of market value).\n• Van market value (valuer's report): K80,000.",
+          },
+        ],
+        question: "Calculate the three figures. Give the percentage to one decimal place.",
+        fields: [
+          { id: "inst", label: "Monthly instalment for K50,000 over 12 months", prefix: "K", answer: 6166.67, tolerance: 1 },
+          { id: "surplus", label: "Applicant's monthly surplus", prefix: "K", answer: 6500, tolerance: 1 },
+          { id: "share", label: "Instalment as % of surplus", suffix: "%", answer: 94.9, tolerance: 0.2 },
+        ],
+        modelAnswer: "Instalment = 50,000 ÷ 12 + 50,000 × 4% = K4,166.67 + K2,000 = K6,166.67.\nSurplus = 38,000 − 21,000 − 8,500 − 2,000 = K6,500.\nShare = 6,166.67 ÷ 6,500 = 94.9%, far above the 50% limit.\nCollateral: forced sale value = 60% × K80,000 = K48,000, which is also below the K50,000 requested.\nThe application fails policy on both affordability and collateral as it stands.",
       },
       {
         id: "banking2",
-        question: "Explain how you would manage the risk of loan default in a portfolio of collateral-backed loans.",
-        fileType: "",
-        modelAnswer: "Key risk management practices: diversify the portfolio across sectors so a downturn in one (e.g. agriculture in a drought year) doesn't sink the book; set conservative loan-to-value ratios (lend well below collateral value); require collateral that's liquid and easy to repossess and resell; monitor early-warning signs (missed payments, declining deposits) and intervene early with restructuring before default; maintain a loan-loss provision (a reserve fund) sized to expected default rates; and ensure legal documentation (a registered security interest under the Movable Property Security Interests Act) so repossession is enforceable. For Zambian MFIs, regular borrower contact and community ties matter as much as paperwork."
+        type: "decision",
+        title: "Make the lending decision",
+        brief: {
+          from: "Mr Kelvin Mwale, Branch Credit Manager",
+          subject: "Your recommendation",
+          body: "Mutinta is a good customer with a clean record. Using your calculations, what do you recommend to the credit committee?",
+        },
+        question: "Which recommendation do you make?",
+        options: [
+          { label: "Approve K50,000 over 12 months. She's a good customer.", feedback: "The instalment would take 95% of her surplus, leaving almost nothing for a bad month. A good record doesn't change the maths, and the loan is also above the collateral value." },
+          { label: "Approve K50,000 over 24 months to reduce the instalment.", feedback: "The instalment drops to K4,083.33, but that's still 62.8% of her surplus, over the 50% limit. With flat interest she'd also pay K48,000 in interest, almost the whole loan again." },
+          { label: "Offer K25,000 over 12 months.", best: true, feedback: "Instalment = K2,083.33 + K1,000 = K3,083.33, which is 47.4% of her surplus (within policy), and well covered by the K48,000 forced sale value. She gets funding she can actually repay." },
+          { label: "Decline outright.", feedback: "Declining loses a good customer when a smaller loan fits policy. Your job is to find a loan that works, not just to say no." },
+        ],
+        modelAnswer: "Recommend K25,000 over 12 months. Instalment = 25,000 ÷ 12 + 25,000 × 4% = K3,083.33, which is 47.4% of her K6,500 surplus (inside the 50% limit), and the van's K48,000 forced sale value covers the loan almost twice. Explain to her that once the existing K2,000 loan is repaid, she may qualify for more.",
       },
       {
         id: "banking3",
-        question: "Draft a clear, fair repayment plan communication to a borrower who has missed two payments.",
-        fileType: "docx",
-        modelAnswer: "An effective message is empathetic but clear: acknowledge the missed payments without judgment, state the current arrears amount precisely, and open a conversation rather than threaten. Offer concrete options: a short grace period, a restructured schedule with smaller installments over a longer term, or partial payment now to bring the account current. Be transparent about consequences of continued non-payment (additional interest, eventual collateral repossession) but frame repossession as a last resort. Include a specific call to action ('please call me by Friday to agree a plan') and your direct contact. Tone should preserve the relationship — most borrowers want to pay and a workable plan recovers more than aggressive collection."
-      }
-    ]
+        type: "written",
+        title: "Write to a borrower in arrears",
+        brief: {
+          from: "Mr Kelvin Mwale, Branch Credit Manager",
+          subject: "Letter to Mr Daka",
+          body: "Mr Daka (K30,000 loan, instalment K3,700) has missed his last two payments. His shop was affected by load-shedding. Please write him a letter that's firm but fair: what he owes, his options, and what happens if he doesn't respond within 14 days.",
+        },
+        question: "Write the letter (about 200 words).",
+        checklist: [
+          "State exactly what is owed: two missed instalments of K3,700 = K7,400, plus any charges under the agreement",
+          "Acknowledge his situation without judgement",
+          "Offer realistic options (catch-up plan, temporary restructuring) and invite him to a meeting",
+          "Explain clearly and calmly what happens if he doesn't respond, referring to the loan agreement",
+          "Use a respectful tone and give contact details and a deadline",
+        ],
+        modelAnswer: "A strong letter is addressed formally, states the arrears clearly (two instalments of K3,700, K7,400 in total), and acknowledges that load-shedding has hurt many businesses. It offers to meet within 14 days to agree a catch-up plan (for example spreading the arrears over the next four months) or a temporary restructure. It explains that if there is no contact by a specific date, the company will follow the recovery steps in the loan agreement, which may include recovering the collateral. It closes with the officer's name, phone number and branch address.",
+      },
+    ],
   },
   {
     id: "accounting",
     title: "Audit & Financial Reporting",
     category: "Accounting",
     partner: "ZICA",
-    duration: "4-5 hours",
-    description: "You are a trainee auditor at a Lusaka accounting firm working through a client's year-end audit.",
+    duration: "3 hours",
+    description: "You are an audit trainee on the year-end audit of Mulungushi Hardware Ltd. Run analytical review, choose audit procedures, correct a depreciation error and draft the adjustment memo.",
     tasks: [
       {
         id: "accounting1",
-        question: "The client's inventory balance increased 60% year-on-year while sales were flat. What audit procedures would you perform and why?",
-        fileType: "",
-        modelAnswer: "This is a red flag for overstated inventory (a common way to inflate profit/assets). Procedures: (1) Attend a physical stock count and test counts against records. (2) Test inventory valuation — confirm it's held at the lower of cost and net realisable value per IAS 2; check for obsolete or slow-moving stock that should be written down. (3) Cut-off testing — ensure purchases near year-end are recorded in the correct period. (4) Analytical review — compare inventory days/turnover to prior years and industry norms; a sharp rise with flat sales suggests obsolescence or error. (5) Inquire with management and corroborate explanations with evidence. Document professional scepticism throughout."
+        type: "numbers",
+        title: "Analytical review of inventory",
+        brief: {
+          from: "Ms Precious Ngoma, Audit Senior",
+          subject: "Planning: inventory looks odd",
+          body: "Inventory has jumped 60% but sales are almost flat. Before we plan procedures, please calculate inventory days for both years and this year's gross margin.",
+        },
+        documents: [
+          {
+            title: "Mulungushi Hardware Ltd: draft figures (K millions)",
+            columns: ["", "2025 (draft)", "2024 (audited)"],
+            rows: [
+              ["Revenue", "12.20", "12.00"],
+              ["Cost of sales", "8.60", "8.40"],
+              ["Closing inventory", "2.24", "1.40"],
+            ],
+            note: "Use inventory days = closing inventory ÷ cost of sales × 365.",
+          },
+        ],
+        question: "Give inventory days to one decimal place and gross margin to one decimal place.",
+        fields: [
+          { id: "d25", label: "Inventory days, 2025", suffix: "days", answer: 95.1, tolerance: 0.2 },
+          { id: "d24", label: "Inventory days, 2024", suffix: "days", answer: 60.8, tolerance: 0.2 },
+          { id: "gm", label: "Gross margin, 2025", suffix: "%", answer: 29.5, tolerance: 0.1 },
+        ],
+        modelAnswer: "2025: 2.24 ÷ 8.60 × 365 = 95.1 days. 2024: 1.40 ÷ 8.40 × 365 = 60.8 days.\nGross margin 2025 = (12.20 − 8.60) ÷ 12.20 = 29.5% (2024: 30.0%).\nInventory is held for 34 days longer with no matching increase in sales, while margin is stable. This points to a risk that inventory is overstated: slow-moving or obsolete stock not written down to net realisable value (IAS 2), cut-off errors, or items counted that don't exist.",
       },
       {
         id: "accounting2",
-        question: "Explain how you would account for a piece of equipment purchased for K200,000 with a 10-year useful life, including depreciation.",
-        fileType: "pdf,docx",
-        modelAnswer: "Under IAS 16: capitalise the K200,000 as a non-current asset (Property, Plant & Equipment) — it's not an expense because it provides benefit over many years. Depreciate it over the 10-year useful life. Using straight-line: K200,000 ÷ 10 = K20,000 depreciation expense per year, reducing the asset's carrying value annually. Journal each year: Dr Depreciation expense K20,000, Cr Accumulated depreciation K20,000. After year 3, carrying value = K200,000 − (3 × K20,000) = K140,000. Note any residual value would reduce the depreciable amount. Review useful life and residual value annually, and test for impairment under IAS 36 if there are indicators."
+        type: "decision",
+        title: "Choose the audit response",
+        brief: {
+          from: "Ms Precious Ngoma, Audit Senior",
+          subject: "How do we respond to the inventory risk?",
+          body: "The finance director says they 'stocked up before price increases'. Given your analytical review, what should our main response be?",
+        },
+        question: "Which approach best addresses the risk?",
+        options: [
+          { label: "Accept the finance director's explanation and document it.", feedback: "A management explanation is not audit evidence on its own. ISA 520 requires you to corroborate it, especially when the movement is this large." },
+          { label: "Attend the year-end count, test slow-moving lines for net realisable value, test cut-off, and check purchase invoices for the 'stock up' explanation.", best: true, feedback: "This targets each possible cause: existence (count), valuation (NRV of slow-moving items), cut-off, and whether the explanation is true. It's a proportionate, risk-based response." },
+          { label: "Increase the sample size for testing sales invoices.", feedback: "Sales are flat and not where the risk sits. More sales testing doesn't address whether inventory is overstated." },
+          { label: "Tell the partner we will need to qualify the audit opinion.", feedback: "Far too early. You haven't gathered evidence yet, and the balance may well be fine once tested." },
+        ],
+        modelAnswer: "Respond with targeted procedures. Attend the count and test-count high-value lines (existence). Review the aged inventory report and sales after year-end to find items selling below cost (valuation at the lower of cost and NRV under IAS 2). Test goods received and dispatched around year-end (cut-off). Inspect purchase invoices and price lists to see if the 'stocking up' explanation is supported. Document the risk and response in the audit plan.",
       },
       {
         id: "accounting3",
-        question: "Identify three ethical threats an auditor might face and how the ZICA/IFAC code addresses them.",
-        fileType: "",
-        modelAnswer: "Per the IFAC/ZICA Code of Ethics: (1) Self-interest threat — e.g. audit fees being a large share of firm income, or owning shares in the client. Safeguard: rotate clients, prohibit financial interests, cap fee dependency. (2) Familiarity threat — long association with the client weakens objectivity. Safeguard: rotate the engagement partner (every 7 years for listed entities). (3) Self-review threat — auditing your own firm's prior work (e.g. if the firm also did the bookkeeping). Safeguard: separate teams, or decline non-audit services for audit clients. The fundamental principles — integrity, objectivity, professional competence, confidentiality, professional behaviour — guide all judgments. When threats can't be reduced to an acceptable level, decline or withdraw."
-      }
-    ]
+        type: "numbers",
+        title: "Correct a depreciation error",
+        brief: {
+          from: "Ms Precious Ngoma, Audit Senior",
+          subject: "PPE testing: new machine",
+          body: "The client bought a cutting machine during the year and charged a full year's depreciation. Our firm checks that depreciation is time-apportioned from the date the asset is available for use. Please recalculate and quantify the misstatement.",
+        },
+        documents: [
+          {
+            title: "Fixed asset register extract",
+            columns: ["Item", "Detail"],
+            rows: [
+              ["Asset", "Cutting machine"],
+              ["Cost", "K200,000"],
+              ["Date available for use", "1 April 2025"],
+              ["Year end", "31 December 2025"],
+              ["Useful life", "10 years, straight-line"],
+              ["Residual value", "K20,000"],
+              ["Depreciation charged by client", "K18,000"],
+            ],
+          },
+        ],
+        question: "Calculate the correct depreciation charge, the correct carrying amount at year end and the misstatement.",
+        fields: [
+          { id: "dep", label: "Correct depreciation for 2025", prefix: "K", answer: 13500, tolerance: 1 },
+          { id: "ca", label: "Carrying amount at 31 December 2025", prefix: "K", answer: 186500, tolerance: 1 },
+          { id: "mis", label: "Amount by which depreciation is overstated", prefix: "K", answer: 4500, tolerance: 1 },
+        ],
+        modelAnswer: "Depreciable amount = K200,000 − K20,000 = K180,000. Annual charge = K18,000. Time-apportioned for 9 months (April to December): 18,000 × 9/12 = K13,500.\nCarrying amount = K200,000 − K13,500 = K186,500.\nThe client charged K18,000, so depreciation expense is overstated by K4,500 and profit and the asset are understated by K4,500.\nAdjustment: Dr Accumulated depreciation K4,500, Cr Depreciation expense K4,500.",
+      },
+      {
+        id: "accounting4",
+        type: "written",
+        title: "Draft the audit adjustment memo",
+        brief: {
+          from: "Ms Precious Ngoma, Audit Senior",
+          subject: "Memo for the file and the client",
+          body: "Please write a short memo to the client's finance director explaining the depreciation error, the adjustment, and a recommendation to stop it happening again. About 150 words.",
+        },
+        question: "Write the memo.",
+        checklist: [
+          "Identify the asset, the issue and the amount (K4,500 overstatement)",
+          "Show the correct calculation briefly (K180,000 ÷ 10 × 9/12 = K13,500)",
+          "Give the journal entry: Dr Accumulated depreciation K4,500, Cr Depreciation expense K4,500",
+          "State the effect on profit and the asset",
+          "Recommend a control, such as recording the 'available for use' date in the register and reviewing new additions monthly",
+        ],
+        modelAnswer: "A strong memo states that depreciation on the cutting machine (cost K200,000, available for use 1 April 2025) was charged for a full year at K18,000 instead of 9 months at K13,500. It proposes the adjustment Dr Accumulated depreciation K4,500, Cr Depreciation expense K4,500, which increases profit and the asset's carrying amount by K4,500 to K186,500. It notes the amount is below materiality but should be corrected, and recommends adding the 'available for use' date to the fixed asset register and having the financial controller review depreciation on new additions each month.",
+      },
+    ],
   },
   {
     id: "mining",
     title: "Mining Operations & Sustainability",
     category: "Mining",
     partner: "Zambia Chamber of Mines",
-    duration: "3-4 hours",
-    description: "You are an analyst at a Copperbelt mining company balancing production targets with environmental and community obligations.",
+    duration: "2 hours",
+    description: "You are a financial analyst at a Copperbelt copper mine. Measure the impact of a 20% copper price fall, recommend a response and communicate an expansion to the community.",
     tasks: [
       {
         id: "mining1",
-        question: "Copper prices have dropped 20%. Recommend how the operation should respond without resorting to mass layoffs.",
-        fileType: "pdf,docx",
-        modelAnswer: "Strong recommendations protect both viability and jobs: (1) Focus mining on higher-grade ore to maintain revenue per tonne (high-grading) while prices are low. (2) Cut discretionary and capital spending, defer non-critical expansion. (3) Renegotiate supplier contracts and energy costs (ZESCO tariffs are a major mining input). (4) Reduce overtime and use natural attrition rather than retrenchment. (5) Hedge a portion of future production to lock in prices. (6) Engage government on the mineral royalty tax structure, which in Zambia is price-linked and rises with copper prices. Frame layoffs as a last resort given the social impact on Copperbelt communities and the long-term cost of losing skilled labour."
+        type: "numbers",
+        title: "Impact of the copper price fall",
+        brief: {
+          from: "Mr Davies Chisenga, Finance Manager",
+          subject: "Price drop: margins",
+          body: "Copper has fallen from $9,500 to $7,600 a tonne. Please work out our royalty per tonne, our cash margin per tonne and our total monthly cash margin at the new price.",
+        },
+        documents: [
+          {
+            title: "Mine cost data (per tonne of copper)",
+            columns: ["Item", "Value"],
+            rows: [
+              ["Production", "4,000 tonnes per month"],
+              ["Cash operating cost", "$5,800 per tonne"],
+              ["Sustaining capital spend", "$900 per tonne"],
+              ["Mineral royalty (assume)", "6% of the copper price"],
+              ["New copper price", "$7,600 per tonne"],
+            ],
+          },
+        ],
+        question: "Calculate the three figures in US dollars at the new price.",
+        fields: [
+          { id: "roy", label: "Royalty per tonne", prefix: "$", answer: 456, tolerance: 0.5 },
+          { id: "margin", label: "Cash margin per tonne", prefix: "$", answer: 444, tolerance: 0.5 },
+          { id: "monthly", label: "Total monthly cash margin", prefix: "$", answer: 1776000, tolerance: 10 },
+        ],
+        modelAnswer: "Royalty = 6% × $7,600 = $456.\nMargin = $7,600 − $5,800 − $900 − $456 = $444 per tonne.\nMonthly = $444 × 4,000 = $1,776,000.\nAt the old price, margin was $9,500 − $5,800 − $900 − $570 = $2,230 per tonne ($8.92 million a month). A 20% price fall has cut cash margin by about 80%, which shows how sensitive mining profits are to price.",
       },
       {
         id: "mining2",
-        question: "Draft a community engagement plan for a mine expanding into land near a village.",
-        fileType: "docx",
-        modelAnswer: "An effective plan centres on Free, Prior and Informed Consent: (1) Early, genuine consultation with traditional leaders (the chief/induna) and affected households — before decisions are finalised, not after. (2) Transparent disclosure of the expansion's footprint, environmental impact (dust, water, blasting), and timeline. (3) Fair compensation and resettlement aligned with the Lands Act and IFC Performance Standards — replacement land or housing, not just cash. (4) Local benefit: prioritise local hiring, fund a community development project (clinic, borehole, school). (5) A grievance mechanism so residents can raise concerns and get responses. (6) Ongoing dialogue via a community liaison committee. Reference ZEMA (Zambia Environmental Management Agency) requirements for an Environmental Impact Assessment."
+        type: "decision",
+        title: "Recommend a response",
+        brief: {
+          from: "Mr Davies Chisenga, Finance Manager",
+          subject: "Options for the executive meeting",
+          body: "The executives want options that protect cash without mass layoffs. Which package do you recommend?",
+        },
+        question: "Which package do you recommend?",
+        options: [
+          { label: "Lay off 30% of the workforce immediately.", feedback: "This damages community relations and the mine's licence to operate, costs money in severance, and loses skilled people you'll need when prices recover." },
+          { label: "Defer non-essential capital projects, renegotiate supplier and contractor rates, and focus on mining higher-grade ore for now.", best: true, feedback: "These measures cut cost per tonne and protect cash quickly while keeping the workforce. They can be reversed when prices recover." },
+          { label: "Pause environmental rehabilitation spending until prices recover.", feedback: "Rehabilitation is a legal obligation. Cutting it risks penalties and community anger, and only moves the cost into the future." },
+          { label: "Hedge all production for two years at today's low price.", feedback: "This locks in the low price and means missing out when copper recovers. Hedging is a tool, but not at the bottom of the market for all output." },
+        ],
+        modelAnswer: "Recommend cutting costs and protecting cash without layoffs: defer non-essential capital projects, renegotiate contractor, fuel and supplier rates, temporarily mine higher-grade areas to produce more copper per tonne of ore, freeze hiring and overtime, and keep rehabilitation and safety spending. Review monthly against the copper price.",
       },
       {
         id: "mining3",
-        question: "Explain the environmental rehabilitation obligations a mine must plan for, and why they matter.",
-        fileType: "",
-        modelAnswer: "Under Zambian law (the Mines and Minerals Development Act and ZEMA regulations), mines must plan and fund rehabilitation from the start, not at closure. Obligations include: progressive rehabilitation of mined-out areas during operations; safe management of tailings dams to prevent collapse and water contamination (a major risk after global tailings disasters); treatment of acid mine drainage; reshaping and revegetating land; and a financial assurance / environmental bond set aside so funds exist even if the company fails. These matter because abandoned mines impose huge costs on communities and government, contaminate water sources people depend on, and damage the sector's social licence to operate. Planning early is far cheaper than remediation later."
-      }
-    ]
+        type: "written",
+        title: "Notice to the community about expansion",
+        brief: {
+          from: "Ms Esther Kunda, Community Relations Manager",
+          subject: "Expansion near Kamitondo village",
+          body: "The mine plans to expand onto land near Kamitondo village next year. Please draft the notice we'll read at the community meeting and post at the village. It must be honest, clear and invite people to give their views.",
+        },
+        question: "Write the community notice (about 200 words).",
+        checklist: [
+          "Explain what is planned, where and when, in plain language",
+          "Be honest about impacts (noise, dust, traffic, possible relocation) and how they'll be managed",
+          "Mention the Environmental Impact Assessment and the community's right to comment",
+          "Give dates, places and ways to raise concerns, including for people who can't attend",
+          "State the benefits (jobs, local suppliers, community projects) without over-promising",
+        ],
+        modelAnswer: "A strong notice is written in plain words (and translated into the local language), explains the planned expansion and timeline, is honest about dust, noise and traffic and whether any households may need to move, explains that an Environmental Impact Assessment will be done and that the community has the right to comment, lists the meeting date, place and a phone number or suggestion box for those who can't attend, and describes realistic benefits such as local hiring targets.",
+      },
+    ],
   },
   {
     id: "marketing",
     title: "Marketing & Brand Strategy",
     category: "Marketing",
     partner: "Airtel Zambia",
-    duration: "2-3 hours",
-    description: "You are a marketing associate launching a new product for a major Zambian consumer brand.",
+    duration: "2 hours",
+    description: "You are a marketing associate at a mobile network launching a student data bundle. Measure campaign results, respond to a competitor price cut and plan next month's budget.",
     tasks: [
       {
         id: "marketing1",
-        question: "Design a go-to-market strategy for a new mobile data bundle targeting university students.",
-        fileType: "pdf,docx",
-        modelAnswer: "A strong strategy: (1) Positioning — affordable, social-media-optimised bundles (zero-rated WhatsApp/TikTok) priced for student budgets. (2) Channels — campus brand ambassadors, university WiFi-zone activations, and heavy WhatsApp/TikTok promotion rather than expensive TV. (3) Pricing — micro-bundles (daily K5-K10) that match irregular student cash flow, plus a discounted semester bundle. (4) Partnerships — bundle with e-learning platforms or campus events. (5) Launch tactic — a referral mechanic ('refer 3 friends, get free data') leveraging tight student networks. (6) Metrics — track activation rate, cost per acquisition, and 30-day retention. Ground it in the reality that students are price-sensitive, mobile-first, and influenced by peers."
+        type: "numbers",
+        title: "Measure the launch campaign",
+        brief: {
+          from: "Ms Linda Kasonde, Brand Manager",
+          subject: "Campaign results",
+          body: "The student bundle campaign has finished its first month. Please work out our blended cost per sign-up, the cost per sign-up for radio, and how much gross profit an average customer brings us over their lifetime.",
+        },
+        documents: [
+          {
+            title: "Campaign results, month 1",
+            columns: ["Channel", "Spend", "Sign-ups"],
+            rows: [
+              ["Campus ambassadors", "K30,000", "2,000"],
+              ["Social media ads", "K60,000", "2,500"],
+              ["Radio", "K30,000", "500"],
+            ],
+            note: "Average revenue per subscriber: K100 a month. Gross margin: 60%. Average customer stays 5 months.",
+          },
+        ],
+        question: "Calculate the three figures.",
+        fields: [
+          { id: "blended", label: "Blended cost per sign-up (all channels)", prefix: "K", answer: 24, tolerance: 0.1 },
+          { id: "radio", label: "Radio cost per sign-up", prefix: "K", answer: 60, tolerance: 0.1 },
+          { id: "ltv", label: "Lifetime gross profit per customer", prefix: "K", answer: 300, tolerance: 0.5 },
+        ],
+        modelAnswer: "Blended = K120,000 ÷ 5,000 = K24 per sign-up. Radio = K30,000 ÷ 500 = K60. Ambassadors = K15, social = K24.\nLifetime gross profit = K100 × 60% × 5 months = K300.\nEvery channel is profitable (even radio returns K300 for K60), but ambassadors are four times more efficient than radio.",
       },
       {
         id: "marketing2",
-        question: "A competitor launches a cheaper rival product. Draft your response strategy.",
-        fileType: "",
-        modelAnswer: "Avoid a reflexive price war (it erodes margins for everyone). Better response: (1) Reinforce differentiation — emphasise network quality, coverage, or added value the competitor lacks. (2) Add value rather than cut price — bundle extras (free streaming, loyalty rewards) so perceived value rises without headline price dropping. (3) Segment — defend price-sensitive customers with a targeted value tier while keeping premium customers on higher-margin plans. (4) Strengthen retention — loyalty programmes and contract incentives raise switching costs. (5) Monitor — track churn and competitor uptake before overreacting. Only match price selectively if you're genuinely losing share in a key segment. Communicate confidence, not panic."
+        type: "decision",
+        title: "A competitor cuts its price",
+        brief: {
+          from: "Ms Linda Kasonde, Brand Manager",
+          subject: "Competitor just cut prices 30%",
+          body: "A rival network has launched a student bundle 30% cheaper than ours. Sales is panicking. What's our response?",
+        },
+        question: "What do you recommend?",
+        options: [
+          { label: "Match their price immediately.", feedback: "Cutting 30% slashes our margin and lifetime profit, and they can cut again. Price wars usually hurt both sides." },
+          { label: "Keep the price, add value students care about (free night data, campus WiFi access) and a refer-a-friend reward.", best: true, feedback: "This protects margin while giving students a reason to stay. Referral rewards use our best channel, word of mouth on campus, at low cost." },
+          { label: "Ignore it. Our brand is stronger.", feedback: "Students are price-sensitive. Doing nothing risks losing many of the 5,000 customers we just won." },
+          { label: "Run ads saying the competitor's network is unreliable.", feedback: "Attacking a competitor without evidence can break advertising rules and damages our brand." },
+        ],
+        modelAnswer: "Compete on value, not price. Keep the price, add benefits that cost us little but matter to students (night data, campus WiFi, exam-season bonus data), and launch a refer-a-friend reward through campus ambassadors, our cheapest channel at K15 per sign-up. Track weekly churn and be ready to run a time-limited offer if losses exceed a set level.",
       },
       {
         id: "marketing3",
-        question: "Create a social media content calendar outline for a one-month brand awareness campaign.",
-        fileType: "docx",
-        modelAnswer: "A practical Zambian-context calendar: Week 1 (Awareness) — teaser posts, brand story, behind-the-scenes; emphasise WhatsApp Status and TikTok where reach is highest. Week 2 (Engagement) — polls, user-generated content contest with a local hashtag, influencer collaborations with Zambian micro-influencers (more affordable and trusted than celebrities). Week 3 (Conversion) — product demos, customer testimonials in local languages, limited-time offer. Week 4 (Retention/community) — recap, thank-you posts, loyalty teaser. For each post specify: platform, format (image/video/Status), caption tone, posting time (evenings and weekends get higher engagement), and a single KPI per week. Keep production lightweight — phone-shot vertical video outperforms polished studio content on these platforms."
-      }
-    ]
+        type: "written",
+        title: "Plan next month's budget",
+        brief: {
+          from: "Ms Linda Kasonde, Brand Manager",
+          subject: "Next month: K120,000 again",
+          body: "We have the same K120,000 next month. Write me a short plan: how you'd split it across channels and why, based on the results, plus a rough content calendar for the four weeks.",
+        },
+        question: "Write the budget plan and weekly calendar (about 200 words).",
+        checklist: [
+          "Shift budget toward the most efficient channels (ambassadors at K15, social at K24) and explain why",
+          "Decide what to do with radio (cut, reduce or test a different slot) with a reason",
+          "Include the competitor response (value add and referral reward)",
+          "Give a week-by-week outline with themes or actions",
+          "Say how you'll measure success (sign-ups, cost per sign-up, churn)",
+        ],
+        modelAnswer: "A strong plan moves money to ambassadors (for example K50,000) and social (K55,000), reduces radio to a K15,000 test of a different time slot, and sets a target of about 6,500 sign-ups at under K19 each. Week 1: referral reward launch on campus. Week 2: student testimonial videos on social. Week 3: exam-season bonus data push. Week 4: retention messages to month-1 customers. Measure weekly sign-ups, cost per sign-up by channel and churn.",
+      },
+    ],
   },
   {
     id: "law",
     title: "Corporate Law & Compliance",
     category: "Law",
     partner: "LAZ",
-    duration: "4-5 hours",
-    description: "You are a junior associate at a Lusaka law firm advising businesses on compliance and contracts.",
+    duration: "2-3 hours",
+    description: "You are a junior associate at a Lusaka law firm. Apply a late-delivery clause, fix a contract with no dispute-resolution clause and advise a client on registering a company.",
     tasks: [
       {
         id: "law1",
-        question: "A client wants to register a new private limited company in Zambia. Outline the steps and key legal requirements.",
-        fileType: "pdf,docx",
-        modelAnswer: "Steps under the Companies Act 2017, via PACRA (Patents and Companies Registration Agency): (1) Name clearance — search and reserve the company name. (2) Prepare the application (Form 4) with registered office address, share capital, and details of directors (minimum one resident director) and shareholders. (3) Submit the Articles of Association (or adopt the standard articles). (4) Pay the registration fee. (5) Receive the Certificate of Incorporation. After incorporation: register for a TPIN with ZRA (tax), register for VAT if turnover exceeds the threshold, register with NAPSA (social security) and the Workers' Compensation fund if hiring, and obtain any sector-specific licences. Advise the client on ongoing obligations: annual returns to PACRA and tax filings."
+        type: "numbers",
+        title: "Apply the late-delivery clause",
+        brief: {
+          from: "Mrs Agness Mumba, Partner",
+          subject: "Client: late delivery of equipment",
+          body: "Our client's supplier delivered equipment 26 days late. The contract has a liquidated damages clause. Please work out what the clause would give before the cap, and what our client can actually claim.",
+        },
+        documents: [
+          {
+            title: "Supply Agreement, clause 14 (extract)",
+            body: "14.1 If the Supplier fails to deliver by the Delivery Date, the Supplier shall pay the Buyer liquidated damages of 0.5% of the Contract Price for each day of delay.\n14.2 The total liquidated damages payable under clause 14.1 shall not exceed 10% of the Contract Price.\n\nContract Price: K2,400,000. Days of delay: 26.",
+          },
+        ],
+        question: "Calculate the two figures.",
+        fields: [
+          { id: "uncapped", label: "Damages under clause 14.1 before the cap", prefix: "K", answer: 312000, tolerance: 1 },
+          { id: "payable", label: "Amount the client can claim", prefix: "K", answer: 240000, tolerance: 1 },
+        ],
+        modelAnswer: "Clause 14.1: 0.5% × 26 days = 13% × K2,400,000 = K312,000.\nClause 14.2 caps damages at 10% × K2,400,000 = K240,000.\nThe client can claim K240,000. Reading every sub-clause matters: the cap reduced the claim by K72,000. Also check notice requirements and whether any delay was caused by the client.",
       },
       {
         id: "law2",
-        question: "Review this scenario: a supplier contract has no dispute-resolution clause. Explain the risk and draft a suitable clause.",
-        fileType: "docx",
-        modelAnswer: "Risk: without a dispute-resolution clause, any disagreement defaults to litigation in the Zambian courts, which can be slow, costly, and public — and there's no agreed process, so parties may waste time arguing about *how* to resolve before addressing *what*. A suitable clause should establish a tiered process: first, good-faith negotiation between senior representatives within a set period (e.g. 14 days); if unresolved, mediation; and finally binding arbitration under the Arbitration Act 2000, seated in Lusaka, conducted in English, before a single arbitrator. Specify governing law (laws of Zambia). Arbitration is often preferable for commercial contracts — it's private, faster, and the award is enforceable. Always tailor to the contract's value and the parties' relationship."
+        type: "decision",
+        title: "Fix a missing dispute-resolution clause",
+        brief: {
+          from: "Mrs Agness Mumba, Partner",
+          subject: "Supplier contract has no dispute clause",
+          body: "A client is about to sign a 3-year supply contract worth K2.4 million with no dispute-resolution clause. Which clause should we propose?",
+        },
+        question: "Which clause do you recommend?",
+        options: [
+          { label: "No clause is needed. The courts will deal with any dispute.", feedback: "Without a clause, disputes go to court by default, which can be slow, costly and public, and there's no agreed first step to settle things early." },
+          { label: "A tiered clause: senior-level negotiation within 14 days, then mediation, then arbitration under the Arbitration Act 2000, seated in Lusaka, under Zambian law.", best: true, feedback: "This gives early, cheap chances to settle and ends in a private, binding process. It suits a long-term commercial relationship worth protecting." },
+          { label: "Disputes are decided by the supplier's managing director, whose decision is final.", feedback: "This is one-sided and against our client's interests. A neutral decision-maker is essential." },
+          { label: "Any dispute must go straight to the High Court.", feedback: "Clear, but skips the cheaper, faster steps that save business relationships." },
+        ],
+        modelAnswer: "Propose a tiered clause: (1) notice of dispute and negotiation between senior managers within 14 days; (2) if unresolved, mediation within a further 30 days; (3) if still unresolved, final and binding arbitration under the Arbitration Act 2000, seated in Lusaka, in English, before a single arbitrator, with the contract governed by the laws of Zambia. Include a carve-out allowing either party to seek urgent court orders to protect its position.",
       },
       {
         id: "law3",
-        question: "Explain an employer's key obligations under Zambian employment law when terminating an employee.",
-        fileType: "",
-        modelAnswer: "Under the Employment Code Act 2019: (1) Valid reason — termination must be for a fair reason (misconduct, poor performance, redundancy, or operational requirements), not arbitrary. (2) Due process — for misconduct/performance, follow a fair procedure: notice of the allegation, a hearing where the employee can respond, and the right to representation. (3) Notice — give the contractual or statutory notice period, or pay in lieu. (4) Redundancy — if the role is redundant, consult, follow selection criteria fairly, and pay redundancy benefits as prescribed. (5) Final dues — pay all accrued leave, salary, and benefits promptly. (6) Documentation — keep records and issue a certificate of service. Failure to follow process exposes the employer to an unfair dismissal claim before the courts or the Labour Commissioner. Advise employers to document everything."
-      }
-    ]
+        type: "written",
+        title: "Advise a client on company registration",
+        brief: {
+          from: "Mrs Agness Mumba, Partner",
+          subject: "Client email: new company",
+          body: "A client wants to set up a private limited company to run a catering business in Lusaka. Please draft our advice email: the registration steps, what they need to prepare, and what they must do after registration. About 250 words, in plain language.",
+        },
+        question: "Write the advice email.",
+        checklist: [
+          "Explain registration with PACRA under the Companies Act 2017, including name clearance",
+          "List what the client must prepare: company name options, registered office, directors and shareholders, share capital, and articles",
+          "Cover steps after registration: ZRA tax registration, NAPSA if hiring, and business and food-safety licences from the local council",
+          "Mention ongoing duties such as annual returns and tax filings",
+          "Use plain language, a clear structure and a next step (for example, send us the details by a date)",
+        ],
+        modelAnswer: "A strong email explains that the company is registered with PACRA under the Companies Act 2017, starting with a name search and reservation, followed by the incorporation application with details of the registered office, directors, shareholders, share capital and articles, and payment of fees, leading to a Certificate of Incorporation. After registration, the company registers with ZRA for a TPIN (and VAT if it passes the threshold), with NAPSA once it employs staff, and obtains a trading licence and food-safety permits from Lusaka City Council. It reminds the client to file annual returns and tax returns, lists the information the firm needs, and gives a clear next step.",
+      },
+    ],
   },
   {
     id: "hr",
     title: "Human Resources Management",
     category: "Human Resources",
     partner: "ZIHRM",
-    duration: "2-3 hours",
-    description: "You are an HR officer at a growing Zambian company handling recruitment, culture, and employee relations.",
+    duration: "2 hours",
+    description: "You are an HR officer at a growing Lusaka distribution company. Measure staff turnover and its cost, handle a workplace conflict and propose a retention plan.",
     tasks: [
       {
         id: "hr1",
-        question: "Design a fair and effective recruitment process for hiring five new sales staff.",
-        fileType: "pdf,docx",
-        modelAnswer: "A fair, effective process: (1) Job analysis — clear job description and person specification with objective criteria. (2) Sourcing — advertise widely (company channels, GoBeans/job boards, LinkedIn, and notice boards) to reach a diverse pool, not just referrals. (3) Screening — shortlist against the criteria using a consistent scorecard to reduce bias. (4) Structured interviews — same core questions for all candidates, scored independently by a panel; include a practical sales scenario. (5) Verification — check references and verify qualifications. (6) Decision — document the scoring rationale. (7) Onboarding plan. Throughout, comply with the Employment Code Act and avoid discrimination (gender, tribe, disability, HIV status). Structured, criteria-based hiring is both fairer and a better predictor of performance than gut feel."
+        type: "numbers",
+        title: "Measure turnover and its cost",
+        brief: {
+          from: "Mr Brian Siame, HR Manager",
+          subject: "Turnover figures for the MD",
+          body: "The MD thinks we're losing too many sales staff. Please work out last year's turnover rate, what it costs us to replace one sales rep, and the total cost of last year's leavers.",
+        },
+        documents: [
+          {
+            title: "Sales team headcount, last year",
+            columns: ["Item", "Value"],
+            rows: [
+              ["Headcount at start of year", "80"],
+              ["Headcount at end of year", "90"],
+              ["Leavers during the year", "18"],
+              ["Average annual salary of a sales rep", "K96,000"],
+              ["Replacement cost (recruitment, training, lost sales)", "30% of annual salary"],
+            ],
+            note: "Turnover rate = leavers ÷ average headcount × 100.",
+          },
+        ],
+        question: "Give the turnover rate to one decimal place.",
+        fields: [
+          { id: "rate", label: "Turnover rate", suffix: "%", answer: 21.2, tolerance: 0.1 },
+          { id: "cost1", label: "Cost to replace one sales rep", prefix: "K", answer: 28800, tolerance: 1 },
+          { id: "total", label: "Total cost of last year's leavers", prefix: "K", answer: 518400, tolerance: 1 },
+        ],
+        modelAnswer: "Average headcount = (80 + 90) ÷ 2 = 85. Turnover = 18 ÷ 85 = 21.2%.\nReplacement cost = 30% × K96,000 = K28,800 per leaver.\nTotal = 18 × K28,800 = K518,400.\nOne in five sales staff left, costing over half a million kwacha. Even halving turnover would save about K259,000 a year, which is the business case for a retention budget.",
       },
       {
         id: "hr2",
-        question: "Two employees have an ongoing conflict affecting the team. Outline how you would handle it.",
-        fileType: "",
-        modelAnswer: "A measured approach: (1) Act early — don't let it fester. (2) Meet each employee separately first to understand each perspective without taking sides. (3) Identify the root cause — is it workload, role clarity, personality, or a specific incident? (4) Facilitate a joint conversation in a neutral setting, setting ground rules for respectful dialogue, and focus on the work impact rather than personal blame. (5) Agree concrete, behavioural commitments from both and document them. (6) Follow up to confirm resolution holds. (7) Escalate to formal disciplinary process only if conduct breaches policy and informal resolution fails. Keep it confidential, stay neutral, and protect team morale. The goal is a working relationship, not friendship."
+        type: "decision",
+        title: "Handle a conflict between two employees",
+        brief: {
+          from: "Ms Mary Lungu, Sales Supervisor",
+          subject: "Two of my team aren't speaking",
+          body: "Two senior sales reps have been arguing about client accounts for weeks. It's now affecting the whole team and one of them has threatened to resign. What should I do?",
+        },
+        question: "What is the best first step?",
+        options: [
+          { label: "Move one of them to another branch straight away.", feedback: "This may punish the wrong person and doesn't resolve the cause. The client-account issue would still be there." },
+          { label: "Meet each person privately to hear their side, then hold a facilitated meeting to agree clear rules on client accounts.", best: true, feedback: "Hearing both sides fairly and then fixing the underlying cause (unclear account ownership) resolves the conflict and stops it coming back." },
+          { label: "Tell them both to sort it out themselves.", feedback: "It's already affecting the team and someone may resign. Leaving it will make it worse." },
+          { label: "Give both a formal written warning.", feedback: "Jumping to discipline without investigating is unfair and could make things worse. Discipline is for misconduct, after a fair process." },
+        ],
+        modelAnswer: "Investigate fairly and fix the cause. Meet each employee privately, listen, and take notes. Then hold a facilitated meeting to agree clear, written rules for who owns which client accounts and how shared clients and commissions are handled. Follow up after two weeks. If behaviour amounts to misconduct, use the formal disciplinary procedure.",
       },
       {
         id: "hr3",
-        question: "Propose three low-cost initiatives to improve employee retention.",
-        fileType: "",
-        modelAnswer: "Low-cost, high-impact initiatives: (1) Career development — structured growth paths, internal promotion, and access to free/low-cost training (like ZBRIDGE simulations or online courses); people leave when they stop growing, and this costs little. (2) Recognition — a consistent, genuine recognition programme (peer shout-outs, employee of the month, public thanks from leadership) that costs almost nothing but strongly drives engagement. (3) Flexibility and voice — flexible hours where possible, regular feedback channels, and acting on employee input so people feel heard. Retention is driven more by management quality, growth, and recognition than by salary alone (though pay must be fair). For a Zambian SME with tight budgets, these culture levers are the most cost-effective."
-      }
-    ]
+        type: "written",
+        title: "Propose a retention plan",
+        brief: {
+          from: "Mr Brian Siame, HR Manager",
+          subject: "Retention proposal",
+          body: "Exit interviews show leavers mostly cite unclear career paths, late commission payments, and poor relationships with supervisors. Please write a one-page proposal with three initiatives, their cost, and the saving if turnover falls.",
+        },
+        question: "Write the proposal (about 250 words).",
+        checklist: [
+          "Link each initiative directly to an exit-interview reason",
+          "Give a realistic cost for each initiative",
+          "Use your Task 1 figures to show the saving, for example cutting leavers from 18 to 12 saves 6 × K28,800 = K172,800",
+          "Say how you'll measure success (turnover rate, exit-interview themes, staff survey)",
+          "Give an implementation timeline",
+        ],
+        modelAnswer: "A strong proposal suggests: (1) a clear sales career ladder (Rep, Senior Rep, Team Lead) with published criteria, costing little beyond management time; (2) paying commission by a fixed date each month, fixing the payroll process; (3) supervisor training in coaching and feedback, about K40,000. It shows that reducing leavers from 18 to 12 saves 6 × K28,800 = K172,800 a year, well above the cost. It sets targets (turnover under 15% in 12 months) and a quarterly review.",
+      },
+    ],
   },
   {
     id: "realestate",
     title: "Real Estate & Property Development",
     category: "Real Estate",
     partner: "ZIESCO Properties",
-    duration: "3-4 hours",
-    description: "You are an analyst evaluating property investment and development opportunities in Lusaka.",
+    duration: "2 hours",
+    description: "You are an investment analyst at a Lusaka property developer. Compare residential and commercial options for a plot, check a land title and write the investment recommendation.",
     tasks: [
       {
         id: "realestate1",
-        question: "Evaluate whether to develop a vacant plot in Lusaka into residential units or commercial space.",
-        fileType: "pdf,docx",
-        modelAnswer: "A sound evaluation compares both options on: (1) Demand — research the local market; residential demand is strong in growing suburbs (e.g. along the Kafue or Great East Road corridors), while commercial suits high-traffic, accessible areas. (2) Zoning — confirm the plot's permitted use with the Lusaka City Council; changing zoning is slow and uncertain. (3) Financials — build a model comparing development cost, projected rental yield, and payback for each; residential typically offers steadier occupancy, commercial higher yield but more vacancy risk. (4) Infrastructure — water, ZESCO power reliability, road access, and drainage materially affect viability and cost. (5) Risk — construction cost inflation, currency exposure on imported materials, and financing cost. Recommend with a clear financial case, not just intuition."
+        type: "numbers",
+        title: "Residential or commercial?",
+        brief: {
+          from: "Mr Henry Mbewe, Development Director",
+          subject: "Plot in Chalala: what should we build?",
+          body: "We own a plot in Chalala. Please work out the net operating income and yield on cost for flats, and the yield on cost for shops, using the assumptions below.",
+        },
+        documents: [
+          {
+            title: "Development options",
+            columns: ["", "Option 1: 8 flats", "Option 2: 4 shops"],
+            rows: [
+              ["Total build cost", "K3,600,000", "K3,000,000"],
+              ["Rent per unit per month", "K7,000", "K15,000"],
+              ["Expected vacancy", "10%", "25%"],
+              ["Operating costs (% of rent collected)", "20%", "15%"],
+            ],
+            note: "Net operating income (NOI) = rent collected − operating costs. Yield on cost = annual NOI ÷ build cost.",
+          },
+        ],
+        question: "Calculate the figures. Give yields to two decimal places.",
+        fields: [
+          { id: "noi1", label: "Flats: annual net operating income", prefix: "K", answer: 483840, tolerance: 1 },
+          { id: "y1", label: "Flats: yield on cost", suffix: "%", answer: 13.44, tolerance: 0.02 },
+          { id: "y2", label: "Shops: yield on cost", suffix: "%", answer: 15.3, tolerance: 0.02 },
+        ],
+        modelAnswer: "Flats: 8 × K7,000 × 12 = K672,000 potential rent. Collected at 90% = K604,800. Less 20% costs = K483,840 NOI. Yield = 483,840 ÷ 3,600,000 = 13.44%.\nShops: 4 × K15,000 × 12 = K720,000. Collected at 75% = K540,000. Less 15% = K459,000 NOI. Yield = 459,000 ÷ 3,000,000 = 15.30%.\nShops yield more, but they depend on the 25% vacancy assumption, and a single empty shop is a quarter of income, while one empty flat is only an eighth.",
       },
       {
         id: "realestate2",
-        question: "Explain the key legal checks before purchasing land in Zambia.",
-        fileType: "",
-        modelAnswer: "Essential due diligence: (1) Title verification — conduct a search at the Ministry of Lands to confirm the seller holds valid title (most Zambian land is leasehold, typically 99 years, under the Lands Act). (2) Confirm there are no encumbrances — mortgages, caveats, or disputes registered against the title. (3) Verify the seller's identity and right to sell. (4) Check for customary land issues — land under customary tenure requires the chief's and council's consent to convert and sell; many disputes arise here. (5) Confirm the plot's boundaries via a survey diagram and that it matches the physical site. (6) Confirm rates and ground rent are paid up. (7) Use a conveyancing lawyer and ensure the transfer is registered. Buying land without a title search is the single biggest avoidable risk."
+        type: "decision",
+        title: "Check the land before buying",
+        brief: {
+          from: "Mr Henry Mbewe, Development Director",
+          subject: "Second plot: seller wants a deposit today",
+          body: "A seller is offering a neighbouring plot at a good price but wants a 30% deposit today. He has a council offer letter but says the Certificate of Title is 'still being processed'. Do we pay?",
+        },
+        question: "What do you advise?",
+        options: [
+          { label: "Pay the deposit today to secure the good price.", feedback: "An offer letter is not proof of ownership. Paying before checking the title is how buyers lose money to double sales and land fraud." },
+          { label: "Don't pay yet. Have a lawyer search the title at the Ministry of Lands, confirm the seller's identity and any charges on the land, and pay any deposit into a lawyer's account only once checks are complete.", best: true, feedback: "This protects the company. A search shows who really owns the land and whether it is mortgaged or disputed, and holding money with a lawyer means it is only released when the sale is safe." },
+          { label: "Pay a smaller deposit of 10% as a compromise.", feedback: "A smaller amount is still at risk if the seller doesn't own the land. The problem is the missing checks, not the size of the deposit." },
+          { label: "Visit the plot and ask the neighbours who owns it.", feedback: "Useful extra information, but neighbours can't confirm legal ownership. Only an official title search can." },
+        ],
+        modelAnswer: "Don't pay until the checks are done. Instruct a lawyer to conduct an official search at the Ministry of Lands, verify the seller's identity against the records, check for mortgages, caveats or disputes, confirm zoning and that ground rent and rates are paid, and visit the site to check boundaries and occupants. Any deposit should be paid to the lawyer to hold until the sale can safely complete.",
       },
       {
         id: "realestate3",
-        question: "Draft a tenant screening and lease summary process for a residential rental.",
-        fileType: "docx",
-        modelAnswer: "A clear process: Screening — collect an application with proof of income (payslips or business records showing rent is affordable, ideally rent under 30% of income), references from previous landlords and employer, and ID verification. Assess reliability without unlawful discrimination. Lease essentials — put everything in writing: parties, property description, rent amount and due date, deposit (typically 1-3 months, with clear conditions for return), lease term and renewal, who pays utilities and rates, maintenance responsibilities, and rules on subletting and notice for termination. Comply with the Landlord and Tenant Act. Conduct a documented inspection with photos at move-in and move-out to resolve deposit disputes fairly. A clear lease and good screening prevent most rental problems."
-      }
-    ]
+        type: "written",
+        title: "Write the investment recommendation",
+        brief: {
+          from: "Mr Henry Mbewe, Development Director",
+          subject: "Recommendation for the board",
+          body: "Please write a one-page recommendation on whether to build flats or shops on the Chalala plot. Use your figures, and cover the risks, not just the yield.",
+        },
+        question: "Write the recommendation (about 250 words).",
+        checklist: [
+          "State a clear recommendation in the first sentence",
+          "Compare the yields (13.44% vs 15.30%) and NOI using your figures",
+          "Discuss risk: vacancy, income concentration in 4 tenants vs 8, and demand in the area",
+          "Test sensitivity, for example the shops' yield if vacancy is 40% instead of 25%",
+          "End with next steps (market study, pre-letting, financing)",
+        ],
+        modelAnswer: "A strong recommendation might favour flats despite the lower yield, explaining that housing demand in Chalala is steady, income is spread across 8 tenants, and vacancy is lower. It shows that if shop vacancy rises from 25% to 40%, shop NOI falls to K367,200 (yield 12.24%), below the flats. Alternatively it could recommend shops if a pre-letting agreement with anchor tenants is secured. Either way it gives a clear choice, the numbers behind it and the next steps.",
+      },
+    ],
   },
   {
     id: "tourism",
     title: "Tourism & Hospitality Management",
     category: "Tourism",
     partner: "Zambia Tourism Agency",
-    duration: "2-3 hours",
-    description: "You manage a lodge near a major Zambian tourist destination, balancing guest experience, revenue, and community impact.",
+    duration: "2 hours",
+    description: "You manage a 20-room lodge near Livingstone. Decide whether a low-season discount pays off, choose the right reply to a bad review and write a low-season plan for the owner.",
     tasks: [
       {
         id: "tourism1",
-        question: "Tourist numbers drop sharply in the low season. Propose strategies to maintain revenue.",
-        fileType: "pdf,docx",
-        modelAnswer: "Strong low-season strategies: (1) Target the domestic and regional market — discounted packages for Zambian and SADC residents (who travel year-round), promoted via local channels and mobile money payment options. (2) Diversify revenue — host conferences, weddings, and corporate retreats that aren't weather-dependent; offer the venue for events. (3) Dynamic pricing — lower rates to fill rooms (a discounted occupied room beats an empty one) while protecting peak-season pricing. (4) Experience packages — bundle activities (guided walks, cultural visits, birding which peaks in different seasons) to add value rather than just cut price. (5) Partnerships — work with tour operators and the Zambia Tourism Agency on promotions. (6) Use the quiet period for staff training and maintenance. Diversifying who you serve and what you offer smooths the seasonal swing."
+        type: "numbers",
+        title: "Does a low-season discount pay?",
+        brief: {
+          from: "Mrs Joyce Hamoonga, Lodge Owner",
+          subject: "Low season pricing",
+          body: "In the 90-day low season we're only 25% full at K1,800 a night. Our sales agent thinks that at K1,200 we'd be 50% full. Please compare the contribution of each option, and the revenue per available room (RevPAR) at the new price.",
+        },
+        documents: [
+          {
+            title: "Low season data",
+            columns: ["", "Current", "Proposed"],
+            rows: [
+              ["Rooms", "20", "20"],
+              ["Nights in low season", "90", "90"],
+              ["Room rate per night", "K1,800", "K1,200"],
+              ["Expected occupancy", "25%", "50%"],
+              ["Variable cost per occupied room night (cleaning, laundry, breakfast)", "K400", "K400"],
+            ],
+            note: "RevPAR = room rate × occupancy.",
+          },
+        ],
+        question: "Calculate the three figures.",
+        fields: [
+          { id: "cur", label: "Current low-season contribution", prefix: "K", answer: 630000, tolerance: 1 },
+          { id: "new", label: "Proposed low-season contribution", prefix: "K", answer: 720000, tolerance: 1 },
+          { id: "revpar", label: "RevPAR at the proposed rate", prefix: "K", answer: 600, tolerance: 0.5 },
+        ],
+        modelAnswer: "Current: 20 × 90 × 25% = 450 room nights × (K1,800 − K400) = K630,000.\nProposed: 20 × 90 × 50% = 900 room nights × (K1,200 − K400) = K720,000.\nThe discount adds K90,000, but only if occupancy really doubles. RevPAR rises from K450 to K600.\nBreak-even occupancy at K1,200: K630,000 ÷ K800 = 787.5 nights ÷ 1,800 = 43.75%, so you need at least about 44% full for the discount to be worth it.",
       },
       {
         id: "tourism2",
-        question: "Design a guest experience plan that incorporates the local community authentically.",
-        fileType: "docx",
-        modelAnswer: "An authentic, beneficial plan: (1) Source locally — buy food and crafts from nearby farmers and artisans, creating income and a genuine local flavour. (2) Offer optional, respectful cultural experiences co-designed with the community (village visits, traditional cooking, storytelling) where the community sets the terms and receives fair payment — not staged performances. (3) Hire and train locally, with pathways to senior roles. (4) Support a community project (school, clinic) and let guests contribute transparently. (5) Educate guests on local customs and responsible behaviour. (6) Ensure the community has a voice in tourism decisions affecting them. The principle: tourism should benefit the community as partners, not treat them as a backdrop. This also differentiates the lodge — travellers increasingly seek authentic, ethical experiences."
+        type: "decision",
+        title: "Reply to a bad review",
+        brief: {
+          from: "Front desk",
+          subject: "1-star review posted online",
+          body: "A guest wrote: \"Waited 2 hours for our room, nobody apologised, and the hot water didn't work. Never again.\" The review is public and getting views. Which reply should we post?",
+        },
+        question: "Which reply do you approve?",
+        options: [
+          { label: "\"We are sorry you feel this way. Check-in is at 2pm, as stated on our website.\"", feedback: "Defensive and dismissive. It argues with the guest and ignores the hot water. Other travellers will read it as a lodge that doesn't care." },
+          { label: "\"Thank you for telling us, and we're truly sorry. A 2-hour wait and no hot water is not acceptable. We've fixed the boiler and changed how we prepare rooms for early arrivals. I'd like to make this right. Please email me directly. Joyce Hamoonga, Owner.\"", best: true, feedback: "Specific, sincere and takes responsibility, explains what has been fixed, and moves the conversation offline. Future guests see a lodge that solves problems." },
+          { label: "Don't reply. Responding draws more attention.", feedback: "Silence looks like you don't care, and the review stays there anyway. Most travellers read the owner's replies." },
+          { label: "Ask the platform to remove the review.", feedback: "Platforms rarely remove honest reviews, and trying to hide criticism can backfire if the guest finds out." },
+        ],
+        modelAnswer: "Choose the reply that apologises specifically, takes responsibility for both problems, explains what has been fixed, and offers to make it right offline, signed by a named person. Post it within 24 hours, then fix the process behind it (room readiness for early arrivals and a maintenance check on boilers).",
       },
       {
         id: "tourism3",
-        question: "Write a response to a serious negative online review about poor service.",
-        fileType: "",
-        modelAnswer: "An effective response: respond promptly and publicly (other travellers are reading). Thank the guest for the feedback and apologise sincerely for the specific failure without being defensive. Acknowledge what went wrong, take responsibility, and briefly explain the concrete steps you're taking to fix it (e.g. 'we've retrained our front-desk team on check-in times'). Avoid arguing, blaming the guest, or making excuses — that damages the brand more than the original review. Offer to make it right and move the detailed conversation offline ('please email me directly so I can address this personally'). Keep it warm, professional, and concise. A well-handled negative review can actually build trust by showing prospective guests how you treat problems."
-      }
-    ]
-  }
+        type: "written",
+        title: "Write the low-season plan",
+        brief: {
+          from: "Mrs Joyce Hamoonga, Lodge Owner",
+          subject: "Low-season plan",
+          body: "Please write me a one-page plan for the low season: pricing, which guests we target, and two or three other ways to bring in revenue. Use your figures.",
+        },
+        question: "Write the plan (about 250 words).",
+        checklist: [
+          "Recommend a pricing approach using your figures (K90,000 extra if occupancy reaches 50%; break-even about 44%)",
+          "Target specific guests, such as Zambian residents, regional travellers and conference groups",
+          "Add non-room revenue ideas (events, packages with local guides, day visitors)",
+          "Explain how you'll track whether it is working (weekly occupancy, RevPAR)",
+          "Keep peak-season pricing protected, for example with resident-only or advance-booking rates",
+        ],
+        modelAnswer: "A strong plan recommends a K1,200 resident and advance-booking rate rather than a public price cut (protecting peak pricing), targeting Zambian residents, SADC travellers and corporate retreats. It sets a minimum of 44% occupancy as the break-even target and 50% as the goal (adding K90,000). It adds revenue through weekend packages with local guides and community visits, conference and wedding bookings, and day-visitor lunch deals. It reviews occupancy and RevPAR weekly and switches strategy if bookings fall below the break-even level by mid-season.",
+      },
+    ],
+  },
 ];
 
 export default simulations;

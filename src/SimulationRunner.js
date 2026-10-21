@@ -8,6 +8,7 @@ import { generateCertificate } from "./Certificate";
 import { getAIFeedback } from "./aiFeedback";
 import { notifySimulationComplete } from "./notifications";
 import { FeedbackForm } from "./components/Feedback";
+import { TaskBrief, TaskDocuments, NumbersTask, DecisionTask, Checklist } from "./components/SimWorkspace";
 
 const CYAN = ZB_COLORS.cyan;
 const LIME = "#0e8a5f";
@@ -40,6 +41,7 @@ export default function SimulationRunner({ profile }) {
   const [aiFeedback, setAIFeedback] = useState({});
   const [loadingFeedback, setLoadingFeedback] = useState({});
   const [taskSubmitted, setTaskSubmitted] = useState({});
+  const [results, setResults] = useState({});
 
   if (!sim) {
     return (
@@ -54,11 +56,21 @@ export default function SimulationRunner({ profile }) {
   const isLast = activeStep === sim.tasks.length - 1;
 
   const handleSubmitTask = () => setTaskSubmitted(prev => ({ ...prev, [task.id]: true }));
+  const isWritten = !task.type || task.type === "written";
+  // Numbers and decision tasks are marked automatically; keep the score for the summary.
+  const handleAutoMarked = (result) => {
+    setResults(prev => ({ ...prev, [task.id]: result }));
+    if (result.answer) setAnswers(prev => ({ ...prev, [task.id]: result.answer }));
+    handleSubmitTask();
+  };
+  const marked = Object.values(results);
+  const score = marked.reduce((a, r) => ({ correct: a.correct + r.correct, total: a.total + r.total }), { correct: 0, total: 0 });
 
   const handleGetAIFeedback = async () => {
     if (!answers[task.id]?.trim()) return;
     setLoadingFeedback(prev => ({ ...prev, [task.id]: true }));
-    const feedback = await getAIFeedback(task.question, answers[task.id], task.modelAnswer, sim.title);
+    const taskText = task.brief ? `${task.brief.body}\n\nTask: ${task.question}` : task.question;
+    const feedback = await getAIFeedback(taskText, answers[task.id], task.modelAnswer, sim.title);
     setAIFeedback(prev => ({ ...prev, [task.id]: feedback }));
     setLoadingFeedback(prev => ({ ...prev, [task.id]: false }));
   };
@@ -95,9 +107,14 @@ export default function SimulationRunner({ profile }) {
         <Typography sx={{ color: ZB_COLORS.textMuted, fontFamily: "'Space Grotesk', sans-serif", mb: 0.5 }}>
           You completed all {sim.tasks.length} tasks in
         </Typography>
-        <Typography sx={{ color: CYAN, fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, fontSize: "1.1rem", mb: 3, textShadow: "none" }}>
+        <Typography sx={{ color: CYAN, fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, fontSize: "1.1rem", mb: score.total ? 1.5 : 3, textShadow: "none" }}>
           {sim.title}
         </Typography>
+        {score.total > 0 && (
+          <Typography sx={{ color: ZB_COLORS.textMuted, fontFamily: "'Space Grotesk', sans-serif", mb: 3 }}>
+            You got {score.correct} of {score.total} calculations and decisions right.
+          </Typography>
+        )}
 
         {sim.partner && (
           <Box sx={{ background: "rgba(31,64,214,0.05)", border: `2px solid ${ZB_COLORS.border}`, borderRadius: "12px", p: 2, mb: 3 }}>
@@ -186,17 +203,32 @@ export default function SimulationRunner({ profile }) {
         <Box sx={{ background: ZB_COLORS.bgMid, border: `2px solid ${ZB_COLORS.border}`, borderRadius: "16px", p: { xs: 2.5, md: 4 }, mb: 2 }}>
           <Chip label={`TASK ${activeStep + 1}`} size="small"
             sx={{ background: "rgba(31,64,214,0.1)", color: CYAN, border: `2px solid ${ZB_COLORS.borderBright}`, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.66rem", mb: 2 }} />
-          <Typography sx={{ color: "#14110f", fontFamily: "'Space Grotesk', sans-serif", fontSize: "1.05rem", lineHeight: 1.7, mb: 3 }}>
+          {task.title && (
+            <Typography variant="h6" sx={{ color: "#14110f", mb: 2 }}>{task.title}</Typography>
+          )}
+          <TaskBrief brief={task.brief} />
+          <TaskDocuments documents={task.documents} />
+          <Typography sx={{ color: "#14110f", fontFamily: "'Space Grotesk', sans-serif", fontSize: "1.05rem", fontWeight: task.brief ? 600 : 400, lineHeight: 1.7, mb: 3 }}>
             {task.question}
           </Typography>
 
-          <TextField label="Your answer" fullWidth multiline minRows={4}
-            value={answers[task.id] || ""}
-            onChange={e => setAnswers({ ...answers, [task.id]: e.target.value })}
-            disabled={taskSubmitted[task.id]}
-            sx={{ mb: 2 }} />
+          {task.type === "numbers" && (
+            <NumbersTask key={task.id} task={task} done={!!taskSubmitted[task.id]} onDone={handleAutoMarked} />
+          )}
+          {task.type === "decision" && (
+            <DecisionTask key={task.id} task={task} done={!!taskSubmitted[task.id]} onDone={handleAutoMarked} />
+          )}
 
-          {task.fileType && (
+          {isWritten && <Checklist items={task.checklist} />}
+          {isWritten && (
+            <TextField label="Your answer" fullWidth multiline minRows={6}
+              value={answers[task.id] || ""}
+              onChange={e => setAnswers({ ...answers, [task.id]: e.target.value })}
+              disabled={taskSubmitted[task.id]}
+              sx={{ mb: 2 }} />
+          )}
+
+          {isWritten && task.fileType && (
             <Box sx={{ mb: 3, p: 1.5, background: "rgba(31,64,214,0.03)", borderRadius: "8px", border: `2px solid ${ZB_COLORS.border}` }}>
               <Mono sx={{ fontSize: "0.7rem", color: ZB_COLORS.textMuted, mb: 1 }}>
                 optional: attach a file ({task.fileType.toUpperCase()})
@@ -207,12 +239,12 @@ export default function SimulationRunner({ profile }) {
 
           {/* Action buttons */}
           <Box sx={{ display: "flex", gap: 1.5, flexWrap: "wrap", mb: 2 }}>
-            {!taskSubmitted[task.id] && (
+            {isWritten && !taskSubmitted[task.id] && (
               <Button variant="contained" onClick={handleSubmitTask} disabled={!answers[task.id]?.trim()} sx={{ fontSize: "0.875rem" }}>
                 <CheckIcon color="#fffaf0" /> Submit answer
               </Button>
             )}
-            {taskSubmitted[task.id] && !aiFeedback[task.id] && (
+            {isWritten && taskSubmitted[task.id] && !aiFeedback[task.id] && (
               <Button onClick={handleGetAIFeedback} disabled={loadingFeedback[task.id]}
                 sx={{ background: "rgba(31,64,214,0.1)", color: CYAN, border: `2px solid ${ZB_COLORS.borderBright}`, borderRadius: "6px", fontSize: "0.875rem", "&:hover": { background: "rgba(31,64,214,0.18)", boxShadow: "5px 5px 0 #14110f" } }}>
                 {loadingFeedback[task.id] ? <CircularProgress size={16} sx={{ color: CYAN, mr: 1 }} /> : <SparkIcon />}
@@ -222,7 +254,7 @@ export default function SimulationRunner({ profile }) {
             {taskSubmitted[task.id] && (
               <Button onClick={() => setShowModel(prev => ({ ...prev, [task.id]: !prev[task.id] }))}
                 sx={{ background: "rgba(20,17,15,0.04)", color: "rgba(20,17,15,0.65)", border: `2px solid ${ZB_COLORS.border}`, borderRadius: "6px", fontSize: "0.875rem", "&:hover": { background: "rgba(20,17,15,0.08)" } }}>
-                {showModel[task.id] ? "Hide model answer" : "See model answer"}
+                {showModel[task.id] ? "Hide" : "See"} {task.type === "numbers" ? "worked solution" : task.type === "decision" ? "expert view" : "model answer"}
               </Button>
             )}
           </Box>
@@ -245,9 +277,9 @@ export default function SimulationRunner({ profile }) {
             <Box sx={{ background: "rgba(14,138,95,0.05)", border: `2px solid ${LIME}33`, borderRadius: "12px", p: 2.5, mb: 2 }}>
               <Box sx={{ display: "flex", alignItems: "center", mb: 1.5 }}>
                 <CheckIcon color={LIME} />
-                <Typography sx={{ color: LIME, fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, fontSize: "0.875rem" }}>Model answer</Typography>
+                <Typography sx={{ color: LIME, fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, fontSize: "0.875rem" }}>{task.type === "numbers" ? "Worked solution" : task.type === "decision" ? "Expert view" : "Model answer"}</Typography>
               </Box>
-              <Typography sx={{ color: "rgba(20,17,15,0.8)", fontFamily: "'Space Grotesk', sans-serif", fontSize: "0.875rem", lineHeight: 1.75 }}>
+              <Typography sx={{ color: "rgba(20,17,15,0.8)", fontFamily: "'Space Grotesk', sans-serif", fontSize: "0.875rem", lineHeight: 1.75, whiteSpace: "pre-line" }}>
                 {task.modelAnswer}
               </Typography>
             </Box>
@@ -269,7 +301,7 @@ export default function SimulationRunner({ profile }) {
 
       {!taskSubmitted[task.id] && (
         <Mono sx={{ textAlign: "center", mt: 2, fontSize: "0.72rem", color: ZB_COLORS.textMuted }}>
-          submit your answer to continue
+          {task.type === "numbers" ? "check your figures to continue" : task.type === "decision" ? "confirm your decision to continue" : "submit your answer to continue"}
         </Mono>
       )}
     </Box>
