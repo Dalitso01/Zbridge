@@ -7,6 +7,7 @@ import { ZB_COLORS } from "./theme";
 import { generateCertificate } from "./Certificate";
 import { getAIFeedback } from "./aiFeedback";
 import { notifySimulationComplete } from "./notifications";
+import { FeedbackForm } from "./components/Feedback";
 
 const CYAN = ZB_COLORS.cyan;
 const LIME = "#0e8a5f";
@@ -110,7 +111,7 @@ export default function SimulationRunner({ profile }) {
             ⤓ Download certificate
           </Button>
           <Alert severity="info" sx={{ textAlign: "left", fontSize: "0.78rem", background: "rgba(31,64,214,0.06)", border: `2px solid ${ZB_COLORS.border}`, color: "rgba(20,17,15,0.8)", "& .MuiAlert-icon": { color: CYAN } }}>
-            Add your certificate to LinkedIn and your CV — employers recognise ZBRIDGE simulations.
+            Add your certificate to LinkedIn and your CV, and use what you did here as examples in interviews.
           </Alert>
           <Button component={Link} to="/simulations" sx={{ color: CYAN, border: `2px solid ${ZB_COLORS.borderBright}`, borderRadius: "6px", "&:hover": { background: "rgba(31,64,214,0.06)" } }}>
             Try another simulation
@@ -118,6 +119,10 @@ export default function SimulationRunner({ profile }) {
           <Button component={Link} to="/dashboard" sx={{ color: ZB_COLORS.textMuted, fontSize: "0.875rem" }}>
             Back to dashboard
           </Button>
+        </Box>
+
+        <Box sx={{ mt: 5, textAlign: "left", background: ZB_COLORS.cardBg, border: "2px solid #14110f", boxShadow: "5px 5px 0 #14110f", p: { xs: 2.5, md: 3.5 } }}>
+          <FeedbackForm user={profile} defaultType="Content" simulationId={sim.id} compact prompt={`How useful was ${sim.title}?`} />
         </Box>
       </Box>
     );

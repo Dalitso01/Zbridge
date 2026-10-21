@@ -1,42 +1,99 @@
 import React from "react";
-import { Box } from "@mui/material";
+import { Link } from "react-router-dom";
+import { Box, Typography } from "@mui/material";
 import Navbar from "./Navbar";
 import ZBridgeGuide from "./components/ZBridgeGuide";
+import { FeedbackProvider, useFeedback } from "./components/Feedback";
 import { ZB_COLORS } from "./theme";
 
-const Layout = ({ children, user, onLogout }) => (
-  <Box sx={{ minHeight: "100vh", background: "transparent", display: "flex", flexDirection: "column" }}>
-    <Navbar user={user} onLogout={onLogout} />
-    <Box sx={{ flexGrow: 1 }}>
-      {children}
+const { ink, paper, cobalt, sun, vermilion, emerald } = ZB_COLORS;
+
+// Thin strip above the navbar inviting early testers to share feedback.
+function BetaBanner() {
+  const { openFeedback } = useFeedback();
+  return (
+    <Box sx={{ background: ink, color: paper, px: 2, py: 0.75, display: "flex", alignItems: "center", justifyContent: "center", gap: 1.25, flexWrap: "wrap", textAlign: "center" }}>
+      <Box component="span" sx={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.65rem", fontWeight: 500, letterSpacing: "0.12em", background: sun, color: ink, px: 0.9, py: 0.2, borderRadius: 0.5 }}>
+        EARLY ACCESS
+      </Box>
+      <Typography component="span" sx={{ fontSize: "0.82rem", display: { xs: "none", sm: "inline" } }}>
+        You're one of our first users. Tell us what works and what doesn't.
+      </Typography>
+      <Typography component="span" sx={{ fontSize: "0.82rem", display: { xs: "inline", sm: "none" } }}>
+        Help shape ZBRIDGE.
+      </Typography>
+      <Box component="button" type="button" onClick={() => openFeedback()}
+        sx={{ background: "none", border: "none", p: 0, color: sun, font: "inherit", fontSize: "0.82rem", fontWeight: 700, textDecoration: "underline", textUnderlineOffset: 3, cursor: "pointer" }}>
+        Give feedback
+      </Box>
     </Box>
-    <Box component="footer" sx={{ background: ZB_COLORS.ink, color: ZB_COLORS.paper, mt: 4 }}>
+  );
+}
+
+function Footer() {
+  const { openFeedback } = useFeedback();
+  const linkSx = { color: "inherit", textDecoration: "none", fontWeight: 500, opacity: 0.85, "&:hover": { color: sun, opacity: 1 } };
+  const columns = [
+    { title: "Learn", links: [["Simulations", "/simulations"], ["Library", "/library"], ["Podcasts", "/podcast"]] },
+    { title: "Community", links: [["Forum", "/forum"], ["For employers", "/employer"], ["About us", "/about"]] },
+    { title: "Help", links: [["Contact", "/contact"], ["Privacy policy", "/privacy-policy"]] },
+  ];
+
+  return (
+    <Box component="footer" sx={{ background: ink, color: paper, mt: 4 }}>
       {/* Bauhaus colour stripe */}
       <Box sx={{ display: "flex", height: 10 }}>
-        <Box sx={{ flex: 3, background: ZB_COLORS.cobalt }} />
-        <Box sx={{ flex: 1, background: ZB_COLORS.sun }} />
-        <Box sx={{ flex: 2, background: ZB_COLORS.vermilion }} />
-        <Box sx={{ flex: 1, background: ZB_COLORS.emerald }} />
+        <Box sx={{ flex: 3, background: cobalt }} />
+        <Box sx={{ flex: 1, background: sun }} />
+        <Box sx={{ flex: 2, background: vermilion }} />
+        <Box sx={{ flex: 1, background: emerald }} />
       </Box>
-      <Box
-        sx={{
-          py: 3.5, px: { xs: 2, md: 4 }, maxWidth: 1200, mx: "auto",
-          display: "flex", justifyContent: "space-between", alignItems: "center",
-          flexWrap: "wrap", gap: 1.5, fontSize: "0.85rem",
-        }}
-      >
-        <Box component="span" sx={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: "1.1rem" }}>ZBRIDGE</Box>
-        <Box component="span" sx={{ opacity: 0.7 }}>© 2025 ZBRIDGE. All rights reserved.</Box>
-        <Box sx={{ display: "flex", gap: 2.5, "& a": { color: "inherit", textDecoration: "none", fontWeight: 600 }, "& a:hover": { color: ZB_COLORS.sun } }}>
-          <a href="/privacy-policy">Privacy Policy</a>
-          <a href="/contact">Contact</a>
+      <Box sx={{ maxWidth: 1200, mx: "auto", px: { xs: 2, md: 4 }, pt: 5, pb: 3 }}>
+        <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr 1fr", md: "1.6fr 1fr 1fr 1fr" }, gap: 4, mb: 4 }}>
+          <Box sx={{ gridColumn: { xs: "1 / -1", md: "auto" } }}>
+            <Typography sx={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: "1.4rem", mb: 1 }}>ZBRIDGE</Typography>
+            <Typography sx={{ opacity: 0.75, fontSize: "0.9rem", maxWidth: 300, mb: 2 }}>
+              Practical career simulations for students and young professionals in Zambia.
+            </Typography>
+            <Box component="button" type="button" onClick={() => openFeedback()}
+              sx={{ font: "inherit", fontWeight: 700, fontSize: "0.85rem", cursor: "pointer", background: sun, color: ink, border: `2px solid ${paper}`, borderRadius: 999, px: 2, py: 0.75, boxShadow: `3px 3px 0 ${paper}` }}>
+              Share feedback
+            </Box>
+          </Box>
+          {columns.map(col => (
+            <Box key={col.title}>
+              <Typography sx={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.7rem", letterSpacing: "0.14em", textTransform: "uppercase", color: sun, mb: 1.5 }}>{col.title}</Typography>
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 1, fontSize: "0.9rem" }}>
+                {col.links.map(([label, to]) => (
+                  <Box key={to} component={Link} to={to} sx={linkSx}>{label}</Box>
+                ))}
+              </Box>
+            </Box>
+          ))}
+        </Box>
+        <Box sx={{ borderTop: "1px solid rgba(243,236,223,0.2)", pt: 2.5, fontSize: "0.8rem", opacity: 0.65, display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 1 }}>
+          <span>© {new Date().getFullYear()} ZBRIDGE. All rights reserved.</span>
+          <span>Made in Zambia</span>
         </Box>
       </Box>
     </Box>
+  );
+}
 
-    {/* Floating AI assistant on every page */}
-    <ZBridgeGuide profile={user} />
-  </Box>
+const Layout = ({ children, user, onLogout }) => (
+  <FeedbackProvider user={user}>
+    <Box sx={{ minHeight: "100vh", background: "transparent", display: "flex", flexDirection: "column" }}>
+      <BetaBanner />
+      <Navbar user={user} onLogout={onLogout} />
+      <Box component="main" sx={{ flexGrow: 1 }}>
+        {children}
+      </Box>
+      <Footer />
+
+      {/* Floating AI assistant on every page */}
+      <ZBridgeGuide profile={user} />
+    </Box>
+  </FeedbackProvider>
 );
 
 export default Layout;

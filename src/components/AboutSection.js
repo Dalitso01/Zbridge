@@ -20,9 +20,9 @@ const values = [
 ];
 
 const stats = [
-  { num: "8", label: "Industries" },
-  { num: "12+", label: "Simulations" },
-  { num: "Free", label: "Forever" },
+  { num: "15", label: "Industries" },
+  { num: "16", label: "Simulations" },
+  { num: "Free", label: "To join" },
 ];
 
 const fadeUp = (delay = 0) => ({

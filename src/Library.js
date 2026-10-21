@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Box, Typography, TextField, Button, Chip, Select, MenuItem, FormControl, InputLabel, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
 import { motion } from "framer-motion";
 import { ZB_COLORS } from "./theme";
+import { feedbackReady, submitFeedback } from "./feedback";
 
 const CYAN = ZB_COLORS.cyan;
 const LIME = "#0e8a5f";
@@ -125,7 +126,13 @@ export default function Library() {
               </Select>
             </FormControl>
             <Box sx={{ gridColumn: "1 / -1" }}>
-              <Button variant="contained" onClick={() => setSuggested(true)} disabled={!suggestTitle || !suggestLink || !suggestCat}>Submit suggestion</Button>
+              <Button variant="contained" onClick={() => {
+                if (feedbackReady) {
+                  submitFeedback({ type: "Content", message: `Resource suggestion: ${suggestTitle} (${suggestCat}) ${suggestLink}`, page: "/library" })
+                    .catch(err => console.error("Could not send suggestion", err));
+                }
+                setSuggested(true);
+              }} disabled={!suggestTitle || !suggestLink || !suggestCat}>Submit suggestion</Button>
             </Box>
           </Box>
         )}

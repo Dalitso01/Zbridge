@@ -4,15 +4,16 @@ import { motion } from "framer-motion";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import { ZB_COLORS, ART_SHADOW } from "./theme";
+import { useFeedback } from "./components/Feedback";
 
 const { ink, paper, cobalt, vermilion, sun, emerald } = ZB_COLORS;
 const CREAM = ZB_COLORS.cardBg;
 
 const features = [
-  { shape: "circle", color: cobalt, title: "Simulations", desc: "Real-world scenarios across fintech, agritech, healthcare, and more.", to: "/simulations", tag: "12 active" },
-  { shape: "square", color: vermilion, title: "Forum", desc: "Publish, debate, and connect with professionals across the network.", to: "/forum", tag: "Live" },
-  { shape: "triangle", color: sun, title: "Podcasts", desc: "In-depth discussions to stay informed and inspired on the go.", to: "/podcast", tag: "Audio" },
-  { shape: "half", color: emerald, title: "Library", desc: "Curated resources to upskill and stay ahead in your field.", to: "/library", tag: "Free" },
+  { shape: "circle", color: cobalt, title: "Simulations", desc: "Real-world scenarios across fintech, agritech, healthcare, and more.", to: "/simulations", tag: "16 live" },
+  { shape: "square", color: vermilion, title: "Forum", desc: "Ask questions, share advice, and meet other students and young professionals.", to: "/forum", tag: "Community" },
+  { shape: "triangle", color: sun, title: "Podcasts", desc: "Conversations with Zambian professionals about how they built their careers.", to: "/podcast", tag: "Coming soon" },
+  { shape: "half", color: emerald, title: "Library", desc: "Hand-picked free courses and books to build skills employers look for.", to: "/library", tag: "Free" },
 ];
 
 const quotes = [
@@ -24,7 +25,13 @@ const quotes = [
 const stats = [
   { num: "16", label: "Simulations", bg: cobalt, fg: CREAM },
   { num: "Free", label: "To join", bg: sun, fg: ink },
-  { num: "16", label: "Industries", bg: vermilion, fg: CREAM },
+  { num: "15", label: "Industries", bg: vermilion, fg: CREAM },
+];
+
+const steps = [
+  { n: "1", color: cobalt, fg: CREAM, title: "Pick a real-world scenario", desc: "Choose from 16 simulations set in Zambian industries, from banking and audit to mining and healthcare." },
+  { n: "2", color: sun, fg: ink, title: "Do the work", desc: "Tackle the same tasks a junior professional would face, then compare your answer with a model answer and get instant AI feedback." },
+  { n: "3", color: vermilion, fg: CREAM, title: "Show what you can do", desc: "Download a certificate for each simulation you finish and talk about real work in your CV and interviews." },
 ];
 
 const fadeUp = (delay = 0) => ({
@@ -93,10 +100,11 @@ const HeroArt = () => (
 );
 
 export default function Home({ isLoggedIn }) {
+  const { openFeedback } = useFeedback();
   return (
     <>
       <Helmet>
-        <title>ZBRIDGE: Bridge the Gap</title>
+        <title>ZBRIDGE | Career simulations for Zambian students</title>
       </Helmet>
 
       {/* HERO */}
@@ -130,7 +138,7 @@ export default function Home({ isLoggedIn }) {
 
             <motion.div {...fadeUp(0.2)}>
               <Typography sx={{ fontSize: { xs: "1.05rem", md: "1.2rem" }, color: ZB_COLORS.textMuted, maxWidth: 520, mb: 4 }}>
-                ZBRIDGE connects you with real-world simulations, expert resources, and a community to accelerate your career in Africa.
+                Practise real work before your first job. ZBRIDGE gives students and graduates hands-on career simulations, instant feedback, and a community to grow with. Free to join.
               </Typography>
             </motion.div>
 
@@ -139,8 +147,8 @@ export default function Home({ isLoggedIn }) {
                 <Button component={Link} to={isLoggedIn ? "/simulations" : "/signup"} variant="contained" size="large" sx={{ px: 4, py: 1.4, fontSize: "1rem" }}>
                   {isLoggedIn ? "Browse simulations" : "Get started free"}
                 </Button>
-                <Button component={Link} to="/about" variant="outlined" size="large" sx={{ px: 3.5, py: 1.4, fontSize: "1rem", background: CREAM }}>
-                  Explore ZBRIDGE
+                <Button component={Link} to={isLoggedIn ? "/dashboard" : "/simulations"} variant="outlined" size="large" sx={{ px: 3.5, py: 1.4, fontSize: "1rem", background: CREAM }}>
+                  {isLoggedIn ? "My dashboard" : "See the simulations"}
                 </Button>
               </Box>
             </motion.div>
@@ -202,6 +210,25 @@ export default function Home({ isLoggedIn }) {
         </Section>
       </Box>
 
+      {/* HOW IT WORKS */}
+      <Section>
+        <motion.div {...fadeUp(0)}>
+          <Eyebrow color={emerald}>How it works</Eyebrow>
+          <Typography variant="h2" sx={{ fontSize: { xs: "2.2rem", md: "3.2rem" }, color: ink, mb: 6, lineHeight: 1.02 }}>Learn by doing, in three steps</Typography>
+        </motion.div>
+        <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "repeat(3, 1fr)" }, gap: 3 }}>
+          {steps.map((st, i) => (
+            <motion.div key={st.n} {...fadeUp(i * 0.1)} style={{ height: "100%" }}>
+              <Box sx={{ height: "100%", boxSizing: "border-box", background: CREAM, border: `2px solid ${ink}`, boxShadow: `4px 4px 0 ${ink}`, p: 3.5 }}>
+                <Box sx={{ width: 52, height: 52, borderRadius: "50%", background: st.color, color: st.fg, border: `2px solid ${ink}`, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: "1.5rem", mb: 2.5 }}>{st.n}</Box>
+                <Typography sx={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: "1.3rem", mb: 1 }}>{st.title}</Typography>
+                <Typography sx={{ color: ZB_COLORS.textMuted, fontSize: "0.95rem" }}>{st.desc}</Typography>
+              </Box>
+            </motion.div>
+          ))}
+        </Box>
+      </Section>
+
       {/* ABOUT BAND */}
       <Box sx={{ background: cobalt, color: CREAM, borderBottom: `2px solid ${ink}`, position: "relative", overflow: "hidden" }}>
         <Box aria-hidden="true" sx={{ position: "absolute", right: { xs: -120, md: -60 }, top: { xs: -80, md: -100 }, width: { xs: 240, md: 380 }, height: { xs: 240, md: 380 }, borderRadius: "50%", background: sun, border: `2px solid ${ink}` }} />
@@ -238,6 +265,27 @@ export default function Home({ isLoggedIn }) {
         </Box>
       </Section>
 
+      {/* EARLY ACCESS FEEDBACK */}
+      <Section sx={{ pt: 0 }}>
+        <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1.4fr 1fr" }, gap: 3, alignItems: "center", background: sun, border: `2px solid ${ink}`, boxShadow: ART_SHADOW, p: { xs: 3.5, md: 5 } }}>
+          <Box>
+            <Eyebrow>Early access</Eyebrow>
+            <Typography variant="h3" sx={{ fontSize: { xs: "1.8rem", md: "2.4rem" }, mb: 1.5, lineHeight: 1.05 }}>Help us build ZBRIDGE with you</Typography>
+            <Typography sx={{ fontSize: "1.02rem", maxWidth: 520 }}>
+              We're opening ZBRIDGE to our first group of students and graduates. Try a simulation, then tell us what helped, what confused you, and what you wish it did. It takes two minutes.
+            </Typography>
+          </Box>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5, alignItems: { xs: "stretch", md: "flex-start" } }}>
+            <Button variant="contained" size="large" onClick={() => openFeedback()} sx={{ px: 4, background: ink, color: CREAM, "&:hover": { background: "#2b2622" } }}>
+              Share your feedback
+            </Button>
+            <Button component={Link} to="/forum" variant="outlined" size="large" sx={{ px: 4, background: CREAM, "&:hover": { background: CREAM } }}>
+              Join the conversation
+            </Button>
+          </Box>
+        </Box>
+      </Section>
+
       {/* CTA BANNER */}
       <Section sx={{ pt: 0 }}>
         <Box sx={{ background: ink, color: CREAM, border: `2px solid ${ink}`, boxShadow: `10px 10px 0 ${vermilion}`, p: { xs: 4, md: 7 }, position: "relative", overflow: "hidden" }}>
@@ -245,7 +293,7 @@ export default function Home({ isLoggedIn }) {
           <Box aria-hidden="true" sx={{ position: "absolute", right: { xs: 30, md: 170 }, bottom: { xs: -30, md: 30 }, width: { xs: 70, md: 90 }, height: { xs: 70, md: 90 }, background: sun, transform: "rotate(20deg)" }} />
           <Box sx={{ position: "relative", maxWidth: 600 }}>
             <Typography variant="h3" sx={{ fontSize: { xs: "2rem", md: "2.8rem" }, mb: 1.5, lineHeight: 1.05 }}>Ready to start your journey?</Typography>
-            <Typography sx={{ opacity: 0.8, mb: 4, fontSize: "1.05rem" }}>Join Zambian students and professionals building real-world skills on ZBRIDGE.</Typography>
+            <Typography sx={{ opacity: 0.8, mb: 4, fontSize: "1.05rem" }}>Create a free account in under a minute and start your first simulation today.</Typography>
             <Button component={Link} to="/signup" variant="contained" size="large"
               sx={{ px: 4.5, py: 1.4, fontSize: "1.05rem", background: sun, color: ink, border: `2px solid ${CREAM}`, boxShadow: `4px 4px 0 ${CREAM}`, "&:hover": { background: "#ffd04d", boxShadow: `6px 6px 0 ${CREAM}` } }}>
               Create your free account
