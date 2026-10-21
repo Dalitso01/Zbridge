@@ -5,7 +5,7 @@ import { ZB_COLORS } from "./theme";
 import { feedbackReady, submitFeedback } from "./feedback";
 
 const CYAN = ZB_COLORS.cyan;
-const LIME = "#0e8a5f";
+const LIME = "#0f7b5f";
 const GLOW = ZB_COLORS.cyanGlow;
 
 const Mono = ({ children, sx }) => (
@@ -32,20 +32,20 @@ const defaultResources = [
 const ResourceCard = ({ r, onClick }) => (
   <Box onClick={onClick}
     sx={{
-      background: r.featured ? "rgba(31,64,214,0.06)" : ZB_COLORS.cardBg,
-      border: `2px solid ${r.featured ? ZB_COLORS.borderBright : ZB_COLORS.border}`,
+      background: r.featured ? "rgba(29,79,145,0.06)" : ZB_COLORS.cardBg,
+      border: `1px solid ${r.featured ? ZB_COLORS.borderBright : ZB_COLORS.border}`,
       borderRadius: "12px", p: 2.5, cursor: "pointer", height: "100%",
       display: "flex", flexDirection: "column", boxSizing: "border-box",
       transition: "all 0.2s",
-      "&:hover": { background: ZB_COLORS.cardHover, borderColor: ZB_COLORS.borderBright, transform: "translate(-3px, -3px)", boxShadow: "5px 5px 0 #14110f" },
+      "&:hover": { background: ZB_COLORS.cardHover, borderColor: ZB_COLORS.borderBright, transform: "translateY(-2px)", boxShadow: "0 2px 4px rgba(11,31,58,0.06), 0 12px 28px rgba(11,31,58,0.1)" },
     }}>
     <Box sx={{ display: "flex", gap: 0.75, mb: 1.25, flexWrap: "wrap" }}>
-      <Chip label={r.category} size="small" sx={{ background: "rgba(20,17,15,0.06)", color: "rgba(20,17,15,0.7)", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.64rem" }} />
-      <Chip label={r.type} size="small" sx={{ background: (typeColor[r.type] || CYAN) + "1e", color: typeColor[r.type] || CYAN, border: `2px solid ${(typeColor[r.type] || CYAN)}44`, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.64rem" }} />
-      {r.featured && <Chip label="★" size="small" sx={{ background: "rgba(31,64,214,0.12)", color: CYAN, fontSize: "0.64rem" }} />}
+      <Chip label={r.category} size="small" sx={{ background: "rgba(11,31,58,0.06)", color: "rgba(11,31,58,0.7)", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.64rem" }} />
+      <Chip label={r.type} size="small" sx={{ background: (typeColor[r.type] || CYAN) + "1e", color: typeColor[r.type] || CYAN, border: `1px solid ${(typeColor[r.type] || CYAN)}44`, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.64rem" }} />
+      {r.featured && <Chip label="★" size="small" sx={{ background: "rgba(29,79,145,0.12)", color: CYAN, fontSize: "0.64rem" }} />}
     </Box>
-    <Typography sx={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, color: "#14110f", fontSize: "0.92rem", mb: 0.75, flexGrow: 1 }}>{r.title}</Typography>
-    <Typography sx={{ fontSize: "0.78rem", color: ZB_COLORS.textMuted, fontFamily: "'Space Grotesk', sans-serif", lineHeight: 1.5 }}>{r.description}</Typography>
+    <Typography sx={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, color: "#0b1f3a", fontSize: "0.92rem", mb: 0.75, flexGrow: 1 }}>{r.title}</Typography>
+    <Typography sx={{ fontSize: "0.78rem", color: ZB_COLORS.textMuted, fontFamily: "'Inter', sans-serif", lineHeight: 1.5 }}>{r.description}</Typography>
   </Box>
 );
 
@@ -67,8 +67,8 @@ export default function Library() {
   return (
     <Box sx={{ maxWidth: 1200, mx: "auto", px: { xs: 2, md: 4 }, py: { xs: 4, md: 6 } }}>
       <Mono sx={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.15em", color: CYAN, fontWeight: 500, mb: 1 }}>{"// resources"}</Mono>
-      <Typography variant="h3" sx={{ fontSize: { xs: "1.9rem", md: "2.4rem" }, color: "#14110f", mb: 0.5 }}>Library</Typography>
-      <Typography sx={{ color: ZB_COLORS.textMuted, fontFamily: "'Space Grotesk', sans-serif", mb: 4 }}>Curated free courses, books, and tools to grow your career.</Typography>
+      <Typography variant="h3" sx={{ fontSize: { xs: "1.9rem", md: "2.4rem" }, color: "#0b1f3a", mb: 0.5 }}>Library</Typography>
+      <Typography sx={{ color: ZB_COLORS.textMuted, fontFamily: "'Inter', sans-serif", mb: 4 }}>Curated free courses, books, and tools to grow your career.</Typography>
 
       {/* Featured */}
       {featured.length > 0 && (
@@ -91,7 +91,7 @@ export default function Library() {
       <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mb: 3 }}>
         {categories.map(cat => (
           <Chip key={cat} label={cat} onClick={() => setCategory(cat)} size="small"
-            sx={{ cursor: "pointer", background: category === cat ? "rgba(31,64,214,0.15)" : "rgba(31,64,214,0.03)", border: `2px solid ${category === cat ? CYAN : ZB_COLORS.border}`, color: category === cat ? CYAN : "rgba(20,17,15,0.6)", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.7rem", boxShadow: category === cat ? `0 0 12px ${GLOW}` : "none" }} />
+            sx={{ cursor: "pointer", background: category === cat ? "rgba(29,79,145,0.15)" : "rgba(29,79,145,0.03)", border: `1px solid ${category === cat ? CYAN : ZB_COLORS.border}`, color: category === cat ? CYAN : "rgba(11,31,58,0.6)", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.7rem", boxShadow: category === cat ? `0 0 12px ${GLOW}` : "none" }} />
         ))}
       </Box>
 
@@ -106,15 +106,15 @@ export default function Library() {
 
       {filtered.length === 0 && (
         <Box sx={{ textAlign: "center", py: 6, border: `0.5px dashed ${ZB_COLORS.border}`, borderRadius: "12px", mb: 5 }}>
-          <Typography sx={{ color: ZB_COLORS.textMuted, fontFamily: "'Space Grotesk', sans-serif" }}>No resources match your search.</Typography>
+          <Typography sx={{ color: ZB_COLORS.textMuted, fontFamily: "'Inter', sans-serif" }}>No resources match your search.</Typography>
         </Box>
       )}
 
       {/* Suggest */}
-      <Box sx={{ background: ZB_COLORS.bgMid, border: `2px solid ${ZB_COLORS.border}`, borderRadius: "12px", p: 3 }}>
-        <Typography sx={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, color: "#14110f", mb: 2 }}>Suggest a resource</Typography>
+      <Box sx={{ background: ZB_COLORS.bgMid, border: `1px solid ${ZB_COLORS.border}`, borderRadius: "12px", p: 3 }}>
+        <Typography sx={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, color: "#0b1f3a", mb: 2 }}>Suggest a resource</Typography>
         {suggested ? (
-          <Typography sx={{ color: LIME, fontFamily: "'Space Grotesk', sans-serif" }}>✓ Thanks! Your suggestion will be reviewed.</Typography>
+          <Typography sx={{ color: LIME, fontFamily: "'Inter', sans-serif" }}>✓ Thanks! Your suggestion will be reviewed.</Typography>
         ) : (
           <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "repeat(3, 1fr)" }, gap: 2 }}>
             <TextField label="Title" fullWidth size="small" value={suggestTitle} onChange={e => setSuggestTitle(e.target.value)} />
@@ -139,14 +139,14 @@ export default function Library() {
       </Box>
 
       {/* Detail dialog */}
-      <Dialog open={!!openResource} onClose={() => setOpenResource(null)} maxWidth="sm" fullWidth PaperProps={{ sx: { background: ZB_COLORS.bgMid, border: `2px solid ${ZB_COLORS.borderBright}`, borderRadius: "14px" } }}>
-        <DialogTitle sx={{ color: "#14110f", fontFamily: "'Space Grotesk', sans-serif" }}>{openResource?.title}</DialogTitle>
+      <Dialog open={!!openResource} onClose={() => setOpenResource(null)} maxWidth="sm" fullWidth PaperProps={{ sx: { background: ZB_COLORS.bgMid, border: `1px solid ${ZB_COLORS.borderBright}`, borderRadius: "14px" } }}>
+        <DialogTitle sx={{ color: "#0b1f3a", fontFamily: "'Inter', sans-serif" }}>{openResource?.title}</DialogTitle>
         <DialogContent>
           <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
-            <Chip label={openResource?.category} size="small" sx={{ background: "rgba(20,17,15,0.06)", color: "rgba(20,17,15,0.7)", fontFamily: "'JetBrains Mono', monospace" }} />
+            <Chip label={openResource?.category} size="small" sx={{ background: "rgba(11,31,58,0.06)", color: "rgba(11,31,58,0.7)", fontFamily: "'JetBrains Mono', monospace" }} />
             {openResource?.type && <Chip label={openResource.type} size="small" sx={{ background: (typeColor[openResource.type] || CYAN) + "1e", color: typeColor[openResource.type] || CYAN, fontFamily: "'JetBrains Mono', monospace" }} />}
           </Box>
-          <Typography sx={{ color: ZB_COLORS.textMuted, fontFamily: "'Space Grotesk', sans-serif", mb: 3 }}>{openResource?.description}</Typography>
+          <Typography sx={{ color: ZB_COLORS.textMuted, fontFamily: "'Inter', sans-serif", mb: 3 }}>{openResource?.description}</Typography>
           <Button href={openResource?.link} target="_blank" rel="noopener noreferrer" variant="contained">Open resource →</Button>
         </DialogContent>
         <DialogActions><Button onClick={() => setOpenResource(null)} sx={{ color: ZB_COLORS.textMuted }}>Close</Button></DialogActions>

@@ -7,7 +7,7 @@ import { db, firebaseReady } from "./firebase";
 import { ZB_COLORS } from "./theme";
 
 const CYAN = ZB_COLORS.cyan;
-const LIME = "#0e8a5f";
+const LIME = "#0f7b5f";
 
 const Mono = ({ children, sx }) => (
   <Typography sx={{ fontFamily: "'JetBrains Mono', monospace", ...sx }}>{children}</Typography>
@@ -111,8 +111,8 @@ export default function Forum({ user }) {
       <Mono sx={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.15em", color: CYAN, fontWeight: 500, mb: 1 }}>{"// community"}</Mono>
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 2, mb: 4 }}>
         <Box>
-          <Typography variant="h3" sx={{ fontSize: { xs: "1.9rem", md: "2.4rem" }, color: "#14110f", mb: 0.5 }}>Forum</Typography>
-          <Typography sx={{ color: ZB_COLORS.textMuted, fontFamily: "'Space Grotesk', sans-serif" }}>Ask questions, share ideas, connect with the network.</Typography>
+          <Typography variant="h3" sx={{ fontSize: { xs: "1.9rem", md: "2.4rem" }, color: "#0b1f3a", mb: 0.5 }}>Forum</Typography>
+          <Typography sx={{ color: ZB_COLORS.textMuted, fontFamily: "'Inter', sans-serif" }}>Ask questions, share ideas, connect with the network.</Typography>
         </Box>
         {user ? (
           <Button variant="contained" onClick={() => setShowCompose(!showCompose)} sx={{ whiteSpace: "nowrap" }}>
@@ -133,13 +133,13 @@ export default function Forum({ user }) {
       {/* Compose */}
       {showCompose && (
         <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }}>
-          <Box sx={{ background: ZB_COLORS.bgMid, border: `2px solid ${ZB_COLORS.borderBright}`, borderRadius: "12px", p: 3, mb: 3 }}>
+          <Box sx={{ background: ZB_COLORS.bgMid, border: `1px solid ${ZB_COLORS.borderBright}`, borderRadius: "12px", p: 3, mb: 3 }}>
             <TextField label="Title" fullWidth inputProps={{ maxLength: 140 }} value={newTitle} onChange={e => setNewTitle(e.target.value)} sx={{ mb: 2 }} />
             <TextField label="What's on your mind?" fullWidth multiline minRows={3} value={newContent} onChange={e => setNewContent(e.target.value)} sx={{ mb: 2 }} />
             <Box sx={{ display: "flex", gap: 1, mb: 2, flexWrap: "wrap" }}>
               {Object.keys(tagColors).map(tag => (
                 <Chip key={tag} label={tag} onClick={() => setNewTag(tag)} size="small"
-                  sx={{ cursor: "pointer", background: newTag === tag ? tagColors[tag] + "22" : "rgba(31,64,214,0.03)", border: `2px solid ${newTag === tag ? tagColors[tag] : ZB_COLORS.border}`, color: newTag === tag ? tagColors[tag] : "rgba(20,17,15,0.6)", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.7rem" }} />
+                  sx={{ cursor: "pointer", background: newTag === tag ? tagColors[tag] + "22" : "rgba(29,79,145,0.03)", border: `1px solid ${newTag === tag ? tagColors[tag] : ZB_COLORS.border}`, color: newTag === tag ? tagColors[tag] : "rgba(11,31,58,0.6)", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.7rem" }} />
               ))}
             </Box>
             <Button variant="contained" onClick={handlePost} disabled={posting || !newTitle.trim() || !newContent.trim()}>{posting ? "Posting…" : "Post topic"}</Button>
@@ -167,27 +167,27 @@ export default function Forum({ user }) {
         const topicReplies = replies.filter(r => r.topicId === topic.id);
         return (
           <motion.div key={topic.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05 }}>
-            <Box sx={{ background: ZB_COLORS.bgMid, border: `2px solid ${ZB_COLORS.border}`, borderRadius: "12px", p: 3, mb: 2, transition: "all 0.2s", "&:hover": { borderColor: ZB_COLORS.borderBright } }}>
+            <Box sx={{ background: ZB_COLORS.bgMid, border: `1px solid ${ZB_COLORS.border}`, borderRadius: "12px", p: 3, mb: 2, transition: "all 0.2s", "&:hover": { borderColor: ZB_COLORS.borderBright } }}>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 1.5 }}>
-                <Avatar sx={{ width: 36, height: 36, background: "rgba(31,64,214,0.1)", color: CYAN, fontSize: "0.8rem", fontWeight: 700, border: `2px solid ${ZB_COLORS.borderBright}`, fontFamily: "'Space Grotesk', sans-serif" }}>
+                <Avatar sx={{ width: 36, height: 36, background: "rgba(29,79,145,0.1)", color: CYAN, fontSize: "0.8rem", fontWeight: 700, border: `1px solid ${ZB_COLORS.borderBright}`, fontFamily: "'Inter', sans-serif" }}>
                   {initials(topic.authorName)}
                 </Avatar>
                 <Box sx={{ flexGrow: 1 }}>
-                  <Typography sx={{ color: "#14110f", fontFamily: "'Space Grotesk', sans-serif", fontSize: "0.85rem", fontWeight: 500 }}>{topic.authorName}</Typography>
+                  <Typography sx={{ color: "#0b1f3a", fontFamily: "'Inter', sans-serif", fontSize: "0.85rem", fontWeight: 500 }}>{topic.authorName}</Typography>
                   <Mono sx={{ fontSize: "0.66rem", color: ZB_COLORS.textMuted }}>{timeAgo(topic.createdAt)}</Mono>
                 </Box>
-                <Chip label={topic.tag} size="small" sx={{ background: tagColor + "18", color: tagColor, border: `2px solid ${tagColor}44`, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.64rem" }} />
+                <Chip label={topic.tag} size="small" sx={{ background: tagColor + "18", color: tagColor, border: `1px solid ${tagColor}44`, fontFamily: "'JetBrains Mono', monospace", fontSize: "0.64rem" }} />
               </Box>
 
-              <Typography sx={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, color: "#14110f", fontSize: "1.05rem", mb: 0.75 }}>{topic.title}</Typography>
-              <Typography sx={{ color: "rgba(20,17,15,0.75)", fontFamily: "'Space Grotesk', sans-serif", fontSize: "0.9rem", lineHeight: 1.6, mb: 2 }}>{topic.content}</Typography>
+              <Typography sx={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, color: "#0b1f3a", fontSize: "1.05rem", mb: 0.75 }}>{topic.title}</Typography>
+              <Typography sx={{ color: "rgba(11,31,58,0.75)", fontFamily: "'Inter', sans-serif", fontSize: "0.9rem", lineHeight: 1.6, mb: 2 }}>{topic.content}</Typography>
 
               {topicReplies.length > 0 && (
-                <Box sx={{ pl: 2, borderLeft: `2px solid ${ZB_COLORS.border}`, mb: 2 }}>
+                <Box sx={{ pl: 2, borderLeft: `1px solid ${ZB_COLORS.border}`, mb: 2 }}>
                   {topicReplies.map(r => (
                     <Box key={r.id} sx={{ mb: 1.5 }}>
                       <Mono sx={{ fontSize: "0.66rem", color: CYAN }}>{r.authorName} · {timeAgo(r.createdAt)}</Mono>
-                      <Typography sx={{ color: "rgba(20,17,15,0.8)", fontFamily: "'Space Grotesk', sans-serif", fontSize: "0.875rem" }}>{r.text}</Typography>
+                      <Typography sx={{ color: "rgba(11,31,58,0.8)", fontFamily: "'Inter', sans-serif", fontSize: "0.875rem" }}>{r.text}</Typography>
                     </Box>
                   ))}
                 </Box>

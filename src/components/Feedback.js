@@ -54,7 +54,7 @@ export function FeedbackForm({ user, defaultType = "Idea", simulationId, prompt,
   if (status === "sent") {
     return (
       <Box sx={{ textAlign: "center", py: compact ? 2 : 4 }}>
-        <Box sx={{ width: 56, height: 56, borderRadius: "50%", background: emerald, border: `2px solid ${ink}`, boxShadow: `3px 3px 0 ${ink}`, mx: "auto", mb: 2, display: "flex", alignItems: "center", justifyContent: "center", color: CREAM, fontSize: "1.6rem", fontWeight: 800 }}>✓</Box>
+        <Box sx={{ width: 56, height: 56, borderRadius: "50%", background: emerald, border: `1px solid ${ZB_COLORS.border}`, boxShadow: "0 1px 2px rgba(11,31,58,0.06), 0 2px 8px rgba(11,31,58,0.05)", mx: "auto", mb: 2, display: "flex", alignItems: "center", justifyContent: "center", color: CREAM, fontSize: "1.6rem", fontWeight: 700 }}>✓</Box>
         <Typography variant="h5" sx={{ mb: 1 }}>Thank you!</Typography>
         <Typography sx={{ color: ZB_COLORS.textMuted, mb: onDone ? 3 : 0 }}>
           Every message is read. You're helping shape ZBRIDGE for students across Zambia.
@@ -76,9 +76,8 @@ export function FeedbackForm({ user, defaultType = "Idea", simulationId, prompt,
             <Box key={r.value} component="button" type="button" role="radio" aria-checked={active} onClick={() => setRating(r.value)}
               sx={{
                 cursor: "pointer", font: "inherit", color: ink, py: 1, px: 0.5,
-                background: active ? sun : CREAM, border: `2px solid ${ink}`, borderRadius: 1,
-                boxShadow: active ? `3px 3px 0 ${ink}` : "none", transform: active ? "translate(-1px, -1px)" : "none",
-                transition: "all 0.12s ease", "&:hover": { background: active ? sun : "#fff3d6" },
+                background: active ? ZB_COLORS.tint : CREAM, border: `1px solid ${active ? cobalt : ZB_COLORS.border}`, borderRadius: 1,
+                transition: "all 0.12s ease", "&:hover": { background: ZB_COLORS.tint },
               }}>
               <Box sx={{ fontSize: "1.4rem", lineHeight: 1.2 }}>{r.emoji}</Box>
               <Box sx={{ fontSize: "0.68rem", fontWeight: 600 }}>{r.label}</Box>
@@ -95,7 +94,7 @@ export function FeedbackForm({ user, defaultType = "Idea", simulationId, prompt,
               <Box key={t} component="button" type="button" onClick={() => setType(t)} aria-pressed={type === t}
                 sx={{
                   cursor: "pointer", font: "inherit", fontSize: "0.8rem", fontWeight: 600, px: 1.5, py: 0.5, borderRadius: 999,
-                  border: `2px solid ${ink}`, background: type === t ? cobalt : CREAM, color: type === t ? CREAM : ink,
+                  border: `1px solid ${ZB_COLORS.border}`, background: type === t ? cobalt : CREAM, color: type === t ? CREAM : ink,
                 }}>
                 {t}
               </Box>
@@ -146,12 +145,7 @@ export function FeedbackProvider({ user, children }) {
     <FeedbackContext.Provider value={{ openFeedback }}>
       {children}
       <Dialog open={open} onClose={close} maxWidth="sm" fullWidth aria-labelledby="feedback-title">
-        <Box sx={{ display: "flex", height: 8 }} aria-hidden="true">
-          <Box sx={{ flex: 3, background: cobalt }} />
-          <Box sx={{ flex: 1, background: sun }} />
-          <Box sx={{ flex: 2, background: vermilion }} />
-          <Box sx={{ flex: 1, background: emerald }} />
-        </Box>
+        <Box sx={{ height: 4, background: cobalt }} aria-hidden="true" />
         <Box sx={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", px: 3, pt: 2.5 }}>
           <Box>
             <Typography id="feedback-title" variant="h5">{opts.title || "Share your feedback"}</Typography>
